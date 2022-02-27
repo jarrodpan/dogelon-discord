@@ -2,7 +2,7 @@
 
 require('dotenv').config();
 //console.log(process.env); // to test dotenv
-const { Client, Intents } = require('discord.js');
+const { Client, Intents, MessageEmbed } = require('discord.js');
 
 
 
@@ -44,6 +44,18 @@ client.on('messageCreate', (message) => {
 
 		if (token.charAt(0) == "$") queue.push([message, token, (stock) => {
 			// code goes here
+
+			const embed = new MessageEmbed()
+				.setColor("#0099ff")
+				.setTitle(stock + " blah balh")
+				.setDescription("asAdfasdfasfd")
+				.addField("field 1 inline", "sample saplmepl", true)
+				.addField("field 1 inline", "sample saplmepl", true)
+				.addField("field 1 inline", "sample saplmepl", true)
+				.setTimestamp();
+
+
+			return { embeds: [embed] };
 		}]);
 
 		if (token.slice(0, 2) == "r/" || token.slice(0, 3) == "/r/") queue.push([message, token, (msg) => {
