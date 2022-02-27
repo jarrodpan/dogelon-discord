@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
 require('dotenv').config();
 //console.log(process.env); // to test dotenv
