@@ -3,7 +3,7 @@
 require('dotenv').config();
 //console.log(process.env); // to test dotenv
 const { Client, Intents, MessageEmbed } = require('discord.js');
-
+const axios = require('axios');
 
 
 
@@ -42,38 +42,62 @@ client.on('messageCreate', (message) => {
 	let tokens = message.content.split(" ");
 	tokens.forEach(token => {
 
-		if (token.charAt(0) == "$") queue.push([message, token, (stock) => {
+		if (token.charAt(0) == "$") queue.push([message, token, async (token) => {
 			// code goes here
+			let ticker = token.slice(1);
+			let response = await axios.get("https://query1.finance.yahoo.com/v10/finance/quoteSummary/" + ticker + "?region=AU&lang=en-AU&corsDomain=au.finance.yahoo.com&formatted=true&modules=price%2CsummaryDetail%2CpageViews%2CfinancialsTemplate");
 
-			const embed = new MessageEmbed()
-				.setColor("#0099ff")
-				.setTitle(stock + " blah balh")
-				.setDescription("asAdfasdfasfd")
-				.addField("field 1 inline", "sample saplmepl", true)
-				.addField("field 1 inline", "sample saplmepl", true)
-				.addField("field 1 inline", "sample saplmepl", true)
-				.setTimestamp();
+			const embed = new MessageEmbed();
 
+			//console.log(response.data);
+			let data = response.data.quoteSummary;
+			console.log(data.error);
+			if (!data.error) {
+				let result = data.result[0].price;
+				let title = result.longName + " " + result.symbol;
+				let price = result.currencySymbol + result.regularMarketPreviousClose.fmt;
+				let priceChange = result.currencySymbol + result.regularMarketChange.fmt;
+				let pcChange = result.regularMarketChangePercent.fmt;
+				let footer = result.quoteSourceName + " " + result.currency;
 
+				embed
+					.setColor("#0099ff")
+					.setTitle(title)
+					.addField("Price", price, true)
+					.addField("$ Change", priceChange, true)
+					.addField("% Change", pcChange, true)
+					.setTimestamp()
+					.setFooter({ text: footer })
+					;
+			} else {
+				// error case
+				embed
+					.setColor("RED")
+					.setTitle(data.error.code)
+					.setDescription(data.error.description)
+					;
+			}
+
+			//console.log(embed);
 			return { embeds: [embed] };
 		}]);
 
-		if (token.slice(0, 2) == "r/" || token.slice(0, 3) == "/r/") queue.push([message, token, (msg) => {
-			return "https://www.reddit.com" + (msg.slice(0, 1) == "/" ? "" : "/") + msg;
+		if (token.slice(0, 2) == "r/" || token.slice(0, 3) == "/r/") queue.push([message, token, (token) => {
+			return "https://www.reddit.com" + (token.slice(0, 1) == "/" ? "" : "/") + token;
 		}]);
 
 	});
 
 });
 
-const parseLoop = setInterval(() => {
+const parseLoop = setInterval(async () => {
 	// skip if empty queue
 	if (queue.length == 0) return;
 
 	// get next item from queue
 	let [message, token, callback] = queue.shift();
 
-	let output = callback(token);
+	let output = await callback(token);
 	// send message to channel
 	return message.reply(output);
 
