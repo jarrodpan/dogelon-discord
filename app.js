@@ -41,11 +41,10 @@ client.on('messageCreate', (message) => {
 	// tokenize
 	let tokens = message.content.split(" ");
 	tokens.forEach(token => {
-		if (token.charAt(0) == "$") {
-			queue.push([message, token, (stock) => {
-				// code goes here
-			}]);
-		}
+
+		if (token.charAt(0) == "$") queue.push([message, token, (stock) => {
+			// code goes here
+		}]);
 
 		if (token.slice(0, 2) == "r/" || token.slice(0, 3) == "/r/") queue.push([message, token, (msg) => {
 			return "https://www.reddit.com" + (msg.slice(0, 1) == "/" ? "" : "/") + msg;
