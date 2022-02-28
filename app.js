@@ -54,7 +54,12 @@ client.on('messageCreate', (message) => {
 			const embed = new MessageEmbed();
 
 			//console.log(response.data);
-			let data = response.data.quoteSummary;
+			let data = {};
+			try {
+				data = response.data.quoteSummary;
+			} catch (e) {
+				data = response.data.finance;
+			}
 			console.log(data.error);
 			if (!data.error) {
 				let result = data.result[0].price;
@@ -77,8 +82,8 @@ client.on('messageCreate', (message) => {
 				// error case
 				embed
 					.setColor("RED")
-					.setTitle(data.finance.error.code)
-					.setDescription(data.finance.error.description)
+					.setTitle(data.error.code)
+					.setDescription(data.error.description)
 					;
 			}
 
