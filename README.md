@@ -16,7 +16,7 @@ After playing with some bots on Discord I found that none of them met my needs, 
 Clone repo then `npm init` to install dependencies, then `node app.js` to run. Plan is to containerise with Docker at some point so i can familiarise myself with that. You'll need to set a `.env` file with your discord bot token.
 
 ## TODO List
-- error handling sucks so the bot dies if the data is bad
+- error handling sucks so the bot dies if the data is bad and spews a bunch of stuff to the terminal
 - Cache API responses so we aren't hitting the API while the stock market is closed
   - 5 min delay for stocks when market is open, until next open when market is closed
   - 1 min for crypto because it's 24/7
