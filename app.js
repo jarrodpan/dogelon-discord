@@ -65,7 +65,7 @@ client.on('messageCreate', (message) => {
 				let result = data.result[0].price;
 				let title = result.longName + " (" + result.symbol + ")";
 				let price = result.currencySymbol + result.regularMarketPreviousClose.fmt;
-				let priceChange = result.currencySymbol + result.regularMarketChange.fmt;
+				let priceChange = result.currencySymbol + result.regularMarketChange.fmt; // TODO: fix this line if the response is messed up
 				let pcChange = result.regularMarketChangePercent.fmt;
 				let footer = result.quoteSourceName + " " + result.currency;
 
