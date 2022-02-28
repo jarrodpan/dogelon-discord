@@ -25,7 +25,7 @@ Clone repo then `npm init` to install dependencies, then `npm start` to run. Pla
 - code is all inline, need to refactor into modules
 - as above, need to write proper parsing engine thing
 - presence updates
-- API rate limiting
+- API rate limiting, for outbound messages too (discord allows 120/min)
 - private messages dont work
 - weather info might be cool to add
 - make the whole thing event driven
