@@ -13,7 +13,7 @@ After playing with some bots on Discord I found that none of them met my needs, 
 - Most of all, some bots aren't online all the time. Plan to solve by deploying to Heroku for 24/7 service while I am not online.
 
 ## Running
-Clone repo then `npm init` to install dependencies, then `node app.js` to run. Plan is to containerise with Docker at some point so i can familiarise myself with that. You'll need to set a `.env` file with your discord bot token.
+Clone repo then `npm init` to install dependencies, then `npm start` to run. Plan is to containerise with Docker at some point so i can familiarise myself with that. You'll need to set a `.env` file with your discord bot token.
 
 ## TODO List
 - error handling sucks so the bot dies if the data is bad and spews a bunch of stuff to the terminal
