@@ -23,6 +23,7 @@ Clone repo then `npm init` to install dependencies, then `node app.js` to run. P
 - Add little pictures of the stocks/coins, whether to host/hotlink/upload I havent decided (will host eventually)
 - idk can add like coin flips and d20 rolls or whatever
 - code is all inline, need to refactor into modules
+- as above, need to write proper parsing engine thing
 - presence updates
 - API rate limiting
 - private messages dont work
