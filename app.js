@@ -49,8 +49,8 @@ client.on('messageCreate', (message) => {
 		if (token.charAt(0) == "$") queue.push([message, token, async (token) => {
 			// code goes here
 			let ticker = token.slice(1);
-			let response = await axios.get("https://query1.finance.yahoo.com/v10/finance/quoteSummary/" + ticker + "?region=AU&lang=en-AU&corsDomain=au.finance.yahoo.com&formatted=true&modules=price%2CsummaryDetail%2CpageViews%2CfinancialsTemplate");
 
+			let response = await axios.get("https://query1.finance.yahoo.com/v10/finance/quoteSummary/" + ticker + "?region=AU&lang=en-AU&corsDomain=au.finance.yahoo.com&formatted=true&modules=price%2CsummaryDetail%2CpageViews%2CfinancialsTemplate");
 			const embed = new MessageEmbed();
 
 			//console.log(response.data);
