@@ -38,6 +38,10 @@ client.on('messageCreate', (message) => {
 	// ignore self messages
 	if (message.author.bot) return;
 
+	// gettem with the ligma
+	let ligma = message.content.search(/what('{0,1}| i)s ligma\?*/gm);
+	if (ligma > -1) queue.push([message, "", (_) => { return "ligma balls" }]);
+
 	// tokenize
 	let tokens = message.content.split(" ");
 	tokens.forEach(token => {
@@ -54,7 +58,7 @@ client.on('messageCreate', (message) => {
 			console.log(data.error);
 			if (!data.error) {
 				let result = data.result[0].price;
-				let title = result.longName + " " + result.symbol;
+				let title = result.longName + " (" + result.symbol + ")";
 				let price = result.currencySymbol + result.regularMarketPreviousClose.fmt;
 				let priceChange = result.currencySymbol + result.regularMarketChange.fmt;
 				let pcChange = result.regularMarketChangePercent.fmt;
@@ -62,9 +66,9 @@ client.on('messageCreate', (message) => {
 
 				embed
 					.setColor("#0099ff")
-					.setTitle(title)
-					.addField("Price", price, true)
-					.addField("$ Change", priceChange, true)
+					.setTitle("🚀 " + title)
+					.addField("💸 Price", price, true)
+					.addField("🪙 $ Change", priceChange, true)
 					.addField("% Change", pcChange, true)
 					.setTimestamp()
 					.setFooter({ text: footer })
