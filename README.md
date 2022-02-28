@@ -29,6 +29,7 @@ Clone repo then `npm init` to install dependencies, then `node app.js` to run. P
 - private messages dont work
 - weather info might be cool to add
 - make the whole thing event driven
+- encapsulate async stuff in promises or whatever just do it properly
 
 ## Parsing ideas
 - finite state automaton
