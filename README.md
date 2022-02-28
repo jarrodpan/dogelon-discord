@@ -46,3 +46,5 @@ Guide for development: https://stackabuse.com/guide-to-creating-a-discord-bot-in
 An API endpoint I can abuse until yahoo blocks me: https://query1.finance.yahoo.com/v10/finance/quoteSummary/ASX.AX?formatted=true&lang=en-AU&region=AU&modules=price%2CsummaryDetail%2CpageViews%2CfinancialsTemplate&corsDomain=au.finance.yahoo.com
 
 Development, deployment and bears - oh my! https://www.smashingmagazine.com/2021/02/building-discord-bot-discordjs/
+
+Rate limiting module https://github.com/xavi-/node-simple-rate-limiter
