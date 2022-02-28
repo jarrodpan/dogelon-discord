@@ -28,6 +28,15 @@ Clone repo then `npm init` to install dependencies, then `node app.js` to run. P
 - API rate limiting
 - private messages dont work
 - weather info might be cool to add
+- make the whole thing event driven
+
+## Parsing ideas
+- finite state automaton
+  - [jssm](https://github.com/StoneCypher/jssm) looks like a cool way to do this
+  - seems like overkill for a discord robot designed to describe ligma
+- regex in a list to check against
+  - could be slow with lots of commands
+  - also, its regex
 
 ## Link dump for my use
 
