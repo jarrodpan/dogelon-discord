@@ -110,4 +110,4 @@ const parseLoop = setInterval(async () => {
 	// send message to channel
 	return message.reply(output);
 
-}, 10);
+}, 500);
