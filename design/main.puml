@@ -1,0 +1,28 @@
+
+participant Discord as discord
+participant Dogelon as bot
+queue Queue as queue
+control Parser as parser
+
+autonumber
+
+
+== messageCreate == 
+discord -> bot: message
+bot -> bot: tokenize message
+loop for each token
+	bot -> parser: pass token
+	parser -> parser: determine if token is valid
+else valid token
+	parser -> queue: queue callback/raise event
+else invalid token
+	parser -> queue: throw error
+end
+
+parser -> bot: return
+
+== newAction ==
+bot -> queue: get next item
+queue -> bot: return next item
+bot -> bot: run callback
+bot -> discord: send message
