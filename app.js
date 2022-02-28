@@ -105,7 +105,7 @@ const parseLoop = setInterval(async () => {
 
 	// get next item from queue
 	let [message, token, callback] = queue.shift();
-
+	console.log(message);
 	let output = await callback(token);
 	// send message to channel
 	return message.reply(output);
