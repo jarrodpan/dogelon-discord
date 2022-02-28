@@ -22,6 +22,7 @@ Clone repo then `npm init` to install dependencies, then `node app.js` to run. P
   - 1 min for crypto because it's 24/7
 - Add little pictures of the stocks/coins, whether to host/hotlink/upload I havent decided (will host eventually)
 - idk can add like coin flips and d20 rolls or whatever
+- code is all inline, need to refactor into modules
 
 ## Link dump for my use
 
