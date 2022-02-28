@@ -77,8 +77,8 @@ client.on('messageCreate', (message) => {
 				// error case
 				embed
 					.setColor("RED")
-					.setTitle(data.error.code)
-					.setDescription(data.error.description)
+					.setTitle(data.finance.error.code)
+					.setDescription(data.finance.error.description)
 					;
 			}
 
