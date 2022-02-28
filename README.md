@@ -20,7 +20,7 @@ Clone repo then `npm init` to install dependencies, then `node app.js` to run. P
 - Cache API responses so we aren't hitting the API while the stock market is closed
   - 5 min delay for stocks when market is open, until next open when market is closed
   - 1 min for crypto because it's 24/7
-- Add little pictures of the stocks/coins, whether to host or hotlink I havent decided (will host eventually)
+- Add little pictures of the stocks/coins, whether to host/hotlink/upload I havent decided (will host eventually)
 - idk can add like coin flips and d20 rolls or whatever
 
 ## Link dump for my use
