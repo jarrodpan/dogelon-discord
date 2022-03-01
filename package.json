@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "stock and helper bot for personal discord",
   "bin": {
-    "app": "./bin/app.js"
+    "app": "./"
   },
   "scripts": {
-    "prestart": "tsc -b -v",
+    "build": "npx tsc -b -v -w",
+    "prestart": "npx tsc -b -v",
     "start": "nodemon ./bin/app.js"
   },
   "author": "Jarrod Pan",
@@ -16,12 +17,12 @@
     "axios": "^0.26.0",
     "discord-api-types": "^0.27.3",
     "discord.js": "^13.6.0",
-    "dotenv": "^16.0.0",
-    "tsc": "^2.0.4",
-    "typescript": "^4.6.2"
+    "dotenv": "^16.0.0"
   },
   "devDependencies": {
+    "@types/eslint": "^8.4.1",
     "eslint": "^8.10.0",
-    "ts-node": "^10.5.0"
+    "ts-node": "^10.5.0",
+    "typescript": "^4.6.2"
   }
 }
