@@ -1,0 +1,28 @@
+@startuml Command module structure
+
+left to right direction
+hide empty members
+
+interface Command {
+	{abstract} #expression: regex string
+	{abstract} #matchType: MatchType
+{abstract} +execute( action: Action ): Promise<any>
+}
+
+enum MatchType {
+	~Token
+	~Message
+}
+
+class Action {
+	+message: Message
+	+token: string
+}
+
+class ImplementedCommand implements Command
+
+
+Command <-- "input" Action
+Command <--  MatchType
+
+@enduml
