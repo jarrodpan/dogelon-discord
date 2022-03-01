@@ -5,11 +5,11 @@ hide empty members
 
 interface Command {
 	{abstract} #expression: regex string
-	{abstract} #matchType: MatchType
+	{abstract} #executeOn: ExecuteOn
 {abstract} +execute( action: Action ): Promise<any>
 }
 
-enum MatchType {
+enum ExecuteOn {
 	~Token
 	~Message
 }
@@ -23,6 +23,6 @@ class ImplementedCommand implements Command
 
 
 Command <-- "input" Action
-Command <--  MatchType
+Command <--  ExecuteOn
 
 @enduml
