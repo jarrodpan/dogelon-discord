@@ -30,6 +30,7 @@ Clone repo then `npm init` to install dependencies, then `npm start` to run. Pla
 - weather info might be cool to add
 - make the whole thing event driven
 - encapsulate async stuff in promises or whatever just do it properly
+- could also convert the whole thing to typescript
 
 ## Parsing ideas
 - finite state automaton
