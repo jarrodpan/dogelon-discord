@@ -6,7 +6,7 @@
     "app": "./bin/app.js"
   },
   "scripts": {
-    "prestart": "tsc",
+    "prestart": "tsc -b -v",
     "start": "nodemon ./bin/app.js"
   },
   "author": "Jarrod Pan",
