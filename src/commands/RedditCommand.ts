@@ -4,7 +4,7 @@ import { Command, MatchOn } from '../types/Command'
 /**
  * a command to turn r/ and /r/ references and reply with the link (as discord doesnt do it automatically for some reason)
  * 
- * Example of token matching
+ * Example of token matching.
  */
 export class RedditCommand implements Command {
 	expression = "(r/|/r/)";
