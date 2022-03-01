@@ -6,12 +6,25 @@ const { Client, Intents, MessageEmbed } = require('discord.js');
 const axios = require('axios');
 import { Action } from "./types/Action";
 
-
+// TODO: might want to refactor this
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
 
+// TODO: fix this crap
 const queue: Action[] = [];
 
+
+// TODO: this is where the magic happens with the parser
+
+
+
+
+
+
+
+
+
 // initialise
+// TODO: refactor this
 client.once('ready', () => {
 	console.log('Ready!');
 });
@@ -58,7 +71,7 @@ client.on('messageCreate', (message: any): void => {
 				let result = data.result[0].price;
 				let title = result.longName + " (" + result.symbol + ")";
 				let price = result.currencySymbol + result.regularMarketPreviousClose.fmt;
-				let priceChange = result.currencySymbol + result.regularMarketChange.fmt; // TODO: fix this line if the response is messed up
+				let priceChange = result.currencySymbol + result.regularMarketChange.fmt; // BUG: fix this line if the response is messed up
 				let pcChange = result.regularMarketChangePercent.fmt;
 				let footer = result.quoteSourceName + " " + result.currency;
 
