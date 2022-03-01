@@ -11,10 +11,6 @@ const queue = [];
 // initialise
 client.once('ready', () => {
     console.log('Ready!');
-    //	console.log(client.channels.cache);
-});
-client.on('interactionCreate', interaction => {
-    console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`);
 });
 // login to discord
 client.login(process.env.DISCORD_TOKEN);
