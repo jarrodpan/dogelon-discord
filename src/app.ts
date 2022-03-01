@@ -11,23 +11,13 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 
 const queue: Action[] = [];
 
-
-
-
 // initialise
 client.once('ready', () => {
 	console.log('Ready!');
-
-	//	console.log(client.channels.cache);
-});
-
-client.on('interactionCreate', interaction => {
-	console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`);
 });
 
 // login to discord
 client.login(process.env.DISCORD_TOKEN);
-
 
 client.on('messageCreate', (message: any): void => {
 	let server = client.channels.cache.get(message.channelId).guild.name;
