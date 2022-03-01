@@ -13,34 +13,66 @@ After playing with some bots on Discord I found that none of them met my needs, 
 - Most of all, some bots aren't online all the time. Plan to solve by deploying to Heroku for 24/7 service while I am not online.
 
 ## Running
-Clone repo then `npm init` to install dependencies, then `npm start` to run. Plan is to containerise with Docker at some point so i can familiarise myself with that. You'll need to set a `.env` file with your discord bot token.
+Clone repo then `npm install` to install dependencies, then `npm start` to compile and run. Plan is to containerise with Docker at some point so i can familiarise myself with that. You'll need to set a `.env` file with your discord bot token.
 
 ## TODO List
 - error handling sucks so the bot dies if the data is bad and spews a bunch of stuff to the terminal
 - Cache API responses so we aren't hitting the API while the stock market is closed
   - 5 min delay for stocks when market is open, until next open when market is closed
   - 1 min for crypto because it's 24/7
-- Add little pictures of the stocks/coins, whether to host/hotlink/upload I havent decided (will host eventually)
+- Add little pictures of the stocks/coins,probably upload at first but will host eventually
 - idk can add like coin flips and d20 rolls or whatever
-- code is all inline, need to refactor into modules
-- as above, need to write proper parsing engine thing
+- code is all inline, need to refactor into modules - in progress in [1.0.1](#1.0.1)
+- as above, need to write proper parsing engine thing - in progress [1.0.1](#1.0.1)
 - presence updates
 - API rate limiting, for outbound messages too (discord allows 120/min)
 - private messages dont work
 - weather info might be cool to add
-- make the whole thing event driven
+- make the whole thing event driven (where appropriate)
 - encapsulate async stuff in promises or whatever just do it properly
-- could also convert the whole thing to typescript
+- ~~could also convert the whole thing to typescript~~ - done in [1.0.1](#1.0.1)
+- containerize with docker
+- deploy to heroku for 24/7 madness
+- find a proper API(s) and use that for financial stuff
+- write API classes and interfaces and stuff to encapsulate things
 
-## Parsing ideas
-- finite state automaton
-  - [jssm](https://github.com/StoneCypher/jssm) looks like a cool way to do this
-  - seems like overkill for a discord robot designed to describe ligma
-- regex in a list to check against
-  - could be slow with lots of commands
-  - also, its regex
+- Parsing ideas
+  - finite state automaton
+    - ~~[jssm](https://github.com/StoneCypher/jssm) looks like a cool way to do this~~
+      - ~~seems like overkill for a discord robot designed to describe ligma~~ i have determined this is way overkill and more work, when regex can be chained together with groups named and reflection used to execute callbacks (and the fact that regex compiles to FSA like structures anyway under the hood).
+    - regex in a list to check against
+      - could be slow with lots of commands
+      - also, its regex
+  
+# Changelog
+Keeping it here for now for ease/laziness.
 
-## Link dump for my use
+## [1.0.1] - 2022-03-01
+### Added
+- Added new types/classes `Action`, `Command` and a few sample commands `LigmaCommand` and `RedditCommand`.
+- uml diagrams for a visual idea of how things should work
+- This changelog lol
+### Changed
+- Converted the whole thing into a Typescript project for practice/sanity
+### Removed
+
+## [1.0.0] - TODO date etc
+### Added
+### Changed
+### Removed
+
+[1.0.0]: ./
+[1.0.1]: ./
+
+## Changelog template
+```
+## [1.0.0] - date
+### Added
+### Changed
+### Removed
+```
+
+# Link dump for my use
 
 Guide for development: https://stackabuse.com/guide-to-creating-a-discord-bot-in-javascript-with-discordjs-v13/
 
@@ -51,3 +83,5 @@ Development, deployment and bears - oh my! https://www.smashingmagazine.com/2021
 Rate limiting module https://github.com/xavi-/node-simple-rate-limiter
 
 Convert to typescript https://javascript.plainenglish.io/how-to-convert-node-js-code-from-javascript-to-typescript-8e7d031a8f49
+
+Changelog properly https://keepachangelog.com/en/1.0.0/
