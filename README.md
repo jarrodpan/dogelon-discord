@@ -49,3 +49,5 @@ An API endpoint I can abuse until yahoo blocks me: https://query1.finance.yahoo.
 Development, deployment and bears - oh my! https://www.smashingmagazine.com/2021/02/building-discord-bot-discordjs/
 
 Rate limiting module https://github.com/xavi-/node-simple-rate-limiter
+
+Convert to typescript https://javascript.plainenglish.io/how-to-convert-node-js-code-from-javascript-to-typescript-8e7d031a8f49

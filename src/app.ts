@@ -1,15 +1,15 @@
-"use strict";
+//"use strict";
 
 require('dotenv').config();
 //console.log(process.env); // to test dotenv
 const { Client, Intents, MessageEmbed } = require('discord.js');
 const axios = require('axios');
-
+import { Action } from "./types/Action";
 
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
 
-const queue = [];
+const queue: Action[] = [];
 
 
 
@@ -29,7 +29,7 @@ client.on('interactionCreate', interaction => {
 client.login(process.env.DISCORD_TOKEN);
 
 
-client.on('messageCreate', (message) => {
+client.on('messageCreate', (message: any): void => {
 	let server = client.channels.cache.get(message.channelId).guild.name;
 	let channel = client.channels.cache.get(message.channelId).name;
 
@@ -40,13 +40,14 @@ client.on('messageCreate', (message) => {
 
 	// gettem with the ligma
 	let ligma = message.content.search(/what('{0,1}| i)s ligma\?*/gm);
-	if (ligma > -1) queue.push([message, "", (_) => { return "ligma balls" }]);
+	let action: Action = new Action(message, "", async (_) => { return "ligma balls"; });
+	if (ligma > -1) queue.push(action);
 
 	// tokenize
 	let tokens = message.content.split(" ");
 	tokens.forEach(token => {
 
-		if (token.charAt(0) == "$") queue.push([message, token, async (token) => {
+		if (token.charAt(0) == "$") queue.push(new Action(message, token, async (token: string) => {
 			// code goes here
 			let ticker = token.slice(1);
 
@@ -54,14 +55,16 @@ client.on('messageCreate', (message) => {
 			const embed = new MessageEmbed();
 
 			//console.log(response.data);
-			let data = {};
+			let data: any = {};
+			let error = false;
 			try {
 				data = response.data.quoteSummary;
 			} catch (e) {
 				data = response.data.finance;
+				error = true;
 			}
-			console.log(data.error);
-			if (!data.error) {
+			//console.log(data.error);
+			if (!error) {
 				let result = data.result[0].price;
 				let title = result.longName + " (" + result.symbol + ")";
 				let price = result.currencySymbol + result.regularMarketPreviousClose.fmt;
@@ -89,11 +92,11 @@ client.on('messageCreate', (message) => {
 
 			//console.log(embed);
 			return { embeds: [embed] };
-		}]);
+		}));
 
-		if (token.slice(0, 2) == "r/" || token.slice(0, 3) == "/r/") queue.push([message, token, (token) => {
+		if (token.slice(0, 2) == "r/" || token.slice(0, 3) == "/r/") queue.push(new Action(message, token, async (token: string) => {
 			return "https://www.reddit.com" + (token.slice(0, 1) == "/" ? "" : "/") + token;
-		}]);
+		}));
 
 	});
 
@@ -104,10 +107,10 @@ const parseLoop = setInterval(async () => {
 	if (queue.length == 0) return;
 
 	// get next item from queue
-	let [message, token, callback] = queue.shift();
+	const action: Action = queue.shift()!;
 	//console.log(message);
-	let output = await callback(token);
+	let output: any = await action.callback(action.token);
 	// send message to channel
-	return message.reply(output);
+	return action.message.reply(output);
 
 }, 500);

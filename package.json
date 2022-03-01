@@ -2,9 +2,12 @@
   "name": "dogelon-discord",
   "version": "1.0.0",
   "description": "stock and helper bot for personal discord",
-  "main": "app.js",
+  "bin": {
+    "app": "./bin/app.js"
+  },
   "scripts": {
-    "start": "node ./app.js"
+    "prestart": "tsc",
+    "start": "nodemon ./bin/app.js"
   },
   "author": "Jarrod Pan",
   "license": "ISC",
@@ -13,9 +16,11 @@
     "axios": "^0.26.0",
     "discord-api-types": "^0.27.3",
     "discord.js": "^13.6.0",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.0",
+    "typescript": "^4.6.2"
   },
   "devDependencies": {
-    "eslint": "^8.10.0"
+    "eslint": "^8.10.0",
+    "ts-node": "^10.5.0"
   }
 }
