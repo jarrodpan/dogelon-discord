@@ -18,7 +18,7 @@ const queue: Action[] = [];
 
 
 
-console.debug(Commands.default);
+console.debug(Commands);
 
 
 
