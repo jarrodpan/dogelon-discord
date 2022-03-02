@@ -6,7 +6,7 @@ import { Command, MatchOn } from '../types/Command'
  * 
  * Example of token matching.
  */
-export class RedditCommand implements Command {
+export default class RedditCommand implements Command {
 	expression = "(r/|/r/)";
 	matchOn = MatchOn.TOKEN;
 	execute = (action: Action) => {

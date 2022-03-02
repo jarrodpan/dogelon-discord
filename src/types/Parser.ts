@@ -1,11 +1,11 @@
 import { Command, MatchOn } from "./Command";
 import * as fs from 'fs';
+import * as Commands from './../commands';
 
 export default class Parser {
-
-	protected static commandList: any[];
+	static Parser: typeof Commands;
 
 	constructor() {
-		Parser.commandList = []
+		console.log(Commands);
 	}
 }
