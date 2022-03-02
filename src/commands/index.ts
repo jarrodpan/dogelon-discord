@@ -1,13 +1,55 @@
+import { Command } from "../types/Command";
 
-const path = './src/commands/';// require("path").join(__dirname, "src", "commands");
-const commandList: any[] = [];
+export default class Commands {
 
-require('fs').readdirSync(path).forEach((command: string) => {
-	const [commandName, ts] = command.split(".");
-	if (ts !== "ts" || commandName == "index") return;
+	/**
+	 * must run directly after declaration
+	 */
+	static initialize() {
 
-	commandList[commandName] = require("./" + commandName);
-	console.log(commandName, "loaded");
-});
+		{ // load commands from file
+			const commandList: any[] = [];
+			require('fs').readdirSync('./src/commands/').forEach((command: string) => {
+				const [commandName, ts] = command.split(".");
+				if (
+					ts !== "ts"								// not typescript
+					|| commandName == "index"				// index file
+					|| !commandName.endsWith("Command")		// not a command
+				) return;
 
-export const Commands = commandList;
+				commandList.push(require("./" + commandName).default);
+				//console.log(commandName, "loaded");
+			});
+			Commands.commands = commandList;
+		}
+
+		// TODO: compile regexes here
+		{
+			// for each command
+			// take the regex string and append to either messageRegex or tokenRegex with named groups
+
+			// compile regexes
+		}
+
+	}
+
+	/**
+	 * all the command classes
+	 */
+	static commands: any[];
+
+	/**
+	 * @deprecated - might not require
+	 * lists all command names available
+	 * 
+	 * @returns string[] list of command names
+	 */
+	static listCommandNames = (): string[] => {
+		const names: any[] = [];
+		Commands.commands.forEach((cmd: any) => { //
+			names.push(cmd.name);
+		});
+		return names;
+	}
+}
+Commands.initialize();

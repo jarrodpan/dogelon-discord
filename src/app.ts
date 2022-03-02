@@ -5,7 +5,7 @@ require('dotenv').config();
 const { Client, Intents, MessageEmbed } = require('discord.js');
 const axios = require('axios');
 import Action from "./types/Action";
-import * as Commands from './commands';
+import Commands from './commands';
 
 // TODO: might want to refactor this
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
@@ -15,10 +15,7 @@ const queue: Action[] = [];
 
 
 // TODO: this is where the magic happens with the parser
-
-
-
-console.debug(Commands);
+console.debug(Commands.commands);
 
 
 
