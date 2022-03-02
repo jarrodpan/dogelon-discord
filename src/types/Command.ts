@@ -1,9 +1,10 @@
 import { Action } from "./Action";
 
-export const enum MatchOn {
+export enum MatchOn {
 	TOKEN,
 	MESSAGE
 }
+
 /**
  * @author Jarrod Pan
  * 
