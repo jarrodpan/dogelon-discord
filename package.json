@@ -1,6 +1,6 @@
 {
   "name": "dogelon-discord",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "stock and helper bot for personal discord",
   "bin": {
     "app": "./"

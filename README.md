@@ -47,6 +47,12 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 # Changelog
 Keeping it here for now for ease/laziness.
 
+## [1.0.2] - TODO date etc
+### Added
+- Commands now load dyanamically from directory `./src/commands/`
+### Changed
+### Removed
+
 ## [1.0.1] - 2022-03-01
 ### Added
 - Added new types/classes `Action`, `Command` and a few sample commands `LigmaCommand` and `RedditCommand`.
