@@ -31,11 +31,11 @@ export default class Commands {
 	/**
 	 * runs directly after declaration
 	 */
-	private static _initialize = (() => {
+	private static _initialize = (async () => {
 
 		// load commands from file
 		let commandList: Map<any, any> = new Map();
-		fs.readdirSync('./src/commands/').forEach(async (command: string) => {
+		await fs.readdirSync('./src/commands/').forEach(async (command: string) => {
 			const [commandName, ts] = command.split(".");
 			if ( // knockout junk files
 				ts !== "ts" // not typescript
@@ -48,7 +48,7 @@ export default class Commands {
 			console.debug("new command:", commandClass);
 
 			// push regex match on to correct queue
-			Commands.matchOn.get(commandClass.matchOn).push(`(?<${commandName}>${commandClass.expression})`);
+			Commands.matchOn.get(commandClass.matchOn).push(`(?<${commandName}>` + commandClass.expression + `)`);
 
 			// add command to command map
 			commandList.set(commandName, commandClass);
@@ -58,6 +58,9 @@ export default class Commands {
 		Commands.commandMap = commandList;
 
 		// TODO: compile regexes here
+		Commands.matchOn.forEach((val: string[], key) => {
+			console.log(key, val.join("|"));
+		});
 
 		// for each command
 		// take the regex string and append to either messageRegex or tokenRegex with named groups
