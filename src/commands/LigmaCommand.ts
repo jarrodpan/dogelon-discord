@@ -7,9 +7,10 @@ import { Command, MatchOn } from '../types/Command'
  * Example of message matching.
  */
 export default class LigmaCommand implements Command {
-	expression = "what('{0,1}| i)s ligma\?*"; //"what's ligma";
-	matchOn = MatchOn.MESSAGE;
-	execute = (action: Action) => {
+	public expression = "what('{0,1}| i)s ligma\?*"; //"what's ligma";
+	public matchOn = MatchOn.MESSAGE;
+	public execute = (action: Action) => {
 		return "ligma balls";
 	}
+	public constructor() { };
 }

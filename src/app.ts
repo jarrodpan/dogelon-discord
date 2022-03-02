@@ -1,11 +1,12 @@
 //"use strict";
+import Action from "./types/Action";
+import Commands from './commands';
 
 require('dotenv').config();
 //console.log(process.env); // to test dotenv
 const { Client, Intents, MessageEmbed } = require('discord.js');
 const axios = require('axios');
-import Action from "./types/Action";
-import Commands from './commands';
+
 
 // TODO: might want to refactor this
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
@@ -15,8 +16,8 @@ const queue: Action[] = [];
 
 
 // TODO: this is where the magic happens with the parser
-console.debug(Commands.commands);
-console.debug(Commands.listCommandNames());
+
+//console.debug(Commands.listCommandNames());
 
 
 
@@ -24,6 +25,8 @@ console.debug(Commands.listCommandNames());
 // TODO: refactor this
 client.once('ready', () => {
 	console.log('Ready!');
+	console.debug(Commands.commands);
+	console.debug(Commands);
 });
 
 // login to discord
