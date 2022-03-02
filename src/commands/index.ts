@@ -1,6 +1,6 @@
 
 const path = './src/commands/';// require("path").join(__dirname, "src", "commands");
-const commands = [];
+const commands: any[] = [];
 
 require('fs').readdirSync(path).forEach((command: string) => {
 	const [commandName, ts] = command.split(".");

@@ -4,7 +4,7 @@ require('dotenv').config();
 //console.log(process.env); // to test dotenv
 const { Client, Intents, MessageEmbed } = require('discord.js');
 const axios = require('axios');
-import { Action } from "./types/Action";
+import Action from "./types/Action";
 import Parser from './types/Parser';
 
 // TODO: might want to refactor this

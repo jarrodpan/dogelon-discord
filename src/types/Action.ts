@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 
-export class Action {
+export default class Action {
 	public message: Message;
 	public token: string;
 	public callback: (input: string) => Promise<any>;
