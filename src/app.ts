@@ -16,6 +16,7 @@ const queue: Action[] = [];
 
 // TODO: this is where the magic happens with the parser
 console.debug(Commands.commands);
+console.debug(Commands.listCommandNames());
 
 
 
