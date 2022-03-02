@@ -3,12 +3,17 @@ import { Command } from "../types/Command";
 export default class Commands {
 
 	/**
+	 * all the command classes
+	 */
+	static commands: Map<any, any>;
+
+	/**
 	 * must run directly after declaration
 	 */
 	static initialize() {
-
+		'load all commands from file'
 		{ // load commands from file
-			const commandList: any[] = [];
+			let commandList: Map<any, any> = new Map();
 			require('fs').readdirSync('./src/commands/').forEach((command: string) => {
 				const [commandName, ts] = command.split(".");
 				if (
@@ -17,7 +22,7 @@ export default class Commands {
 					|| !commandName.endsWith("Command")		// not a command
 				) return;
 
-				commandList.push(require("./" + commandName).default);
+				commandList.set(commandName, require("./" + commandName).default);
 				//console.log(commandName, "loaded");
 			});
 			Commands.commands = commandList;
@@ -30,24 +35,19 @@ export default class Commands {
 
 			// compile regexes
 		}
-
 	}
 
 	/**
-	 * all the command classes
-	 */
-	static commands: any[];
-
-	/**
-	 * @deprecated - might not require
+	 * @deprecated might not require
+	 * 
 	 * lists all command names available
 	 * 
 	 * @returns string[] list of command names
 	 */
 	static listCommandNames = (): string[] => {
 		const names: any[] = [];
-		Commands.commands.forEach((cmd: any) => { //
-			names.push(cmd.name);
+		Commands.commands.forEach((_: any, cmd: any) => { //
+			names.push(cmd);
 		});
 		return names;
 	}
