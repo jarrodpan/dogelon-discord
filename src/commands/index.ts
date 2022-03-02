@@ -10,4 +10,6 @@ require('fs').readdirSync(path).forEach((command: string) => {
 	console.log(commandName, "loaded");
 });
 
-export default commands;
+export default class Commander {
+	static commands;
+}
