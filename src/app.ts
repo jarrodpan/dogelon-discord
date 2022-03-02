@@ -25,7 +25,6 @@ const queue: Action[] = [];
 // TODO: refactor this
 client.once('ready', () => {
 	console.log('Ready!');
-	console.debug(Commands.commands);
 	console.debug(Commands);
 });
 

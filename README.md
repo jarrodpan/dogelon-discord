@@ -47,9 +47,11 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 # Changelog
 Keeping it here for now for ease/laziness.
 
-## [1.0.2] - TODO date etc
+## [1.0.2] - 2022-03-01
 ### Added
 - Commands now load dyanamically from directory `./src/commands/`
+ - thanks to [stack overflow](https://stackoverflow.com/questions/51852938/typescript-dynamically-import-classes) again
+- assemble regex string arrays
 ### Changed
 ### Removed
 

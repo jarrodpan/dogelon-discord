@@ -1,11 +1,11 @@
 import { Command, MatchOn } from "../types/Command";
-
+import * as fs from 'fs';
 export default class Commands {
 
 	/**
 	 * all the command classes
 	 */
-	static commands: Map<any, any>;
+	static commandMap: Map<any, any>;
 
 	static matchOn: Map<MatchOn, any> = new Map([
 		[MatchOn.MESSAGE, []],
@@ -35,45 +35,27 @@ export default class Commands {
 
 		// load commands from file
 		let commandList: Map<any, any> = new Map();
-		require('fs').readdirSync('./src/commands/').forEach(async (command: string) => {
+		fs.readdirSync('./src/commands/').forEach(async (command: string) => {
 			const [commandName, ts] = command.split(".");
-			if (
-				ts !== "ts"								// not typescript
-				|| commandName == "index"				// index file
-				|| !commandName.endsWith("Command")		// not a command
-			) return;
+			if ( // knockout junk files
+				ts !== "ts" // not typescript
+				|| !commandName.endsWith("Command") // not a command
+			)
+				return;
 
-			/*
-			let commandClass: Command;
-			import('./' + commandName).then((module: Command) => {
-				console.log("new module", module);
-				commandClass = module;
-				console.log(module.expression);
-				commandList.set(commandName, commandClass);
-			});*/
-			console.log(commandName);
-			const commandClass = await (async () => {
-				const commandCode = await import(`./${commandName}`);
-				let commandClass = Object.assign(commandCode);
-				console.log(commandName, commandClass, commandClass.expression);
-				return commandClass;
-			})();
+			// import code
+			const commandClass: Command = new (await import(`./${commandName}`)).default();
+			console.debug("new command:", commandClass);
 
-			//commandClass = command;
-			console.log(commandClass);
+			// push regex match on to correct queue
+			Commands.matchOn.get(commandClass.matchOn).push(`(?<${commandName}>${commandClass.expression})`);
 
-
-			//console.debug(commandClass);
-			//console.debug(Commands.matchOn.get(commandClass.matchOn));
-			//Commands.matchOn.get(commandClass.matchOn).push(commandClass.expression);
-
-			//commandClass.expression
-
+			// add command to command map
 			commandList.set(commandName, commandClass);
-			//console.log(commandName, "loaded");
 		});
-		Commands.commands = commandList;
-		console.log("commands:", Commands.commands);
+
+		// assign static variables at runtime
+		Commands.commandMap = commandList;
 
 		// TODO: compile regexes here
 
