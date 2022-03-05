@@ -42,12 +42,9 @@ client.on('messageCreate', (message: any): void => {
 	// ignore self messages
 	if (message.author.bot) return;
 
-	// regex match on message
-	//console.debug(Commands.matchOn.get(MatchOn.MESSAGE).exec(message));
 	// get match groups
 	let msgMatchCommands: any[];
 	let tokenMatchCommands: any[] = [];
-
 
 	try {
 		// TODO: define groups type
@@ -55,14 +52,13 @@ client.on('messageCreate', (message: any): void => {
 		const matchOnMessage: any = (Commands.matchOn.get(MatchOn.MESSAGE).exec(message.content)).groups;
 		console.log("match found:", Object.entries(matchOnMessage));
 		// filter out unmatched expressions
-		msgMatchCommands = Object.entries(matchOnMessage).filter(([_, matchString]) => { return matchString != undefined; })
+		msgMatchCommands = Object.entries(matchOnMessage).filter(([_, matchString]) => { return matchString != undefined; });
+		console.log(message.content, "message matching commands:", msgMatchCommands);
 	}
 	catch (e) {
-		console.error("no message matching groups found");
+		console.error(message.content, "no message matching groups found");
 		msgMatchCommands = [];
 	}
-
-
 
 	// tokenize
 	let tokens = message.content.split(" ");
@@ -119,24 +115,26 @@ client.on('messageCreate', (message: any): void => {
 		try {
 			// TODO: define groups type
 			// TODO: refactor this into Commands module
-			const matchOnMessage: any = (Commands.matchOn.get(MatchOn.TOKEN).exec(message.content)).groups;
-			console.log("match found:", Object.entries(matchOnMessage));
+			const matchOnToken: any = (Commands.matchOn.get(MatchOn.TOKEN).exec(token)).groups;
+			console.log("match found:", Object.entries(matchOnToken));
 			// filter out unmatched expressions
-			tokenMatchCommands = Object.entries(matchOnMessage).filter(([_, matchString]) => { return matchString != undefined; })
+			tokenMatchCommands = Object.entries(matchOnToken).filter(([_, matchString]) => { return matchString != undefined; })
+			console.log(token, "token matching commands:", tokenMatchCommands.toString());
+			Commands.matchOn.get(MatchOn.TOKEN).lastIndex = 0;
 		}
 		catch (e) {
-			console.error("no token matching groups found");
+			console.error(token, "no token matching groups found");
 			tokenMatchCommands = [];
 		}
 
-		console.log("token matching commands:", tokenMatchCommands.toString());
+
 		tokenMatchCommands.forEach(([commandName, _]) => {
 			queue.push(new Action(message, token, Commands.commandMap.get(commandName).execute));
 		});
 
 	});
 
-	console.log("message matching commands:", msgMatchCommands.toString());
+
 	msgMatchCommands.forEach(([commandName, _]) => {
 		queue.push(new Action(message, message.content, Commands.commandMap.get(commandName).execute));
 	});
