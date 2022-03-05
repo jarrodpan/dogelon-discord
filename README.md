@@ -13,7 +13,7 @@ After playing with some bots on Discord I found that none of them met my needs, 
 - Most of all, some bots aren't online all the time. Plan to solve by deploying to Heroku for 24/7 service while I am not online.
 
 ## Running
-Clone repo then `npm install` to install dependencies, then `npm start` to compile and run. Plan is to containerise with Docker at some point so i can familiarise myself with that. You'll need to set a `.env` file with your discord bot token.
+Clone repo then `npm install` to install dependencies, then `npm start` to compile and run. Plan is to containerise with Docker at some point so i can familiarise myself with that. You'll need to set a `.env` file with your discord bot token, a template is provided.
 
 ## TODO List
 - error handling sucks so the bot dies if the data is bad and spews a bunch of stuff to the terminal
@@ -22,38 +22,40 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
   - 1 min for crypto because it's 24/7
 - Add little pictures of the stocks/coins,probably upload at first but will host eventually
 - idk can add like coin flips and d20 rolls or whatever
-- code is all inline, need to refactor into modules - in progress in [1.0.1](#1.0.1)
-- as above, need to write proper parsing engine thing - in progress [1.0.1](#1.0.1)
+- code is all inline, need to refactor into modules - in progress as of [1.0.1](#1.0.1)
+  - ligma and reddit modules done in [1.0.2]
 - presence updates
 - API rate limiting, for outbound messages too (discord allows 120/min)
 - private messages dont work
 - weather info might be cool to add
 - make the whole thing event driven (where appropriate)
 - encapsulate async stuff in promises or whatever just do it properly
-- ~~could also convert the whole thing to typescript~~ - done in [1.0.1](#1.0.1)
+
 - containerize with docker
 - deploy to heroku for 24/7 madness
 - find a proper API(s) and use that for financial stuff
 - write API classes and interfaces and stuff to encapsulate things
 
+### Implemented Changes
+- as above, need to write proper parsing engine thing - done in [1.0.2](#1.0.1)
+- could also convert the whole thing to typescript - done in [1.0.1](#1.0.1)
 - Parsing ideas
   - finite state automaton
     - ~~[jssm](https://github.com/StoneCypher/jssm) looks like a cool way to do this~~
       - ~~seems like overkill for a discord robot designed to describe ligma~~ i have determined this is way overkill and more work, when regex can be chained together with groups named and reflection used to execute callbacks (and the fact that regex compiles to FSA like structures anyway under the hood).
-    - regex in a list to check against
+    - regex in a list to check against -- done in [1.0.2]
       - could be slow with lots of commands
       - also, its regex
   
 # Changelog
-Keeping it here for now for ease/laziness.
-
-## [1.0.2] - 2022-03-01
+## [1.0.2] - 2022-03-05
 ### Added
 - Commands now load dyanamically from directory `./src/commands/`
- - thanks to [stack overflow](https://stackoverflow.com/questions/51852938/typescript-dynamically-import-classes) again
-- assemble regex string arrays
+  - thanks to [stack overflow](https://stackoverflow.com/questions/51852938/typescript-dynamically-import-classes) again
+- assembles regex string arrays and runs callback as defined in class files named `_______Command.ts`
+  - will run against entire message first then against tokens and push all to queue for execution
 ### Changed
-### Removed
+- refactored two commands into [LigmaCommand.ts](./src/commands/LigmaCommand.ts) and [RedditCommand.ts](./src/commands/RedditCommand.ts)
 
 ## [1.0.1] - 2022-03-01
 ### Added
@@ -66,14 +68,13 @@ Keeping it here for now for ease/laziness.
 
 ## [1.0.0] - TODO date etc
 ### Added
-### Changed
-### Removed
+- minimum viable product
 
-[1.0.0]: ./
+[1.0.2]: ./
 [1.0.1]: ./
-
-## Changelog template
+[1.0.0]: ./
 ```
+Changelog template
 ## [1.0.0] - date
 ### Added
 ### Changed
