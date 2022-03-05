@@ -103,8 +103,23 @@ const parseLoop = setInterval(async () => {
 	// get next item from queue
 	const action: Action = queue.shift()!;
 	//console.log(message);
-	let output: any = await action.callback(action.token);
-	// send message to channel
-	return action.message.reply(output);
+	//let output;
+	Promise.resolve().then(async () => {
+		let output = await action.callback(action.token);
+		// send message to channel
+		return output;
+
+	}).then((output) => {
+		console.log("sending to discord...", output);
+		if (output == null) throw new Error("output is undefined");
+
+		action.message.reply(output);
+		return;
+	}).catch((_) => {
+		//
+	});
+
+
+	return;
 
 }, 500);
