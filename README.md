@@ -48,6 +48,11 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
       - also, its regex
   
 # Changelog
+## [1.0.3] - date
+### Added
+- if a command `.execute()` returns null or undefined we fail successfully silently and do not invoke the discord api.
+### Changed
+- `FinanceCommand` now returns `null` for bad requests and throws an error.
 ## [1.0.2] - 2022-03-05
 ### Added
 - Commands now load dyanamically from directory `./src/commands/`
@@ -70,6 +75,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 ### Added
 - minimum viable product
 
+[1.0.3]: ./
 [1.0.2]: ./
 [1.0.1]: ./
 [1.0.0]: ./
