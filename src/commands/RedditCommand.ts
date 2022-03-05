@@ -8,7 +8,7 @@ import { Command, MatchOn } from '../types/Command'
  */
 export default class RedditCommand implements Command {
 	public expression = `(?:r\\/|\\/r\\/)`;
-	public matchOn = MatchOn.TOKEN;
+	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
 	public execute = (action: Action) => {
 		return "https://www.reddit.com" + (action.token.slice(0, 1) == "/" ? "" : "/") + action.token;
 	}
