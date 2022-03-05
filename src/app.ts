@@ -25,8 +25,9 @@ const queue: Action[] = [];
 // initialise
 // TODO: refactor this
 client.once('ready', () => {
+	console.debug(Commands.matchOn);
 	console.log('Ready!');
-	console.debug(Commands);
+	//console.debug(Commands);
 	//console.debug(Commands.matchOn);
 });
 
