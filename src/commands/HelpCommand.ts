@@ -13,7 +13,7 @@ export default class HelpCommand implements Command {
 		const a = "author info here";
 
 		embed
-			.setColor("#3f00ad")
+			.setColor("#9B59B6")
 			.setTitle(`🚀 Dogelon`)
 			.setThumbnail("https://i.imgur.com/2vHF2jl.jpg")
 			.setDescription("The not-so-stupid discord bot made for no reason. Written in Node.js and TypeScript.")
