@@ -31,7 +31,9 @@ export default class Commands {
 	/**
 	 * runs directly after declaration
 	 */
-	private static _initialize = (async () => {
+	private static _initialize = Promise.resolve(1).then(async () => {
+
+
 
 		// load commands from file
 		let commandList: Map<any, any> = new Map();
@@ -40,9 +42,7 @@ export default class Commands {
 			if ( // knockout junk files
 				ts !== "ts" // not typescript
 				|| !commandName.endsWith("Command") // not a command
-			)
-
-				return;
+			) return;
 
 			// import code
 			const commandClass: Command = new (await import(`./${commandName}`)).default();
@@ -59,16 +59,21 @@ export default class Commands {
 		// assign static variables at runtime
 		Commands.commandMap = commandList;
 
-		// TODO: compile regexes here
-		Commands.matchOn.forEach((val: string[], key) => {
-			console.log(key, val.join("|"));
-		});
+		return;
+
+	}).then(() => {
 
 		// for each command
 		// take the regex string and append to either messageRegex or tokenRegex with named groups
+		const newMatch = new Map();
+		Commands.matchOn.forEach((val: string[], key) => {
+			//console.log("MATCHon", key, val.join("|"));
+			newMatch.set(key, val.join("|"));
+		});
 
+		Commands.matchOn = newMatch;
 		// compile regexes
-
-	})();
+		return;
+	});
 
 }
