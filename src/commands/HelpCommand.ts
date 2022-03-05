@@ -14,7 +14,7 @@ export default class HelpCommand implements Command {
 
 		embed
 			.setColor("#3f00ad")
-			.setTitle(`🚀 Dogelon ${v}`)
+			.setTitle(`🚀 Dogelon`)
 			.setThumbnail("https://i.imgur.com/2vHF2jl.jpg")
 			.setDescription("The not-so-stupid discord bot made for no reason. Written in Node.js and TypeScript.")
 			.addField("`${stock ticker}` (inline)", "Gets current price for a stock. Cached and/or delayed depending on API response and exchange opening times. Yahoo tickers, add `.AX` for Australian stocks.")
@@ -22,7 +22,7 @@ export default class HelpCommand implements Command {
 			.addField("`what's ligma?` (and some variants, inline)", "dare you to ask me")
 			.addField("`!help`, `!h`", "Displays this message")
 			//.setTimestamp()
-			.setFooter({ text: `${v} • ${a}` })
+			.setFooter({ text: `Dogelon ${v} • ${a}` })
 			;
 
 		return { embeds: [embed] };
