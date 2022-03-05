@@ -16,27 +16,27 @@ After playing with some bots on Discord I found that none of them met my needs, 
 Clone repo then `npm install` to install dependencies, then `npm start` to compile and run. Plan is to containerise with Docker at some point so i can familiarise myself with that. You'll need to set a `.env` file with your discord bot token, a template is provided.
 
 ## TODO List
-- error handling sucks so the bot dies if the data is bad and spews a bunch of stuff to the terminal
 - Cache API responses so we aren't hitting the API while the stock market is closed
   - 5 min delay for stocks when market is open, until next open when market is closed
   - 1 min for crypto because it's 24/7
 - Add little pictures of the stocks/coins,probably upload at first but will host eventually
 - idk can add like coin flips and d20 rolls or whatever
-- code is all inline, need to refactor into modules - in progress as of [1.0.1](#1.0.1)
-  - ligma and reddit modules done in [1.0.2]
 - presence updates
 - API rate limiting, for outbound messages too (discord allows 120/min)
 - private messages dont work
 - weather info might be cool to add
 - make the whole thing event driven (where appropriate)
 - encapsulate async stuff in promises or whatever just do it properly
-
 - containerize with docker
 - deploy to heroku for 24/7 madness
 - find a proper API(s) and use that for financial stuff
 - write API classes and interfaces and stuff to encapsulate things
+- help command
 
 ### Implemented Changes
+- error handling sucks so the bot dies if the data is bad and spews a bunch of stuff to the terminal - fixed (for now) as of [1.0.3](#1.0.3)
+- code is all inline, need to refactor into modules - finance done as of [1.0.3](#1.0.3)
+  - ligma and reddit modules done in [1.0.2](#1.0.2)
 - as above, need to write proper parsing engine thing - done in [1.0.2](#1.0.1)
 - could also convert the whole thing to typescript - done in [1.0.1](#1.0.1)
 - Parsing ideas
