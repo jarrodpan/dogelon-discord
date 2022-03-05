@@ -54,6 +54,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 ### Changed
 - refactored stock calls into `/src/commands/FinanceCommand.ts`, now the app is clean of raw command parsing and only parses based on imports.
 - `FinanceCommand` now returns `null` for bad requests and throws an error instead of 1) crashing on bad api returns and 2) sending trash to the discord api.
+- exchange name added to stock response footer
 ## [1.0.2] - 2022-03-05
 ### Added
 - Commands now load dyanamically from directory `./src/commands/`

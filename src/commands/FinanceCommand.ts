@@ -47,7 +47,7 @@ export default class FinanceCommand implements Command {
 				let price = result.currencySymbol + result.regularMarketPreviousClose.fmt;
 				let priceChange = result.currencySymbol + result.regularMarketChange.fmt; // BUG: fix this line if the response is messed up
 				let pcChange = result.regularMarketChangePercent.fmt;
-				let footer = result.quoteSourceName + " " + result.currency;
+				let footer = result.exchangeName + " - " + result.quoteSourceName + " " + result.currency;
 
 				embed = new MessageEmbed();
 
