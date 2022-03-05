@@ -31,7 +31,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 - deploy to heroku for 24/7 madness
 - find a proper API(s) and use that for financial stuff
 - write API classes and interfaces and stuff to encapsulate things
-
+- refactor `Command` type with `Commands` class as `Command` is abstract and all of `Commands` is static so combining the two should be fine.
 
 ### Implemented Changes
 - error handling sucks so the bot dies if the data is bad and spews a bunch of stuff to the terminal - fixed (for now) as of [1.0.3](#1.0.3)
