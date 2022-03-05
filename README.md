@@ -48,7 +48,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
       - also, its regex
 - help command - done in [1.0.3](#1.0.3)
 # Changelog
-## [1.0.3] - date
+## [1.0.3] - 2022-03-05
 ### Added
 - if a command `.execute()` returns null or undefined we fail successfully silently and do not invoke the discord api.
 - `!help` and `!h` command
