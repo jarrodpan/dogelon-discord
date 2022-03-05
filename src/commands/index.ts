@@ -68,7 +68,7 @@ export default class Commands {
 		const newMatch = new Map();
 		Commands.matchOn.forEach((val: string[], key) => {
 			//console.log("MATCHon", key, val.join("|"));
-			newMatch.set(key, val.join("|"));
+			newMatch.set(key, new RegExp(val.join("|"), "gm"));
 		});
 
 		Commands.matchOn = newMatch;
