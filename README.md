@@ -103,3 +103,5 @@ Rate limiting module https://github.com/xavi-/node-simple-rate-limiter
 Convert to typescript https://javascript.plainenglish.io/how-to-convert-node-js-code-from-javascript-to-typescript-8e7d031a8f49
 
 Changelog properly https://keepachangelog.com/en/1.0.0/
+
+Getting direct messages https://github.com/discordjs/discord.js/issues/5516 https://stackoverflow.com/questions/41745070/sending-private-messages-to-user 
