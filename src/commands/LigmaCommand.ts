@@ -9,7 +9,7 @@ import { Command, MatchOn } from '../types/Command'
 export default class LigmaCommand implements Command {
 	public expression = "what(?:\'{0,1}| | i)s ligma\\?*"; //"what's ligma";
 	public matchOn = MatchOn.MESSAGE;
-	public execute = (action: Action) => {
+	public execute = (input: any) => {
 		return "ligma balls";
 	}
 }

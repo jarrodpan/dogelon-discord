@@ -17,6 +17,6 @@ export enum MatchOn {
 export abstract class Command {
 	public readonly expression!: string;
 	public readonly matchOn!: MatchOn;
-	public readonly execute!: (action: Action) => Promise<any> | any;
+	public readonly execute!: (input: any) => Promise<any> | any;
 	constructor() { };
 }

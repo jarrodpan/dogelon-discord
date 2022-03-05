@@ -47,10 +47,11 @@ client.on('messageCreate', (message: any): void => {
 	// get match groups
 	let msgMatchCommands: any[];
 	try {
-		// TODO: define groups type 
+		// TODO: define groups type
+		// TODO: refactor this into Commands module
 		const matchOnMessage: any = (Commands.matchOn.get(MatchOn.MESSAGE).exec(message.content)).groups;
 		console.log("match found:", Object.entries(matchOnMessage));
-		//matchOnMessage.
+		// filter out unmatched expressions
 		msgMatchCommands = Object.entries(matchOnMessage).filter(([_, matchString]) => { return matchString != undefined; })
 	}
 	catch (e) {
@@ -58,12 +59,10 @@ client.on('messageCreate', (message: any): void => {
 		msgMatchCommands = [];
 	}
 
-	console.log("matching commands:", msgMatchCommands);
-
-	// gettem with the ligma
-	let ligma = message.content.search(/what('{0,1}| i)s ligma\?*/gm);
-	let action: Action = new Action(message, "", async (_) => { return "ligma balls"; });
-	if (ligma > -1) queue.push(action);
+	console.log("matching commands:", msgMatchCommands.toString());
+	msgMatchCommands.forEach(([commandName, _]) => {
+		queue.push(new Action(message, message.content, Commands.commandMap.get(commandName).execute));
+	});
 
 	// tokenize
 	let tokens = message.content.split(" ");
