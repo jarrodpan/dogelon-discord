@@ -1,4 +1,3 @@
-import Action from '../types/Action';
 import { Command, MatchOn } from '../types/Command'
 
 /**

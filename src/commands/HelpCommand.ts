@@ -1,5 +1,4 @@
 import { MessageEmbed } from 'discord.js';
-import Action from '../types/Action';
 import { Command, MatchOn } from '../types/Command'
 let pkg = require("./../../package.json")
 /**

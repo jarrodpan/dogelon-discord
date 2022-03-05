@@ -1,8 +1,6 @@
 import axios from 'axios';
 import { MessageEmbed, UserContextMenuInteraction } from 'discord.js';
-import Action from '../types/Action';
 import { Command, MatchOn } from '../types/Command'
-const readline = require('readline');
 
 /**
  * a command to turn r/ and /r/ references and reply with the link (as discord doesnt do it automatically for some reason)
