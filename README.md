@@ -31,7 +31,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 - deploy to heroku for 24/7 madness
 - find a proper API(s) and use that for financial stuff
 - write API classes and interfaces and stuff to encapsulate things
-- help command
+
 
 ### Implemented Changes
 - error handling sucks so the bot dies if the data is bad and spews a bunch of stuff to the terminal - fixed (for now) as of [1.0.3](#1.0.3)
@@ -46,11 +46,12 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
     - regex in a list to check against -- done in [1.0.2]
       - could be slow with lots of commands
       - also, its regex
-  
+- help command - done in [1.0.3](#1.0.3)
 # Changelog
 ## [1.0.3] - date
 ### Added
 - if a command `.execute()` returns null or undefined we fail successfully silently and do not invoke the discord api.
+- `!help` and `!h` command
 ### Changed
 - refactored stock calls into `/src/commands/FinanceCommand.ts`, now the app is clean of raw command parsing and only parses based on imports.
 - `FinanceCommand` now returns `null` for bad requests and throws an error instead of 1) crashing on bad api returns and 2) sending trash to the discord api.
