@@ -27,7 +27,7 @@ const queue: Action[] = [];
 client.once('ready', () => {
 	console.log('Ready!');
 	console.debug(Commands);
-	console.debug(Commands.matchOn);
+	//console.debug(Commands.matchOn);
 });
 
 // login to discord
@@ -50,13 +50,13 @@ client.on('messageCreate', (message: any): void => {
 		// TODO: define groups type
 		// TODO: refactor this into Commands module
 		const matchOnMessage: any = (Commands.matchOn.get(MatchOn.MESSAGE).exec(message.content)).groups;
-		console.log("match found:", Object.entries(matchOnMessage));
+		//console.log("match found:", Object.entries(matchOnMessage));
 		// filter out unmatched expressions
 		msgMatchCommands = Object.entries(matchOnMessage).filter(([_, matchString]) => { return matchString != undefined; });
 		console.log(message.content, "message matching commands:", msgMatchCommands);
 	}
 	catch (e) {
-		console.error(message.content, "=>t\no message matching groups found");
+		console.error(message.content, "=>\tno message matching groups found");
 		msgMatchCommands = [];
 	}
 
@@ -69,14 +69,14 @@ client.on('messageCreate', (message: any): void => {
 			// TODO: define groups type
 			// TODO: refactor this into Commands module
 			const matchOnToken: any = (Commands.matchOn.get(MatchOn.TOKEN).exec(token)).groups;
-			console.log("match found:", Object.entries(matchOnToken));
+			//console.log("match found:", Object.entries(matchOnToken));
 			// filter out unmatched expressions
 			tokenMatchCommands = Object.entries(matchOnToken).filter(([_, matchString]) => { return matchString != undefined; })
 			console.log(token, "token matching commands:", tokenMatchCommands.toString());
 			Commands.matchOn.get(MatchOn.TOKEN).lastIndex = 0;
 		}
 		catch (e) {
-			console.error(token, "=>t\no token matching groups found");
+			console.error(token, "=>\tno token matching groups found");
 			tokenMatchCommands = [];
 		}
 

@@ -47,7 +47,7 @@ export default class Commands {
 			// import code
 			const commandClass: Command = new (await import(`./${commandName}`)).default();
 			console.debug("new command:", commandClass);
-			console.debug("match string:", commandClass.expression);
+			//console.debug("match string:", commandClass.expression);
 
 			// push regex match on to correct queue
 			Commands.matchOn.get(commandClass.matchOn).push(`(?<${commandName}>` + commandClass.expression + `)`);
