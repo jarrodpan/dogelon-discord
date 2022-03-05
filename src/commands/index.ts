@@ -65,7 +65,7 @@ export default class Commands {
 
 		// for each command
 		// take the regex string and append to either messageRegex or tokenRegex with named groups
-		const newMatch = new Map();
+		const newMatch: Map<MatchOn, RegExp> = new Map();
 		Commands.matchOn.forEach((val: string[], key) => {
 			//console.log("MATCHon", key, val.join("|"));
 			newMatch.set(key, new RegExp(val.join("|"), "gm"));
