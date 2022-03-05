@@ -1,4 +1,4 @@
-import { Action } from '../types/Action';
+import Action from '../types/Action';
 import { Command, MatchOn } from '../types/Command'
 
 /**
@@ -6,10 +6,10 @@ import { Command, MatchOn } from '../types/Command'
  * 
  * Example of token matching.
  */
-export class RedditCommand implements Command {
-	expression = "(r/|/r/)";
-	matchOn = MatchOn.TOKEN;
-	execute = (action: Action) => {
-		return "https://www.reddit.com" + (action.token.slice(0, 1) == "/" ? "" : "/") + action.token;
+export default class RedditCommand implements Command {
+	public expression = `(?:r\\/|\\/r\\/)`;
+	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
+	public execute = (input: any) => {
+		return "https://www.reddit.com" + (input.slice(0, 1) == "/" ? "" : "/") + input;
 	}
 }

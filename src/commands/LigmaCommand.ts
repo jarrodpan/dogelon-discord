@@ -1,4 +1,4 @@
-import { Action } from '../types/Action';
+import Action from '../types/Action';
 import { Command, MatchOn } from '../types/Command'
 
 /**
@@ -6,10 +6,10 @@ import { Command, MatchOn } from '../types/Command'
  * 
  * Example of message matching.
  */
-export class LigmaCommand implements Command {
-	expression = "what('{0,1}| i)s ligma\?*"; //"what's ligma";
-	matchOn = MatchOn.MESSAGE;
-	execute = (action: Action) => {
+export default class LigmaCommand implements Command {
+	public expression = "what(?:\'{0,1}| | i)s ligma\\?*"; //"what's ligma";
+	public matchOn = MatchOn.MESSAGE;
+	public execute = (input: any) => {
 		return "ligma balls";
 	}
 }

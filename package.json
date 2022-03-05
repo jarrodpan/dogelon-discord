@@ -1,6 +1,6 @@
 {
   "name": "dogelon-discord",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "stock and helper bot for personal discord",
   "bin": {
     "app": "./"
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@types/eslint": "^8.4.1",
+    "@types/jest": "^27.4.1",
     "eslint": "^8.10.0",
     "jest": "^27.5.1",
     "ts-node": "^10.5.0",
