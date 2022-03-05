@@ -8,11 +8,10 @@ export default class HelpCommand implements Command {
 	public expression = "(!h(elp)?)";
 	public matchOn = MatchOn.MESSAGE;
 	public execute = (input: any) => {
-		let embed = new MessageEmbed();
 		const v = `v${pkg.version}`;
 		const a = "author info here";
 
-		embed
+		let embed = new MessageEmbed()
 			.setColor("#9B59B6")
 			.setTitle(`🚀  Dogelon`)
 			.setThumbnail("https://i.imgur.com/2vHF2jl.jpg")

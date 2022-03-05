@@ -47,9 +47,7 @@ export default class FinanceCommand implements Command {
 				let pcChange = result.regularMarketChangePercent.fmt;
 				let footer = result.exchangeName + "  •  " + result.quoteSourceName + " " + result.currency;
 
-				embed = new MessageEmbed();
-
-				embed
+				embed = new MessageEmbed()
 					.setColor("#0099ff")
 					.setTitle("🚀  " + title)
 					.addField("💸  Price", price, true)
