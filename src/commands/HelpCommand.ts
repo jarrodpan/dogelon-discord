@@ -3,9 +3,7 @@ import Action from '../types/Action';
 import { Command, MatchOn } from '../types/Command'
 let pkg = require("./../../package.json")
 /**
- * what's ligma?
- * 
- * Example of message matching.
+ * shows command list
  */
 export default class HelpCommand implements Command {
 	public expression = "(!h(elp)?)";
@@ -19,7 +17,7 @@ export default class HelpCommand implements Command {
 			.setColor("#3f00ad")
 			.setTitle(`🚀 Dogelon ${v}`)
 			.setThumbnail("https://i.imgur.com/2vHF2jl.jpg")
-			.setDescription("The not-so-stupid discord bot made for no reason.")
+			.setDescription("The not-so-stupid discord bot made for no reason. Written in Node.js and TypeScript.")
 			.addField("`${stock ticker}` (inline)", "Gets current price for a stock. Cached and/or delayed depending on API response and exchange opening times.")
 			.addField("`/r/{subreddit}`, `r/{subreddit}` (inline)", "Converts a subreddit reference to a reddit link, regardless of if it exists or not.")
 			.addField("`what's ligma?` (and some variants, inline)", "dare you to ask me")
