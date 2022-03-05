@@ -46,6 +46,9 @@ client.on('messageCreate', (message: any): void => {
 	//console.debug(Commands.matchOn.get(MatchOn.MESSAGE).exec(message));
 	// get match groups
 	let msgMatchCommands: any[];
+	let tokenMatchCommands: any[] = [];
+
+
 	try {
 		// TODO: define groups type
 		// TODO: refactor this into Commands module
@@ -55,14 +58,11 @@ client.on('messageCreate', (message: any): void => {
 		msgMatchCommands = Object.entries(matchOnMessage).filter(([_, matchString]) => { return matchString != undefined; })
 	}
 	catch (e) {
-		console.error("no matching groups found");
+		console.error("no message matching groups found");
 		msgMatchCommands = [];
 	}
 
-	console.log("matching commands:", msgMatchCommands.toString());
-	msgMatchCommands.forEach(([commandName, _]) => {
-		queue.push(new Action(message, message.content, Commands.commandMap.get(commandName).execute));
-	});
+
 
 	// tokenize
 	let tokens = message.content.split(" ");
@@ -115,11 +115,33 @@ client.on('messageCreate', (message: any): void => {
 			return { embeds: [embed] };
 		}));
 
-		if (token.slice(0, 2) == "r/" || token.slice(0, 3) == "/r/") queue.push(new Action(message, token, async (token: string) => {
-			return "https://www.reddit.com" + (token.slice(0, 1) == "/" ? "" : "/") + token;
-		}));
+
+		try {
+			// TODO: define groups type
+			// TODO: refactor this into Commands module
+			const matchOnMessage: any = (Commands.matchOn.get(MatchOn.TOKEN).exec(message.content)).groups;
+			console.log("match found:", Object.entries(matchOnMessage));
+			// filter out unmatched expressions
+			tokenMatchCommands = Object.entries(matchOnMessage).filter(([_, matchString]) => { return matchString != undefined; })
+		}
+		catch (e) {
+			console.error("no token matching groups found");
+			tokenMatchCommands = [];
+		}
+
+		console.log("token matching commands:", tokenMatchCommands.toString());
+		tokenMatchCommands.forEach(([commandName, _]) => {
+			queue.push(new Action(message, token, Commands.commandMap.get(commandName).execute));
+		});
 
 	});
+
+	console.log("message matching commands:", msgMatchCommands.toString());
+	msgMatchCommands.forEach(([commandName, _]) => {
+		queue.push(new Action(message, message.content, Commands.commandMap.get(commandName).execute));
+	});
+
+
 
 });
 
