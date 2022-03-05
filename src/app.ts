@@ -1,6 +1,7 @@
 //"use strict";
 import Action from "./types/Action";
 import Commands from './commands';
+import { MatchOn } from "./types/Command";
 
 require('dotenv').config();
 //console.log(process.env); // to test dotenv
@@ -26,6 +27,7 @@ const queue: Action[] = [];
 client.once('ready', () => {
 	console.log('Ready!');
 	console.debug(Commands);
+	console.debug(Commands.matchOn);
 });
 
 // login to discord
@@ -39,6 +41,24 @@ client.on('messageCreate', (message: any): void => {
 
 	// ignore self messages
 	if (message.author.bot) return;
+
+	// regex match on message
+	//console.debug(Commands.matchOn.get(MatchOn.MESSAGE).exec(message));
+	// get match groups
+	let msgMatchCommands: any[];
+	try {
+		// TODO: define groups type 
+		const matchOnMessage: any = (Commands.matchOn.get(MatchOn.MESSAGE).exec(message.content)).groups;
+		console.log("match found:", Object.entries(matchOnMessage));
+		//matchOnMessage.
+		msgMatchCommands = Object.entries(matchOnMessage).filter(([_, matchString]) => { return matchString != undefined; })
+	}
+	catch (e) {
+		console.error("no matching groups found");
+		msgMatchCommands = [];
+	}
+
+	console.log("matching commands:", msgMatchCommands);
 
 	// gettem with the ligma
 	let ligma = message.content.search(/what('{0,1}| i)s ligma\?*/gm);
