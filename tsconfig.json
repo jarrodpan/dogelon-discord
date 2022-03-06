@@ -9,6 +9,7 @@
 		"strictNullChecks": true,
 		"checkJs": true,
 		"allowJs": true,
+		"resolveJsonModule": true,
 		"moduleResolution": "node",
 		"types": [
 			"node"
@@ -27,7 +28,8 @@
 	},
 	"include": [
 		"./src/**/*.ts",
-		"./src/**/*.js"
+		"./src/**/*.js",
+		"./src/**/*.json",
 	],
 	"exclude": [
 		"node_modules",
