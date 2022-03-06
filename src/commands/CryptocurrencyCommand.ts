@@ -2,12 +2,25 @@ import axios from 'axios';
 import { MessageEmbed, UserContextMenuInteraction } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
 const coins = require("./../types/coingeckocoins.json");
+import { Convert, CoinGeckoResponse } from './../types/CoinGeckoResponse'
 
 /**
+ * Searches coin prices from coingecko.com
  * 
+ * https://www.coingecko.com/en/api/documentation
  * 
  * Coin list sourced from https://api.coingecko.com/api/v3/coins/list
  */
+type Coin = {
+	id: string,
+	symbol: string,
+	name: string
+}
+
+type CoinData = {
+
+}
+
 export default class CryptocurrencyCommand implements Command {
 	public expression = `(?:\\%\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
@@ -18,40 +31,50 @@ export default class CryptocurrencyCommand implements Command {
 		let embed;
 
 		// find coin ticker
-		console.log(coins);
+		const coin: Coin = coins.find(item => item.symbol == ticker);
+		if (coin == undefined) return null;
 
-
-		//console.log(response.data);
-
-		//let embed = null;
+		console.log(coin);
+		let cc = "usd";
+		// coin exists
 		return Promise.resolve().then(async () => {
 			let response;
-			let data: any = {};
+			let data;
 			let error = false;
+
 			try {
-				response = await axios.get("https://query1.finance.yahoo.com/v10/finance/quoteSummary/" + ticker + "?region=AU&lang=en-AU&corsDomain=au.finance.yahoo.com&formatted=true&modules=price%2CsummaryDetail%2CpageViews%2CfinancialsTemplate");
+				response = await axios.get("https://api.coingecko.com/api/v3/coins/" + coin.id + "?tickers=false&market_data=true&community_data=false&developer_data=false");
 				//console.log(response);
-				data = response.data.quoteSummary;
+				//console.log(response);
+				data = response.data;
 			} catch (e) {
 				//if (typeof response.data != undefined) data = {};
 				//if (typeof response.data.quoteSummary != undefined) data = response.data.quoteSummary;
 				//else if (typeof response.data.finance != undefined) data = response.data.finance;
 
 				//data = (response.data.quoteSummary ?? response.data.finance ?? {});
+				data = undefined;
 				error = true;
+				console.error("cyrpto error");
 			}
 			return [response, data, error];
 		}).then(([response, data, error]) => {
 			//console.log(data.error);
 			if (!error) {
 				console.log("setting up response");
-				let result = data.result[0].price;
-				let title = result.longName + " (" + result.symbol + ")";
-				let price = result.currencySymbol + result.regularMarketPreviousClose.fmt;
-				let priceChange = result.currencySymbol + result.regularMarketChange.fmt; // BUG: fix this line if the response is messed up
-				let pcChange = result.regularMarketChangePercent.fmt;
-				let footer = result.exchangeName + "  •  " + result.quoteSourceName + " " + result.currency;
+				let result = data.market_data;
+				let title = data.name + " (" + data.symbol + ")";
+				console.log(title);
+				console.log("title set");
+				//let price = result.current_price[cc];
+				//let priceChange = result.price_change_24h_in_currency[cc]; // BUG: fix this line if the response is messed up
+				//let pcChange = result.price_change_24h_in_currency[cc];
+				let price = result.current_price.usd.toString();
+				let priceChange = result.price_change_24h_in_currency.usd.toString(); // BUG: fix this line if the response is messed up
+				let pcChange = result.price_change_24h_in_currency.usd.toString();
+				let footer = "CoinGecko  •  " + cc.toUpperCase();
 
+				console.log("variables set", price, priceChange, pcChange, footer);
 				embed = new MessageEmbed()
 					.setColor("#0099ff")
 					.setTitle("🚀  " + title)
@@ -61,6 +84,8 @@ export default class CryptocurrencyCommand implements Command {
 					.setTimestamp()
 					.setFooter({ text: footer })
 					;
+				console.log("embed set");
+				console.log(embed);
 			} else {
 				//embed = null;
 				// error case
@@ -69,15 +94,17 @@ export default class CryptocurrencyCommand implements Command {
 					.setTitle(data.error.code)
 					.setDescription(data.error.description)
 					;*/
+				console.error("Crypto: response error");
 				return null;
 			}
 			//console.log("finance return", embed);
-			if (embed == null) throw new Error("FinanceCommands: embed is undefined or null");
-			if (typeof embed != null || typeof embed !== undefined) {
-				return { embeds: [embed] };
-			}
+			if (embed == null) throw new Error("CryptoCommand: embed is undefined or null");
+			//if (typeof embed != null || typeof embed !== undefined) {
+			return { embeds: [embed] };
+			//}
 
 		}).catch((_) => {
+			console.error(_);
 			embed = null;
 			return null;
 		});
