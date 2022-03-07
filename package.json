@@ -6,7 +6,8 @@
     "app": "./"
   },
   "scripts": {
-    "build": "npx tsc -b -v -w",
+    "build": "npx tsc -b -v",
+    "build-w": "npx tsc -b -v -w",
     "prestart": "npx tsc -b -v",
     "start": "node ./bin/app.js",
     "test": "nodemon ./bin/app.js",
