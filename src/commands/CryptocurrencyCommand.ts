@@ -63,15 +63,16 @@ export default class CryptocurrencyCommand implements Command {
 			if (!error) {
 				console.log("setting up response");
 				let result = data.market_data;
-				let title = data.name + " (" + data.symbol + ")";
+				let title = data.name + " (" + (data.symbol).toUpperCase() + ")";
 				console.log(title);
 				console.log("title set");
+				// TODO: select currency dynamically
 				//let price = result.current_price[cc];
-				//let priceChange = result.price_change_24h_in_currency[cc]; // BUG: fix this line if the response is messed up
+				//let priceChange = result.price_change_24h_in_currency[cc]; 
 				//let pcChange = result.price_change_24h_in_currency[cc];
-				let price = result.current_price.usd.toString();
-				let priceChange = result.price_change_24h_in_currency.usd.toString(); // BUG: fix this line if the response is messed up
-				let pcChange = result.price_change_24h_in_currency.usd.toString();
+				let price = (result.current_price.usd).toFixed(2).toString();
+				let priceChange = '$' + (result.price_change_24h_in_currency.usd).toFixed(2).toString();
+				let pcChange = (result.price_change_percentage_24h_in_currency.usd).toFixed(2).toString() + '%';
 				let footer = "CoinGecko  •  " + cc.toUpperCase();
 
 				console.log("variables set", price, priceChange, pcChange, footer);
