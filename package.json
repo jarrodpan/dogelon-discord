@@ -6,7 +6,7 @@
     "app": "./"
   },
   "scripts": {
-    "build": "npx tsc -b -v",
+    "build": "tsc -b -v",
     "build-w": "npx tsc -b -v -w",
     "prestart": "npx tsc -b -v",
     "start": "node ./bin/app.js",
