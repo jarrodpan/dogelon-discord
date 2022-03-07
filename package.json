@@ -8,7 +8,8 @@
   "scripts": {
     "build": "npx tsc -b -v -w",
     "prestart": "npx tsc -b -v",
-    "start": "nodemon ./bin/app.js",
+    "start": "node ./bin/app.js",
+    "test": "nodemon ./bin/app.js",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "author": "Jarrod Pan",
