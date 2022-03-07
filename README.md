@@ -48,6 +48,12 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
       - also, its regex
 - help command - done in [1.0.3](#1.0.3)
 # Changelog
+## [1.0.4] - date
+### Added
+- cryptocurrency command, use `%{ticker}` to fetch a price
+### Changed
+- fixed bug where message regex would not reset until run twice.
+
 ## [1.0.3] - 2022-03-05
 ### Added
 - if a command `.execute()` returns null or undefined we fail successfully silently and do not invoke the discord api.
@@ -56,6 +62,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 - refactored stock calls into `/src/commands/FinanceCommand.ts`, now the app is clean of raw command parsing and only parses based on imports.
 - `FinanceCommand` now returns `null` for bad requests and throws an error instead of 1) crashing on bad api returns and 2) sending trash to the discord api.
 - exchange name added to stock response footer
+
 ## [1.0.2] - 2022-03-05
 ### Added
 - Commands now load dyanamically from directory `./src/commands/`
@@ -72,12 +79,13 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 - This changelog lol
 ### Changed
 - Converted the whole thing into a Typescript project for practice/sanity
-### Removed
+
 
 ## [1.0.0] - TODO date etc
 ### Added
 - minimum viable product
 
+[1.0.4]: ./
 [1.0.3]: ./
 [1.0.2]: ./
 [1.0.1]: ./
