@@ -15,7 +15,7 @@ export default class Commands {
 	/**
 	 * runs directly after declaration
 	 */
-	private static _initialize = Promise.resolve(1).then(async () => {
+	private static _initialize = Promise.resolve().then(async () => {
 
 		// load commands from file
 		const commandList: Map<any, any> = new Map();
