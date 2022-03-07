@@ -70,8 +70,11 @@ export default class CryptocurrencyCommand implements Command {
 				//let price = result.current_price[cc];
 				//let priceChange = result.price_change_24h_in_currency[cc]; 
 				//let pcChange = result.price_change_24h_in_currency[cc];
-				let price = (result.current_price.usd).toFixed(2).toString();
-				let priceChange = '$' + (result.price_change_24h_in_currency.usd).toFixed(2).toString();
+				let coinPrice = result.current_price.usd;
+				let sigDigits = (coinPrice < 10 ? 5 : 2);
+
+				let price = (coinPrice).toFixed(sigDigits).toString();
+				let priceChange = '$' + (result.price_change_24h_in_currency.usd).toFixed(sigDigits).toString();
 				let pcChange = (result.price_change_percentage_24h_in_currency.usd).toFixed(2).toString() + '%';
 				let footer = "CoinGecko  •  " + cc.toUpperCase();
 
