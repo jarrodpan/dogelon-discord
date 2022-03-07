@@ -51,8 +51,8 @@ export default class FinanceCommand implements Command {
 					.setColor("#0099ff")
 					.setTitle("🚀  " + title)
 					.addField("💸  Price", price, true)
-					.addField("🪙  $ Change", priceChange, true)
-					.addField("💹  % Change", pcChange, true)
+					.addField("🪙  $ Change (D)", priceChange, true)
+					.addField("💹  % Change (D)", pcChange, true)
 					.setTimestamp()
 					.setFooter({ text: footer })
 					;

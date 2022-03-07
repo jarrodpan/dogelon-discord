@@ -83,8 +83,8 @@ export default class CryptocurrencyCommand implements Command {
 					.setColor("#0099ff")
 					.setTitle("🚀  " + title)
 					.addField("💸  Price", price, true)
-					.addField("🪙  $ Change", priceChange, true)
-					.addField("💹  % Change", pcChange, true)
+					.addField("🪙  $ Change (24h)", priceChange, true)
+					.addField("💹  % Change (24h)", pcChange, true)
 					.setTimestamp()
 					.setFooter({ text: footer })
 					;
