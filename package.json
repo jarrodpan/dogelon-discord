@@ -9,9 +9,9 @@
     "node": "17.3.0"
   },
   "scripts": {
-    "build": "tsc -b -v",
+    "build": "tsc -v",
     "build-w": "npx tsc -b -v -w",
-    "postinstall": "tsc",
+    "postinstall": "npm run build",
     "start": "node ./bin/app.js",
     "test": "nodemon ./bin/app.js",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
