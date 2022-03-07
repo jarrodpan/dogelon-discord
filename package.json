@@ -5,10 +5,13 @@
   "bin": {
     "app": "./"
   },
+  "engines": {
+    "node": "17.3.0"
+  },
   "scripts": {
     "build": "tsc -b -v",
     "build-w": "npx tsc -b -v -w",
-    "prestart": "npx tsc -b -v",
+    "postinstall": "tsc",
     "start": "node ./bin/app.js",
     "test": "nodemon ./bin/app.js",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
