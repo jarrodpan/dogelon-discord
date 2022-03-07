@@ -1,4 +1,5 @@
 # Dogelon - A not-so-stupid discord bot
+
 This is Dogelon, a robot built with discord.js and a handful of other libraries.
 
 After playing with some bots on Discord I found that none of them met my needs, which was:
@@ -13,27 +14,28 @@ After playing with some bots on Discord I found that none of them met my needs, 
 - Most of all, some bots aren't online all the time. Plan to solve by deploying to Heroku for 24/7 service while I am not online.
 
 ## Running
+
 Clone repo then `npm install` to install dependencies, then `npm start` to compile and run. Plan is to containerise with Docker at some point so i can familiarise myself with that. You'll need to set a `.env` file with your discord bot token, a template is provided.
 
 ## TODO List
+
 - Cache API responses so we aren't hitting the API while the stock market is closed
   - 5 min delay for stocks when market is open, until next open when market is closed
   - 1 min for crypto because it's 24/7
-- Add little pictures of the stocks/coins,probably upload at first but will host eventually
+- Add little pictures of the stocks/coins,probably upload at first but will host eventually - coins done as of [1.0.5](#1.0.5)
 - idk can add like coin flips and d20 rolls or whatever
 - presence updates
 - API rate limiting, for outbound messages too (discord allows 120/min)
 - private messages dont work
 - weather info might be cool to add
-- make the whole thing event driven (where appropriate)
 - encapsulate async stuff in promises or whatever just do it properly
 - containerize with docker
-- deploy to heroku for 24/7 madness
 - find a proper API(s) and use that for financial stuff
-- write API classes and interfaces and stuff to encapsulate things - is this really needed?
 - refactor `Command` type with `Commands` class as `Command` is abstract and all of `Commands` is static so combining the two should be fine.
 
 ### Implemented Changes
+
+- deploy to heroku for 24/7 madness - done as of [1.0.5](#1.0.5)
 - error handling sucks so the bot dies if the data is bad and spews a bunch of stuff to the terminal - fixed (for now) as of [1.0.3](#1.0.3)
 - code is all inline, need to refactor into modules - finance done as of [1.0.3](#1.0.3)
   - ligma and reddit modules done in [1.0.2](#1.0.2)
@@ -47,49 +49,82 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
       - could be slow with lots of commands
       - also, its regex
 - help command - done in [1.0.3](#1.0.3)
+- ~write API classes and interfaces and stuff to encapsulate things - is this really needed?~ - dont bother with this
+- ~make the whole thing event driven (where appropriate)~ - it already is durr
+
 # Changelog
-## [1.0.4] - date
+
+## [1.0.5] - 2022-03-07
+
 ### Added
-- cryptocurrency command, use `%{ticker}` to fetch a price
+
+- we're live on heroku now! added a second bot for dev purposes.
+
 ### Changed
+
+- added images to crypto output
+
+## [1.0.4] - 2022-03-07
+
+### Added
+
+- cryptocurrency command, use `%{ticker}` to fetch a price
+
+### Changed
+
 - fixed bug where message regex would not reset until run twice.
 
 ## [1.0.3] - 2022-03-05
+
 ### Added
+
 - if a command `.execute()` returns null or undefined we fail successfully silently and do not invoke the discord api.
 - `!help` and `!h` command
+
 ### Changed
+
 - refactored stock calls into `/src/commands/FinanceCommand.ts`, now the app is clean of raw command parsing and only parses based on imports.
 - `FinanceCommand` now returns `null` for bad requests and throws an error instead of 1) crashing on bad api returns and 2) sending trash to the discord api.
 - exchange name added to stock response footer
 
 ## [1.0.2] - 2022-03-05
+
 ### Added
+
 - Commands now load dyanamically from directory `./src/commands/`
   - thanks to [stack overflow](https://stackoverflow.com/questions/51852938/typescript-dynamically-import-classes) again
 - assembles regex string arrays and runs callback as defined in class files named `_______Command.ts`
   - will run against entire message first then against tokens and push all to queue for execution
+
 ### Changed
+
 - refactored two commands into [LigmaCommand.ts](./src/commands/LigmaCommand.ts) and [RedditCommand.ts](./src/commands/RedditCommand.ts)
 
 ## [1.0.1] - 2022-03-01
+
 ### Added
+
 - Added new types/classes `Action`, `Command` and a few sample commands `LigmaCommand` and `RedditCommand`.
 - uml diagrams for a visual idea of how things should work
 - This changelog lol
+
 ### Changed
+
 - Converted the whole thing into a Typescript project for practice/sanity
 
-
 ## [1.0.0] - TODO date etc
+
 ### Added
+
 - minimum viable product
 
+[1.0.5]: ./
 [1.0.4]: ./
 [1.0.3]: ./
 [1.0.2]: ./
 [1.0.1]: ./
 [1.0.0]: ./
+
 ```
 Changelog template
 ## [1.0.0] - date
@@ -112,6 +147,6 @@ Convert to typescript https://javascript.plainenglish.io/how-to-convert-node-js-
 
 Changelog properly https://keepachangelog.com/en/1.0.0/
 
-Getting direct messages https://github.com/discordjs/discord.js/issues/5516 https://stackoverflow.com/questions/41745070/sending-private-messages-to-user 
+Getting direct messages https://github.com/discordjs/discord.js/issues/5516 https://stackoverflow.com/questions/41745070/sending-private-messages-to-user
 
 JSON to types https://quicktype.io/typescript
