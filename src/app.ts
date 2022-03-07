@@ -55,6 +55,7 @@ client.on('messageCreate', (message: any): void => {
 		// filter out unmatched expressions
 		msgMatchCommands = Object.entries(matchOnMessage).filter(([_, matchString]) => { return matchString != undefined; });
 		console.log(message.content, "message matching commands:", msgMatchCommands);
+		Commands.matchOn.get(MatchOn.MESSAGE).lastIndex = 0;
 	}
 	catch (e) {
 		console.error(message.content, "=>\tno message matching groups found");
