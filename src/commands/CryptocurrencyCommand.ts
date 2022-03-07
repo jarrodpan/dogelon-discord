@@ -2,7 +2,6 @@ import axios from 'axios';
 import { MessageEmbed, UserContextMenuInteraction } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
 const coins = require("./../types/coingeckocoins.json");
-import { Convert, CoinGeckoResponse } from './../types/CoinGeckoResponse'
 
 /**
  * Searches coin prices from coingecko.com
@@ -15,10 +14,6 @@ type Coin = {
 	id: string,
 	symbol: string,
 	name: string
-}
-
-type CoinData = {
-
 }
 
 export default class CryptocurrencyCommand implements Command {
