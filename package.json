@@ -9,7 +9,7 @@
     "node": "17.3.0"
   },
   "scripts": {
-    "build": "tsc -v",
+    "build": "tsc -b",
     "build-w": "npx tsc -b -v -w",
     "postinstall": "npm run build",
     "start": "node ./bin/app.js",
