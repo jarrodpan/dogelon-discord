@@ -13,30 +13,12 @@ export default class Commands {
 	]);
 
 	/**
-	 * @deprecated might not require
-	 * 
-	 * lists all command names available
-	 * 
-	 * @returns string[] list of command names
-	 */
-	/*
-	static listCommandNames = (): string[] => {
-		const names: any[] = [];
-		Commands.commands.forEach((_: any, cmd: any) => { //
-			names.push(cmd);
-		});
-		return names;
-	}*/
-
-	/**
 	 * runs directly after declaration
 	 */
 	private static _initialize = Promise.resolve(1).then(async () => {
 
-
-
 		// load commands from file
-		let commandList: Map<any, any> = new Map();
+		const commandList: Map<any, any> = new Map();
 		await fs.readdirSync('./src/commands/').forEach(async (command: string) => {
 			const [commandName, ts] = command.split(".");
 			if ( // knockout junk files

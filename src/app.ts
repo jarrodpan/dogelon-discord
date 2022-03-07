@@ -1,26 +1,19 @@
-//"use strict";
+"use strict";
 import Action from "./types/Action";
 import Commands from './commands';
 import { MatchOn } from "./types/Command";
 
+// following need to be 'require' to work
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { Client, Intents } = require('discord.js');
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
-//console.log(process.env); // to test dotenv
-const { Client, Intents, MessageEmbed } = require('discord.js');
-const axios = require('axios');
 
-
-// TODO: might want to refactor this
+// set up discord client api
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
 
-// TODO: fix this crap
+// TODO: make this better
 const queue: Action[] = [];
-
-
-// TODO: this is where the magic happens with the parser
-
-//console.debug(Commands.listCommandNames());
-
-
 
 // initialise
 // TODO: refactor this
@@ -35,8 +28,8 @@ client.once('ready', () => {
 client.login(process.env.DISCORD_TOKEN);
 
 client.on('messageCreate', (message: any): void => {
-	let server = client.channels.cache.get(message.channelId).guild.name;
-	let channel = client.channels.cache.get(message.channelId).name;
+	const server = client.channels.cache.get(message.channelId).guild.name;
+	const channel = client.channels.cache.get(message.channelId).name;
 
 	console.log("<" + server + "#" + channel + "@" + message.author.username + ">", message.content);
 
@@ -44,7 +37,9 @@ client.on('messageCreate', (message: any): void => {
 	if (message.author.bot) return;
 
 	// get match groups
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let msgMatchCommands: any[];
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	let tokenMatchCommands: any[] = [];
 
 	try {
@@ -63,16 +58,14 @@ client.on('messageCreate', (message: any): void => {
 	}
 
 	// tokenize
-	let tokens = message.content.split(" ");
+	const tokens = message.content.split(" ");
 	tokens.forEach(token => {
-
-
 		try {
-			// TODO: define groups type
 			// TODO: refactor this into Commands module
-			const matchOnToken: any = (Commands.matchOn.get(MatchOn.TOKEN).exec(token)).groups;
+			const matchOnToken = (Commands.matchOn.get(MatchOn.TOKEN).exec(token)).groups;
 			//console.log("match found:", Object.entries(matchOnToken));
 			// filter out unmatched expressions
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			tokenMatchCommands = Object.entries(matchOnToken).filter(([_, matchString]) => { return matchString != undefined; })
 			console.log(token, "token matching commands:", tokenMatchCommands.toString());
 			Commands.matchOn.get(MatchOn.TOKEN).lastIndex = 0;
@@ -82,14 +75,14 @@ client.on('messageCreate', (message: any): void => {
 			tokenMatchCommands = [];
 		}
 
-
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		tokenMatchCommands.forEach(([commandName, _]) => {
 			queue.push(new Action(message, token, Commands.commandMap.get(commandName).execute));
 		});
 
 	});
 
-
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	msgMatchCommands.forEach(([commandName, _]) => {
 		queue.push(new Action(message, message.content, Commands.commandMap.get(commandName).execute));
 	});
@@ -98,7 +91,7 @@ client.on('messageCreate', (message: any): void => {
 
 });
 
-const parseLoop = setInterval(async () => {
+setInterval(async () => {
 	// skip if empty queue
 	if (queue.length == 0) return;
 
@@ -107,7 +100,7 @@ const parseLoop = setInterval(async () => {
 	//console.log(message);
 	//let output;
 	Promise.resolve().then(async () => {
-		let output = await action.callback(action.token);
+		const output = await action.callback(action.token);
 		// send message to channel
 		return output;
 
@@ -117,8 +110,8 @@ const parseLoop = setInterval(async () => {
 
 		action.message.reply(output);
 		return;
-	}).catch((_) => {
-		//
+	}).catch((e) => {
+		console.error(e);
 	});
 
 
