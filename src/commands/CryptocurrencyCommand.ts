@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { MessageEmbed, UserContextMenuInteraction } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const coins = require("./../types/coingeckocoins.json");
 
 /**
@@ -20,7 +21,7 @@ export default class CryptocurrencyCommand implements Command {
 	public expression = `(?:\\%\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
 	public execute = (input: any) => {
-		let ticker = input.slice(1);
+		const ticker = input.slice(1);
 
 
 		let embed;
@@ -30,7 +31,7 @@ export default class CryptocurrencyCommand implements Command {
 		if (coin == undefined) return null;
 
 		console.log(coin);
-		let cc = "usd";
+		const cc = "usd";
 		// coin exists
 		return Promise.resolve().then(async () => {
 			let response;
@@ -53,30 +54,32 @@ export default class CryptocurrencyCommand implements Command {
 				console.error("cyrpto error");
 			}
 			return [response, data, error];
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		}).then(([response, data, error]) => {
 			//console.log(data.error);
 			if (!error) {
 				console.log("setting up response");
-				let result = data.market_data;
-				let title = data.name + " (" + (data.symbol).toUpperCase() + ")";
+				const result = data.market_data;
+				const title = data.name + " (" + (data.symbol).toUpperCase() + ")";
 				console.log(title);
 				console.log("title set");
 				// TODO: select currency dynamically
 				//let price = result.current_price[cc];
 				//let priceChange = result.price_change_24h_in_currency[cc]; 
 				//let pcChange = result.price_change_24h_in_currency[cc];
-				let coinPrice = result.current_price.usd;
-				let sigDigits = (coinPrice < 10 ? 5 : 2);
+				const coinPrice = result.current_price.usd;
+				const sigDigits = (coinPrice < 10 ? 5 : 2);
 
-				let price = (coinPrice).toFixed(sigDigits).toString();
-				let priceChange = '$' + (result.price_change_24h_in_currency.usd).toFixed(sigDigits).toString();
-				let pcChange = (result.price_change_percentage_24h_in_currency.usd).toFixed(2).toString() + '%';
-				let footer = "CoinGecko  •  " + cc.toUpperCase();
+				const price = (coinPrice).toFixed(sigDigits).toString();
+				const priceChange = '$' + (result.price_change_24h_in_currency.usd).toFixed(sigDigits).toString();
+				const pcChange = (result.price_change_percentage_24h_in_currency.usd).toFixed(2).toString() + '%';
+				const footer = "CoinGecko  •  " + cc.toUpperCase();
 
 				console.log("variables set", price, priceChange, pcChange, footer);
 				embed = new MessageEmbed()
 					.setColor("#0099ff")
 					.setTitle("🚀  " + title)
+					.setThumbnail(data.image.large || 'https://i.imgur.com/AfFp7pu.png')
 					.addField("💸  Price", price, true)
 					.addField("🪙  $ Change (24h)", priceChange, true)
 					.addField("💹  % Change (24h)", pcChange, true)
