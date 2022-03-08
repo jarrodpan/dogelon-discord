@@ -151,3 +151,5 @@ Changelog properly https://keepachangelog.com/en/1.0.0/
 Getting direct messages https://github.com/discordjs/discord.js/issues/5516 https://stackoverflow.com/questions/41745070/sending-private-messages-to-user
 
 JSON to types https://quicktype.io/typescript
+
+Get a class name reflectively https://stackoverflow.com/questions/13613524/get-an-objects-class-name-at-runtime
