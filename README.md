@@ -63,6 +63,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 ### Changed
 
 - added images to crypto output
+- moved parsing interval into ready callback
 
 ## [1.0.4] - 2022-03-07
 

@@ -18,6 +18,36 @@ const queue: Action[] = [];
 // initialise
 // TODO: refactor this
 client.once('ready', () => {
+	
+	setInterval(async () => {
+		// skip if empty queue
+		if (queue.length == 0) return;
+
+		// get next item from queue - definitely defined as we check above
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		const action: Action = queue.shift()!;
+		//console.log(message);
+		//let output;
+		Promise.resolve().then(async () => {
+			const output = await action.callback(action.token);
+			// send message to channel
+			return output;
+
+		}).then((output) => {
+			console.log("sending to discord...", output);
+			if (output == null) throw new Error("output is undefined");
+
+			action.message.reply(output);
+			return;
+		}).catch((e) => {
+			console.error(e);
+		});
+
+
+		return;
+
+	}, 500); // 500ms is the rate limit of discord's bot API
+	
 	console.debug(Commands.matchOn);
 	console.log('Ready!');
 	//console.debug(Commands);
@@ -43,7 +73,6 @@ client.on('messageCreate', (message: any): void => {
 	let tokenMatchCommands: any[] = [];
 
 	try {
-		// TODO: define groups type
 		// TODO: refactor this into Commands module
 		const matchOnMessage: any = (Commands.matchOn.get(MatchOn.MESSAGE).exec(message.content)).groups;
 		//console.log("match found:", Object.entries(matchOnMessage));
@@ -53,7 +82,7 @@ client.on('messageCreate', (message: any): void => {
 		Commands.matchOn.get(MatchOn.MESSAGE).lastIndex = 0;
 	}
 	catch (e) {
-		console.error(message.content, "=>\tno message matching groups found");
+		//console.error(message.content, "=>\tno message matching groups found");
 		msgMatchCommands = [];
 	}
 
@@ -71,7 +100,7 @@ client.on('messageCreate', (message: any): void => {
 			Commands.matchOn.get(MatchOn.TOKEN).lastIndex = 0;
 		}
 		catch (e) {
-			console.error(token, "=>\tno token matching groups found");
+			//console.error(token, "=>\tno token matching groups found");
 			tokenMatchCommands = [];
 		}
 
@@ -91,30 +120,3 @@ client.on('messageCreate', (message: any): void => {
 
 });
 
-setInterval(async () => {
-	// skip if empty queue
-	if (queue.length == 0) return;
-
-	// get next item from queue
-	const action: Action = queue.shift()!;
-	//console.log(message);
-	//let output;
-	Promise.resolve().then(async () => {
-		const output = await action.callback(action.token);
-		// send message to channel
-		return output;
-
-	}).then((output) => {
-		console.log("sending to discord...", output);
-		if (output == null) throw new Error("output is undefined");
-
-		action.message.reply(output);
-		return;
-	}).catch((e) => {
-		console.error(e);
-	});
-
-
-	return;
-
-}, 500);
