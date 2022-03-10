@@ -162,3 +162,5 @@ Getting direct messages https://github.com/discordjs/discord.js/issues/5516 http
 JSON to types https://quicktype.io/typescript
 
 Get a class name reflectively https://stackoverflow.com/questions/13613524/get-an-objects-class-name-at-runtime
+
+heroku webhooks? https://stackoverflow.com/questions/50358737/connecting-heroku-webhooks-with-discord
