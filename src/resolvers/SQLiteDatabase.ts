@@ -8,9 +8,9 @@ export default class SQLiteDatabase implements Database {
 		this.db = new SQLiteDb(':memory:');
 		
 		// create table
-		this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(callingFunction TEXT, reference TEXT, cacheUntil INTEGER, jsonData TEXT)').run();
+		this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(callingFunction TEXT, key TEXT, cacheUntil INTEGER, jsonData TEXT)').run();
 	}
-	get(key: string) {
+	get(key: string, callingFunction? :string | undefined) {
 		throw new Error("Method not implemented.");
 	}
 	set(key: string, ...arg0: any): void {
