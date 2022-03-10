@@ -8,12 +8,19 @@ export default class SQLiteDatabase implements Database {
 		this.db = new SQLiteDb(':memory:');
 		
 		// create table
-		this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(key TEXT, cacheUntil INTEGER, jsonData TEXT)').run();
+		this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(key TEXT, jsonData TEXT, cacheUntil INTEGER)').run();
 	}
 	get(key: string) {
-		throw new Error("Method not implemented.");
+		const time = Math.ceil(Date.now() / 1000);
+		const stmt = this.db.prepare("SELECT json_object(jsonData) FROM dogelon WHERE key = ? AND cacheUntil > ?");
+		try {
+			return stmt.get(key, time);
+		} catch (e) {
+			console.error(e);
+			return false;
+		}
 	}
-	set(key: string, val: any): void {
+	set(key: string, val: any, cache?: number): void {
 		throw new Error("Method not implemented.");
 	}
 	
