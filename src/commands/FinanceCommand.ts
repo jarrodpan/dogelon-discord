@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { MessageEmbed, UserContextMenuInteraction } from 'discord.js';
+import { MessageEmbed } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
 
 /**
@@ -11,7 +11,7 @@ export default class FinanceCommand implements Command {
 	public expression = `(?:\\$\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
 	public execute = (input: any) => {
-		let ticker = input.slice(1);
+		const ticker = input.slice(1);
 
 
 		let embed;
@@ -40,12 +40,12 @@ export default class FinanceCommand implements Command {
 			//console.log(data.error);
 			if (!error) {
 				console.log("setting up response");
-				let result = data.result[0].price;
-				let title = result.longName + " (" + result.symbol + ")";
-				let price = result.currencySymbol + result.regularMarketPreviousClose.fmt;
-				let priceChange = result.currencySymbol + result.regularMarketChange.fmt; // BUG: fix this line if the response is messed up
-				let pcChange = result.regularMarketChangePercent.fmt;
-				let footer = result.exchangeName + "  •  " + result.quoteSourceName + " " + result.currency;
+				const result = data.result[0].price;
+				const title = result.longName + " (" + result.symbol + ")";
+				const price = result.currencySymbol + result.regularMarketPreviousClose.fmt;
+				const priceChange = result.currencySymbol + result.regularMarketChange.fmt; // BUG: fix this line if the response is messed up
+				const pcChange = result.regularMarketChangePercent.fmt;
+				const footer = result.exchangeName + "  •  " + result.quoteSourceName + " " + result.currency;
 
 				embed = new MessageEmbed()
 					.setColor("#0099ff")

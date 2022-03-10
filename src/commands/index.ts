@@ -32,7 +32,7 @@ export default class Commands {
 			//console.debug("match string:", commandClass.expression);
 
 			// push regex match on to correct queue
-			Commands.matchOn.get(commandClass.matchOn).push(`(?<${commandName}>` + commandClass.expression + `)`);
+			Commands.matchOn.get(commandClass.matchOn).push(`^(?<${commandName}>` + commandClass.expression + `)$`);
 
 			// add command to command map
 			commandList.set(commandName, commandClass);

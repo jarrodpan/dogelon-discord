@@ -86,8 +86,8 @@ client.on('messageCreate', (message: any): void => {
 		msgMatchCommands = [];
 	}
 
-	// tokenize
-	const tokens = message.content.split(" ");
+	// replace newlines with spaces and tokenize
+	const tokens = message.content.replace(/(\r\n|\n|\r)/gm, " ").split(" ");
 	tokens.forEach(token => {
 		try {
 			// TODO: refactor this into Commands module

@@ -54,6 +54,14 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
+## [1.0.6] - 2022-03-10
+
+### Changed
+
+- fixed issue #5 where the reddit links were going nuts
+- replace newlines with spaces before tokenizing
+- cleaned up some stuff in the typescript
+
 ## [1.0.5] - 2022-03-07
 
 ### Added
@@ -119,6 +127,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 - minimum viable product
 
+[1.0.6]: ./
 [1.0.5]: ./
 [1.0.4]: ./
 [1.0.3]: ./
