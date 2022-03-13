@@ -19,13 +19,13 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## TODO List
 
-- Cache API responses so we aren't hitting the API while the stock market is closed
+- Cache API responses so we aren't hitting the API while the stock market is closed - in progress as of [1.1.0](#1.1.0)
   - 5 min delay for stocks when market is open, until next open when market is closed
-  - 1 min for crypto because it's 24/7
+  - 1 min for crypto because it's 24/7 - done as of [1.1.0](#1.1.0)
 - Add little pictures of the stocks/coins,probably upload at first but will host eventually - coins done as of [1.0.5](#1.0.5)
 - idk can add like coin flips and d20 rolls or whatever
 - presence updates
-- API rate limiting, for outbound messages too (discord allows 120/min)
+
 - private messages dont work
 - weather info might be cool to add
 - encapsulate async stuff in promises or whatever just do it properly
@@ -35,6 +35,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ### Implemented Changes
 
+- API rate limiting, for outbound messages too (discord allows 120/min) - this is done from [1.0.0](#1.0.0) as the commands are queued to run one every half second to match discord's rates.
 - deploy to heroku for 24/7 madness - done as of [1.0.5](#1.0.5)
 - error handling sucks so the bot dies if the data is bad and spews a bunch of stuff to the terminal - fixed (for now) as of [1.0.3](#1.0.3)
 - code is all inline, need to refactor into modules - finance done as of [1.0.3](#1.0.3)
@@ -53,6 +54,14 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 - ~make the whole thing event driven (where appropriate)~ - it already is durr
 
 # Changelog
+
+## [1.1.0] - date
+
+### Added
+
+- Added Database class and sample implementation of SQLite in-memory , as well as cache checking on CryptocurrencyCommand.
+
+### Changed
 
 ## [1.0.6] - 2022-03-10
 
@@ -127,6 +136,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 - minimum viable product
 
+[1.1.0]: ./
 [1.0.6]: ./
 [1.0.5]: ./
 [1.0.4]: ./
