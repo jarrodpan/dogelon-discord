@@ -32,4 +32,6 @@ export default class SQLiteDatabase extends Database {
 		}
 	}
 	
+	constructor() { super(); }
+	
 }
