@@ -59,9 +59,14 @@ export default class Commands {
 			//console.log("MATCHon", key, val.join("|"));
 			newMatch.set(key, new RegExp(val.join("|"), "gm"));
 		});
-
+		// save compiled regexes
 		Commands.matchOn = newMatch;
-		// compile regexes
+		
+		// clear db expired data every 5 mins
+		setInterval(() => {
+			Commands.db?.clean();
+		}, 360);
+		
 		return;
 	});
 

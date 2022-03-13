@@ -22,5 +22,7 @@ export default abstract class Database {
 	 */
 	public abstract set(key: string, val: any, cache?: number): number | false;
 	
+	public abstract clean(): number | false;
+	
 	public static unixTime() { return Math.ceil(Date.now() / 1000); }
 }

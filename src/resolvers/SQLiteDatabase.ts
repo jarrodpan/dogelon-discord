@@ -46,6 +46,10 @@ export default class SQLiteDatabase extends Database {
 		return false;
 	}
 	
+	public clean(): number {
+		return (this.db.prepare('DELETE FROM dogelon WHERE cacheUntil < ?').run(Database.unixTime())).changes;
+	}
+	
 	public constructor() { super(); }
 	
 }
