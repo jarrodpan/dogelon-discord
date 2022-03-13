@@ -12,9 +12,9 @@
   "scripts": {
     "build": "tsc -b",
     "build-w": "tsc -b -v -w",
-    "postinstall": "npm run build",
     "start": "node ./bin/app.js",
-    "test": "nodemon ./bin/app.js",
+    "devstart": "nodemon ./bin/app.js",
+    "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   },
   "author": "Jarrod Pan",
