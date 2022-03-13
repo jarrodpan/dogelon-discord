@@ -16,7 +16,8 @@ export default class SQLiteDatabase extends Database {
 		const stmt = this.db.prepare("SELECT jsonData, cacheUntil FROM dogelon WHERE key = ?");
 		try {
 			const res = stmt.get(key);
-			//console.log(res);
+			//console.log("db response:", res);
+			if (!res) return false;
 			if (res.cacheUntil < Database.unixTime()) {
 				//console.log("cache expired");
 				this.db.prepare('DELETE FROM dogelon WHERE key = ?').run(key);
@@ -29,8 +30,11 @@ export default class SQLiteDatabase extends Database {
 		return false;
 	}
 	
-	public set(key: string, val: any, cache?: number) {
-		if (!cache) cache = Database.unixTime() + 60; // cache for 1 min by default
+	public set(key: string, val: any, setCache?: number) {
+		let cache : number;
+		if (!setCache) {
+			cache = Database.unixTime() + 60; // cache for 1 min by default
+		} else { cache = setCache;}
 		const stmt = this.db.prepare("INSERT OR REPLACE INTO dogelon (key, jsonData, cacheUntil) VALUES (?, ?, ?)");
 		try {
 			const info = stmt.run(key, JSON.stringify(val), cache);

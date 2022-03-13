@@ -1,13 +1,17 @@
 import axios from 'axios';
 import { MessageEmbed } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
+import Database from '../types/Database';
 
 /**
  * a command to turn r/ and /r/ references and reply with the link (as discord doesnt do it automatically for some reason)
  * 
  * Example of token matching.
  */
-export default class FinanceCommand implements Command {
+export default class FinanceCommand extends Command {
+	private db: Database | undefined;
+	public constructor(db?: Database | undefined) { super(); if (db) this.db = db; }
+	
 	public expression = `(?:\\$\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
 	public execute = (input: any) => {
