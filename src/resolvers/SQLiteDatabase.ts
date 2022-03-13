@@ -8,13 +8,17 @@ export default class SQLiteDatabase extends Database {
 		this.db = new SQLiteDb(':memory:');
 		
 		// create table
-		this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(key TEXT, jsonData TEXT, cacheUntil INTEGER)').run();
+		this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData TEXT, cacheUntil INTEGER)').run();
 	}
 	get(key: string) {
-		const time = Database.unixTime();//Math.ceil(Date.now() / 1000);
-		const stmt = this.db.prepare("SELECT json_object(jsonData) FROM dogelon WHERE key = ? AND cacheUntil > ?");
+		const stmt = this.db.prepare("SELECT jsonData, cacheUntil FROM dogelon WHERE key = ?");
 		try {
-			return stmt.get(key, time) || false;
+			const res = stmt.get(key);
+			if (res.cacheUntil > Database.unixTime()) {
+				this.db.prepare('DELETE FROM dogelon WHERE key = ?').run(key);
+				return false;
+			}
+			return JSON.parse(res.jsonData);
 		} catch (e) {
 			console.error(e);
 			return false;
