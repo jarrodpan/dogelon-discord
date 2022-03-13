@@ -21,7 +21,7 @@ export default class SQLiteDatabase extends Database {
 		}
 	}
 	set(key: string, val: any, cache?: number) {
-		if (!cache) cache = Database.unixTime();
+		if (!cache) cache = Database.unixTime() + 60; // cache for 1 min by default
 		const stmt = this.db.prepare("INSERT OR REPLACE INTO dogelon (key, jsonData, cacheUntil) VALUES (?, ?, ?)");
 		try {
 			const info = stmt.run(key, JSON.stringify(val), cache);
