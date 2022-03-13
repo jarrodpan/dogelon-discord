@@ -1,17 +1,21 @@
 import { MessageEmbed } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
-let pkg = require("./../../package.json")
+import Database from '../types/Database';
+const pkg = require("./../../package.json");
 /**
  * shows command list
  */
-export default class HelpCommand implements Command {
+export default class HelpCommand extends Command {
+	private db: Database | undefined;
+	public constructor(db?: Database | undefined) { super(); if (db) this.db = db; }
+	
 	public expression = "(!h(elp)?)";
 	public matchOn = MatchOn.MESSAGE;
 	public execute = (input: any) => {
 		const v = `v${pkg.version}`;
 		const a = "author info here";
 
-		let embed = new MessageEmbed()
+		const embed = new MessageEmbed()
 			.setColor("#9B59B6")
 			.setTitle(`🚀  Dogelon`)
 			.setThumbnail("https://i.imgur.com/2vHF2jl.jpg")

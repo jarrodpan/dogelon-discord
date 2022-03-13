@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { MessageEmbed, UserContextMenuInteraction } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
+import Database from '../types/Database';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const coins = require("./../types/coingeckocoins.json");
 
@@ -17,7 +18,10 @@ type Coin = {
 	name: string
 }
 
-export default class CryptocurrencyCommand implements Command {
+export default class CryptocurrencyCommand extends Command {
+	private db: Database | undefined;
+	public constructor(db?: Database | undefined) { super(); if (db) this.db = db; }
+	
 	public expression = `(?:\\%\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
 	public execute = (input: any) => {
@@ -37,9 +41,22 @@ export default class CryptocurrencyCommand implements Command {
 			let response;
 			let data;
 			let error = false;
+			const cacheName = "crypto-" + coin.id.toUpperCase();
 
 			try {
-				response = await axios.get("https://api.coingecko.com/api/v3/coins/" + coin.id + "?tickers=false&market_data=true&community_data=false&developer_data=false");
+				if (this.db) {
+					response = this.db.get(cacheName);
+					console.log("cache hit:", response);
+				}
+
+				if (response == false) {
+					console.log("fetching new result...");
+					response = await axios.get("https://api.coingecko.com/api/v3/coins/" + coin.id + "?tickers=false&market_data=true&community_data=false&developer_data=false");
+					console.log("new data:",response);
+					response.request = undefined;
+					if (this.db) this.db.set(cacheName, response);
+					console.log("cache updated");
+				}
 				//console.log(response);
 				//console.log(response);
 				data = response.data;

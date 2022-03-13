@@ -1,11 +1,14 @@
 import { Command, MatchOn } from "../types/Command";
 import * as fs from 'fs';
+import Database from "../types/Database";
+import SQLiteDatabase from "../resolvers/SQLiteDatabase";
 export default class Commands {
 
 	/**
 	 * all the command classes
 	 */
 	static commandMap: Map<any, any>;
+	static db: Database | undefined;
 
 	static matchOn: Map<MatchOn, any> = new Map([
 		[MatchOn.MESSAGE, []],
@@ -16,7 +19,11 @@ export default class Commands {
 	 * runs directly after declaration
 	 */
 	private static _initialize = Promise.resolve().then(async () => {
-
+		
+		// initialise database
+		Commands.db = new SQLiteDatabase();
+		Commands.db.connect();
+		
 		// load commands from file
 		const commandList: Map<any, any> = new Map();
 		await fs.readdirSync('./src/commands/').forEach(async (command: string) => {
@@ -27,7 +34,7 @@ export default class Commands {
 			) return;
 
 			// import code
-			const commandClass: Command = new (await import(`./${commandName}`)).default();
+			const commandClass: Command = new (await import(`./${commandName}`)).default(Commands.db);
 			console.debug("new command:", commandClass);
 			//console.debug("match string:", commandClass.expression);
 
@@ -52,9 +59,14 @@ export default class Commands {
 			//console.log("MATCHon", key, val.join("|"));
 			newMatch.set(key, new RegExp(val.join("|"), "gm"));
 		});
-
+		// save compiled regexes
 		Commands.matchOn = newMatch;
-		// compile regexes
+		
+		// clear db expired data every 5 mins
+		setInterval(() => {
+			Commands.db?.clean();
+		}, 360);
+		
 		return;
 	});
 
