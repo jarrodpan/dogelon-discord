@@ -19,35 +19,6 @@ const queue: Action[] = [];
 // TODO: refactor this
 client.once('ready', () => {
 	
-	setInterval(async () => {
-		// skip if empty queue
-		if (queue.length == 0) return;
-
-		// get next item from queue - definitely defined as we check above
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const action: Action = queue.shift()!;
-		//console.log(message);
-		//let output;
-		Promise.resolve().then(async () => {
-			const output = await action.callback(action.token);
-			// send message to channel
-			return output;
-
-		}).then((output) => {
-			console.log("sending to discord...", output);
-			if (output == null) throw new Error("output is undefined");
-
-			action.message.reply(output);
-			return;
-		}).catch((e) => {
-			console.error(e);
-		});
-
-
-		return;
-
-	}, 500); // 500ms is the rate limit of discord's bot API
-	
 	console.debug(Commands.matchOn);
 	console.log('Ready!');
 	//console.debug(Commands);
@@ -120,3 +91,33 @@ client.on('messageCreate', (message: any): void => {
 
 });
 
+setInterval(async () => {
+	// skip if empty queue
+	if (queue.length == 0) return;
+
+	// get next item from queue - definitely defined as we check above
+	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+	const action: Action = queue.shift()!;
+	//console.log(message);
+	//let output;
+	Promise.resolve().then(async () => {
+		const output = await action.callback(action.token);
+		// send message to channel
+		return output;
+
+	}).then((output) => {
+		console.log("sending to discord...", output);
+		if (output == null) throw new Error("output is undefined");
+		
+		console.log(action.message);
+		
+		action.message.reply(output);
+		return;
+	}).catch((e) => {
+		console.error(e);
+	});
+
+
+	return;
+
+}, 500); // 500ms is the rate limit of discord's bot API
