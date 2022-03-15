@@ -55,13 +55,17 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
+## [1.2.0] - date
+
+### Added
+
+- Added `!binance` command to show the latest 5 news articles on binance listings (feature request)
+
 ## [1.1.0] - date
 
 ### Added
 
 - Added Database class and sample implementation of SQLite in-memory , as well as cache checking on CryptocurrencyCommand.
-
-### Changed
 
 ## [1.0.6] - 2022-03-10
 
@@ -136,6 +140,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 - minimum viable product
 
+[1.2.0]: ./
 [1.1.0]: ./
 [1.0.6]: ./
 [1.0.5]: ./
