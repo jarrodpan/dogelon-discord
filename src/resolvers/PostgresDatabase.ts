@@ -1,5 +1,6 @@
 import Database from "../types/Database";
 import { Pool, Client } from 'pg';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
 export default class SQLiteDatabase extends Database {
@@ -47,10 +48,7 @@ export default class SQLiteDatabase extends Database {
 	}
 	
 	public set(key: string, val: any, setCache?: number) {
-		let cache : number;
-		if (!setCache) {
-			cache = Database.unixTime() + 60; // cache for 1 min by default
-		} else { cache = setCache;}
+		const cache = Database.unixTime() + (setCache ?? 60);
 		const stmt = this.db.prepare("INSERT OR REPLACE INTO dogelon (key, jsonData, cacheUntil) VALUES (?, ?, ?)");
 		try {
 			const info = stmt.run(key, JSON.stringify(val), cache);
