@@ -7,7 +7,7 @@ export default class SubscribeCommand extends Command {
 	private db: Database;
 	public constructor(db: Database) { super(); this.db = db; }
 	
-	private intervalList = [];
+	private intervalList = new Map<string, NodeJS.Timer>();
 	
 	public expression = `(!s(ubscribe)? \\S*)`;
 	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
@@ -18,6 +18,11 @@ export default class SubscribeCommand extends Command {
 		
 		const args = input.split(" ");
 		let feature;
+		
+		// TODO: add unsubscribe function
+		// TODO: check for existing subscriptions
+		// TODO: check for no subscriptions and remove interval if so
+		// TODO: set expiry time in database
 		
 		try {
 			// validation
@@ -32,6 +37,7 @@ export default class SubscribeCommand extends Command {
 			return null;
 		}
 		
+		// TODO: pseudocode
 		/** TODO: here
 		 * - get object from db: subscriber list with last check time
 		 * - if channel not in list, subscribe them
@@ -70,16 +76,40 @@ export default class SubscribeCommand extends Command {
 					
 				}
 				else {
-					subscribers.channels.push(message.channelId);
+					if (!subscribers.channels.filter(message.channelId)) subscribers.channels.push(message.channelId);
 				}
 				this.db.set(cacheName, subscribers);
 				
+				embed = new MessageEmbed()
+					.setColor("#9B59B6")
+					.setTitle("🚀  Dogelon Subscriber")
+					.setThumbnail("https://i.imgur.com/2vHF2jl.jpg")
+					.setDescription('Subscribed <#'+message.channelId+'> to feature `'+feature+'`')
+					.setTimestamp()
+					.setFooter({ text: "Dogelon  •  Subscription Service" })
+					;
 				
-				const response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
+				// TODO: set polling interval and push changes
+				if (!this.intervalList.has(cacheName)) {
+					//
+					const poller = setInterval(() => {
+						//
+					}, 3600000); // poll once per hour
+					
+					this.intervalList.set(cacheName, poller);
+				}
+				
+				
+				
+				
+				
+				return { embeds: [embed] };
+				
+				//const response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
 				
 				//console.log(response);
 				//console.log(response);
-				data = response.data.data.catalogs[0];
+				//data = response.data.data.catalogs[0];
 			} catch (e) {
 				//if (typeof response.data != undefined) data = {};
 				//if (typeof response.data.quoteSummary != undefined) data = response.data.quoteSummary;
@@ -88,7 +118,7 @@ export default class SubscribeCommand extends Command {
 				//data = (response.data.quoteSummary ?? response.data.finance ?? {});
 				data = undefined;
 				error = true;
-				console.error("binance error");
+				console.error("subscribe error");
 			}
 			return null;
 			
