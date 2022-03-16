@@ -29,7 +29,7 @@ client.once('ready', () => {
 		//console.log(message);
 		//let output;
 		Promise.resolve().then(async () => {
-			const output = await action.callback(action.token);
+			const output = await action.callback(action.message, action.token);
 			// send message to channel
 			return output;
 

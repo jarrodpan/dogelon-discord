@@ -1,3 +1,4 @@
+import { Message } from "discord.js";
 import Action from "./Action";
 
 export enum MatchOn {
@@ -17,5 +18,5 @@ export enum MatchOn {
 export abstract class Command {
 	public readonly expression!: string;
 	public readonly matchOn!: MatchOn;
-	public readonly execute!: (input: any) => Promise<any> | any;
+	public readonly execute!: (message: Message, input: any) => Promise<any> | any;
 }

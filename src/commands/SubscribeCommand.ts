@@ -3,13 +3,33 @@ import { Message, MessageEmbed } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
 import Database from '../types/Database';
 
-export default class BinanceNewCommand extends Command {
+export default class SubscribeCommand extends Command {
 	private db: Database | undefined;
 	public constructor(db?: Database | undefined) { super(); if (db) this.db = db; }
 	
-	public expression = `(!b(inance)?)`;
-	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
+	public expression = `(!s(ubscribe)? \\S*)`;
+	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
 	public execute = (message: Message, input: any) => {
+		
+		const validArgs = ['binance-new'];
+		
+		
+		const args = input.split(" ");
+		let feature;
+		
+		try {
+			// validation
+			if (args.length != 2) throw new Error("Subscribe: argument count invalid (expect 2):" + args.length);
+			feature = args[1];
+			
+			if (!validArgs.includes(feature)) throw new Error("Subscribe: argument is not valid: " + feature);
+			
+		} catch (e) {
+			console.error(e);
+			return null;
+		}
+		
+		
 		let embed;
 
 		// coin exists
@@ -17,7 +37,7 @@ export default class BinanceNewCommand extends Command {
 			let response;
 			let data;
 			let error = false;
-			const cacheName = "binance-new";
+			const cacheName = "subscribe-binance-new";
 
 			try {
 				if (this.db) {
@@ -105,10 +125,10 @@ export default class BinanceNewCommand extends Command {
 		}).catch((_) => {
 			console.error(_);
 			embed = null;
-			return null;
+			
 		});
 
-
+		return null;
 
 	}
 }

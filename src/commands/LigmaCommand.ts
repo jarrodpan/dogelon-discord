@@ -1,3 +1,4 @@
+import { Message } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
 import Database from '../types/Database';
 
@@ -10,7 +11,7 @@ export default class LigmaCommand extends Command {
 	public expression = "what(?:'{0,1}| | i)s ligma\\?*"; //"what's ligma";
 	public matchOn = MatchOn.MESSAGE;
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public execute = (_: unknown) => {
+	public execute = (message: Message, _: unknown) => {
 		return "ligma balls";
 	}
 }

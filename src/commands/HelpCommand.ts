@@ -1,4 +1,4 @@
-import { MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
 import Database from '../types/Database';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -13,7 +13,7 @@ export default class HelpCommand extends Command {
 	public expression = "(!h(elp)?)";
 	public matchOn = MatchOn.MESSAGE;
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public execute = (_: unknown) => {
+	public execute = (message: Message, _: unknown) => {
 		const v = `v${pkg.version}`;
 		const a = "author info here";
 
