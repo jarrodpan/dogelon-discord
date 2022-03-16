@@ -13,7 +13,10 @@ export default class SubscribeCommand extends Command {
 	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
 	public execute = (message: Message, input: any) => {
 		
-		const validFeatures = ['binance-new'];
+		// TODO: might want to refactor into modules if more subs required
+		const validFeatures = [
+			'binance-new',
+		];
 		
 		
 		const args = input.split(" ");
@@ -22,7 +25,6 @@ export default class SubscribeCommand extends Command {
 		// TODO: add unsubscribe function
 		// TODO: check for existing subscriptions
 		// TODO: check for no subscriptions and remove interval if so
-		// TODO: set expiry time in database
 		
 		try {
 			// validation
@@ -78,7 +80,7 @@ export default class SubscribeCommand extends Command {
 				else {
 					if (!subscribers.channels.filter(message.channelId)) subscribers.channels.push(message.channelId);
 				}
-				this.db.set(cacheName, subscribers);
+				this.db.set(cacheName, subscribers, Database.NEVER_EXPIRE);
 				
 				embed = new MessageEmbed()
 					.setColor("#9B59B6")

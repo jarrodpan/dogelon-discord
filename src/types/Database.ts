@@ -25,4 +25,6 @@ export default abstract class Database {
 	public abstract clean(): number | false;
 	
 	public static unixTime() { return Math.ceil(Date.now() / 1000); }
+	public static readonly NEVER_EXPIRE = 10000000000000;
+	public static readonly EXPIRE = -10000;
 }
