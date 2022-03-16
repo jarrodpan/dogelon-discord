@@ -4,8 +4,10 @@ import { Command, MatchOn } from '../types/Command'
 import Database from '../types/Database';
 
 export default class SubscribeCommand extends Command {
-	private db: Database | undefined;
-	public constructor(db?: Database | undefined) { super(); if (db) this.db = db; }
+	private db: Database;
+	public constructor(db: Database) { super(); this.db = db; }
+	
+	private intervalList = [];
 	
 	public expression = `(!s(ubscribe)? \\S*)`;
 	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
@@ -19,6 +21,7 @@ export default class SubscribeCommand extends Command {
 		
 		try {
 			// validation
+			if (!this.db) throw new Error("Subscribe: database not defined");
 			if (args.length != 2) throw new Error("Subscribe: argument count invalid (expect 2):" + args.length);
 			feature = args[1];
 			
@@ -29,30 +32,51 @@ export default class SubscribeCommand extends Command {
 			return null;
 		}
 		
+		/** TODO: here
+		 * - get object from db: subscriber list with last check time
+		 * - if channel not in list, subscribe them
+		 * 
+		 * - if not set, set interval to check for changes
+		 * - if change is found, send update to subscriber list
+		 * - reset interval
+		 * 
+		 * 
+		 */
+		
+		
 		
 		let embed;
 
 		// coin exists
 		return Promise.resolve().then(async () => {
-			let response;
+			let subscribers;
 			let data;
 			let error = false;
-			const cacheName = "subscribe-binance-new";
+			const cacheName = "subscribe-"+feature;
+			
 
 			try {
-				if (this.db) {
-					response = this.db.get(cacheName);
-					console.log("cache hit:", response);
-				}
+				subscribers = this.db.get(cacheName);
+				//console.log("cache hit:", subscribers);
 
-				if (response == false) {
-					console.log("fetching new result...");
-					response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
-					console.log("new data:",response);
-					response.request = undefined;
-					if (this.db) this.db.set(cacheName, response, 600);
-					console.log("cache updated");
+				if (!subscribers) {
+					// new subscriber object 
+					subscribers = {
+						lastUpdate: Database.unixTime(),
+						channels: [
+							message.channelId
+						]
+					}
+					
 				}
+				else {
+					subscribers.channels.push(message.channelId);
+				}
+				this.db.set(cacheName, subscribers);
+				
+				
+				const response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
+				
 				//console.log(response);
 				//console.log(response);
 				data = response.data.data.catalogs[0];
@@ -66,9 +90,25 @@ export default class SubscribeCommand extends Command {
 				error = true;
 				console.error("binance error");
 			}
-			return [response, data, error];
+			return null;
+			
+			
+			
+			
+		}).catch((_) => {
+			console.error(_);
+			embed = null;
+			
+		});
+
+		return null;
+
+	}
+}
+
+
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		}).then(([response, data, error]) => {
+		/*}).then(([response, data, error]) => {
 			//console.log(data.error);
 			if (!error) {
 				console.log("setting up response");
@@ -108,11 +148,7 @@ export default class SubscribeCommand extends Command {
 			} else {
 				//embed = null;
 				// error case
-				/*embed
-					.setColor("RED")
-					.setTitle(data.error.code)
-					.setDescription(data.error.description)
-					;*/
+
 				console.error("Binance: response error");
 				return null;
 			}
@@ -121,14 +157,5 @@ export default class SubscribeCommand extends Command {
 			//if (typeof embed != null || typeof embed !== undefined) {
 			return { embeds: [embed] };
 			//}
-
-		}).catch((_) => {
-			console.error(_);
-			embed = null;
+			*/
 			
-		});
-
-		return null;
-
-	}
-}
