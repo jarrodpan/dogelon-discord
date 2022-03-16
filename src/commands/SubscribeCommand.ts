@@ -13,7 +13,7 @@ export default class SubscribeCommand extends Command {
 	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
 	public execute = (message: Message, input: any) => {
 		
-		const validArgs = ['binance-new'];
+		const validFeatures = ['binance-new'];
 		
 		
 		const args = input.split(" ");
@@ -25,7 +25,7 @@ export default class SubscribeCommand extends Command {
 			if (args.length != 2) throw new Error("Subscribe: argument count invalid (expect 2):" + args.length);
 			feature = args[1];
 			
-			if (!validArgs.includes(feature)) throw new Error("Subscribe: argument is not valid: " + feature);
+			if (!validFeatures.includes(feature)) throw new Error("Subscribe: argument is not valid: " + feature);
 			
 		} catch (e) {
 			console.error(e);
