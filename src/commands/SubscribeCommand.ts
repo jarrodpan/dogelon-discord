@@ -1,8 +1,14 @@
 import axios from 'axios';
-import { Message, MessageEmbed } from 'discord.js';
+import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
 import Database from '../types/Database';
+import { client, queue } from '../app';
+import Action from '../types/Action';
 
+export interface Subscribers {
+	lastUpdate: number,
+	channels: string[]
+}
 export default class SubscribeCommand extends Command {
 	private db: Database;
 	public constructor(db: Database) { super(); this.db = db; }
@@ -11,7 +17,9 @@ export default class SubscribeCommand extends Command {
 	
 	public expression = `(!s(ubscribe)? \\S*)`;
 	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
-	public execute = (message: Message, input: any) => {
+	public execute = (messageInput: Message | TextChannel, input: any) => {
+		
+		const message = messageInput as Message;
 		
 		// TODO: might want to refactor into modules if more subs required
 		const validFeatures = [
@@ -57,17 +65,18 @@ export default class SubscribeCommand extends Command {
 
 		// coin exists
 		return Promise.resolve().then(async () => {
-			let subscribers;
+			let subscribers : Subscribers;
 			let data;
 			let error = false;
 			const cacheName = "subscribe-"+feature;
 			
 
 			try {
-				subscribers = this.db.get(cacheName);
+				const subscriberLookup = this.db.get(cacheName);
+				
 				//console.log("cache hit:", subscribers);
 
-				if (!subscribers) {
+				if (!subscriberLookup) {
 					// new subscriber object 
 					subscribers = {
 						lastUpdate: Database.unixTime(),
@@ -78,7 +87,8 @@ export default class SubscribeCommand extends Command {
 					
 				}
 				else {
-					if (!subscribers.channels.filter(message.channelId)) subscribers.channels.push(message.channelId);
+					subscribers = subscriberLookup as Subscribers;
+					if (!subscribers.channels.filter( x => x == message.channelId )) subscribers.channels.push(message.channelId);
 				}
 				this.db.set(cacheName, subscribers, Database.NEVER_EXPIRE);
 				
@@ -91,11 +101,49 @@ export default class SubscribeCommand extends Command {
 					.setFooter({ text: "Dogelon  •  Subscription Service" })
 					;
 				
-				// TODO: set polling interval and push changes
+				// set polling interval if not already scheduled
 				if (!this.intervalList.has(cacheName)) {
 					//
-					const poller = setInterval(() => {
-						//
+					const poller = setInterval(async () => {
+						// binance-new
+						// TODO: generalise
+						
+						const response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
+						const data = response.data.data.catalogs[0];
+						
+						const subscribers = this.db.get(cacheName) as Subscribers;
+						
+						if (subscribers.channels.length == 0) {
+							// remove empty list from DB and stop polling
+							this.db.set(cacheName, {}, Database.EXPIRE);
+							this.intervalList.delete(cacheName);
+							return;
+						}
+						
+						data.articles.forEach((article) => {
+							if (article.releaseDate > subscribers.lastUpdate) return;
+						
+							subscribers.channels.forEach((subscriberId) => {
+								queue.push(new Action(client.channels.fetch(subscriberId) as TextChannel, "", (msg, input) => {
+									return Promise.resolve().then(() => {
+										
+										const title = "";
+										const link = "";
+										
+										const embed = new MessageEmbed()
+											.setColor("#9B59B6")
+											.setTitle("🚀  Dogelon Subscriber")
+											.setThumbnail(data.icon || "https://i.imgur.com/2vHF2jl.jpg")
+											.setDescription('Subscribed <#'+message.channelId+'> to feature `'+feature+'`')
+											.setTimestamp()
+											.setFooter({ text: "Dogelon  •  Subscription Service" })
+											;
+										return { embeds: embed};
+									});
+								}));
+							});
+						});
+						
 					}, 3600000); // poll once per hour
 					
 					this.intervalList.set(cacheName, poller);
@@ -113,11 +161,6 @@ export default class SubscribeCommand extends Command {
 				//console.log(response);
 				//data = response.data.data.catalogs[0];
 			} catch (e) {
-				//if (typeof response.data != undefined) data = {};
-				//if (typeof response.data.quoteSummary != undefined) data = response.data.quoteSummary;
-				//else if (typeof response.data.finance != undefined) data = response.data.finance;
-
-				//data = (response.data.quoteSummary ?? response.data.finance ?? {});
 				data = undefined;
 				error = true;
 				console.error("subscribe error");

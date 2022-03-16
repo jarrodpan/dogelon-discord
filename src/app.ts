@@ -2,6 +2,7 @@
 import Action from "./types/Action";
 import Commands from './commands';
 import { MatchOn } from "./types/Command";
+import { Message, TextChannel } from "discord.js";
 
 // following need to be 'require' to work
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -10,10 +11,10 @@ const { Client, Intents } = require('discord.js');
 require('dotenv').config();
 
 // set up discord client api
-const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
+export const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.DIRECT_MESSAGES] });
 
 // TODO: make this better
-const queue: Action[] = [];
+export const queue: Action[] = [];
 
 // initialise
 // TODO: refactor this
@@ -36,8 +37,10 @@ client.once('ready', () => {
 		}).then((output) => {
 			console.log("sending to discord...", output);
 			if (output == null) throw new Error("output is undefined");
-
-			action.message.reply(output);
+			
+			if (action.message instanceof Message) (action.message as Message).reply(output);
+			if (action.message instanceof TextChannel) (action.message as TextChannel).send(output);
+			
 			return;
 		}).catch((e) => {
 			console.error(e);

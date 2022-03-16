@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Message, MessageEmbed, UserContextMenuInteraction } from 'discord.js';
+import { Message, MessageEmbed, TextChannel, UserContextMenuInteraction } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
 import Database from '../types/Database';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -24,7 +24,7 @@ export default class CryptocurrencyCommand extends Command {
 	
 	public expression = `(?:\\%\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (message: Message, input: any) => {
+	public execute = (message: Message | TextChannel, input: any) => {
 		const ticker = input.slice(1);
 
 
