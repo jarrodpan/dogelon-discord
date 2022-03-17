@@ -2,11 +2,15 @@ import express from 'express';
 
 const app = express();
 const port = 3000;
+let flip = 1;
 
 app.get('/', (req, res) => {
 	
-	const time = Math.ceil((new Date()).getTime());
 	
+	const time = Math.ceil((new Date()).getTime());
+	flip = -flip;
+	const release = (time + flip * 10000);
+	console.log("request received "+time.toString()+" "+release.toString());
 	res.send(
 		
 		{
@@ -27,9 +31,9 @@ app.get('/', (req, res) => {
 							{
             "id": 84989,
             "code": "2955fe7b406a43f3bdc4cdd0b226734f",
-            "title": "Sample Response "+time.toString(),
+            "title": "Sample Response "+time.toString()+ " flip="+flip.toString(),
             "type": 1,
-            "releaseDate": (time - 100)
+            "releaseDate": release
           },
 						]
 					}]

@@ -79,7 +79,7 @@ export default class SubscribeCommand extends Command {
 				if (!subscriberLookup) {
 					// new subscriber object 
 					subscribers = {
-						lastUpdate: Database.unixTime(),
+						lastUpdate: (new Date()).getTime(),
 						channels: [
 							message.channelId
 						]
@@ -108,8 +108,10 @@ export default class SubscribeCommand extends Command {
 						// binance-new
 						// TODO: generalise
 						
-						const response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
+						//const response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
+						const response = await axios.get("http://localhost:3000");
 						const data = response.data.data.catalogs[0];
+						console.log("Subscriber: polling for changes on " + cacheName);
 						
 						const subscribers = this.db.get(cacheName) as Subscribers;
 						
@@ -122,7 +124,8 @@ export default class SubscribeCommand extends Command {
 						}
 						
 						data.articles.forEach((article) => {
-							if (article.releaseDate > subscribers.lastUpdate) return;
+							console.log(article.releaseDate, subscribers.lastUpdate, (article.releaseDate > subscribers.lastUpdate));
+							if (article.releaseDate < subscribers.lastUpdate) return;
 							
 							const date = new Date(article.releaseDate);
 							const year = date.getFullYear();
@@ -135,8 +138,8 @@ export default class SubscribeCommand extends Command {
 							const link = article.code;
 						
 							subscribers.channels.forEach((subscriberId) => {
-								queue.push(new Action(client.channels.fetch(subscriberId) as TextChannel, "", (msg, input) => {
-									return Promise.resolve().then(() => {
+								queue.push(new Action(client.channels.cache.get(subscriberId) as TextChannel, "", (msg, input) => {
+									
 										
 										const embed = new MessageEmbed()
 											.setColor("#9B59B6")
@@ -146,17 +149,18 @@ export default class SubscribeCommand extends Command {
 											.setTimestamp()
 											.setFooter({ text: "Dogelon  •  Subscription Service" })
 											;
-										return { embeds: embed};
-									});
+										return { embeds: [embed] };
+									
 								}));
 							});
 						});
 						
 						// change last updated time
-						subscribers.lastUpdate = Database.unixTime();
+						subscribers.lastUpdate = (new Date()).getTime();
 						this.db.set(cacheName, subscribers, Database.NEVER_EXPIRE);
 						
-					}, 3600000); // poll once per hour
+					//}, 3600000); // poll once per hour
+					}, 2000); // poll once per second
 					
 					this.intervalList.set(cacheName, poller);
 					
