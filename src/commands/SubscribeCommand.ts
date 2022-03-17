@@ -133,7 +133,7 @@ export default class SubscribeCommand extends Command {
 										
 										const embed = new MessageEmbed()
 											.setColor("#9B59B6")
-											.setTitle("🚀  Dogelon Subscriber")
+											.setTitle("🚀  New Binance Cryptocurrency Listing News")
 											.setThumbnail(data.icon || "https://i.imgur.com/2vHF2jl.jpg")
 											.setDescription(`[${title}](${link})`)
 											.setTimestamp()
