@@ -13,7 +13,7 @@ describe('sqlite wrapper class', () => {
 	});
 	
 	test('insert 5 min cache value', () => {
-		expect(db.set(key,val,SQLiteDatabase.unixTime()+360)).toBe(1);
+		expect(db.set(key,val,+360)).toBe(1);
 	});
 	
 	
@@ -23,7 +23,7 @@ describe('sqlite wrapper class', () => {
 	
 	
 	test('replace with expired cache value', () => {
-		expect(db.set(key,val,SQLiteDatabase.unixTime()-360)).toBe(1);
+		expect(db.set(key,val,-360)).toBe(1);
 	});
 	
 	

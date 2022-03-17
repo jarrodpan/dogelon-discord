@@ -1,21 +1,7 @@
 import axios from 'axios';
-import { MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
 import Database from '../types/Database';
-
-
-/**
- * Searches coin prices from coingecko.com
- * 
- * https://www.coingecko.com/en/api/documentation
- * 
- * Coin list sourced from https://api.coingecko.com/api/v3/coins/list
- */
-type Coin = {
-	id: string,
-	symbol: string,
-	name: string
-}
 
 export default class BinanceNewCommand extends Command {
 	private db: Database | undefined;
@@ -23,7 +9,7 @@ export default class BinanceNewCommand extends Command {
 	
 	public expression = `(!b(inance)?)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (input: any) => {
+	public execute = (message: Message | TextChannel, input: any) => {
 		let embed;
 
 		// coin exists
@@ -79,7 +65,6 @@ export default class BinanceNewCommand extends Command {
 					.setFooter({ text: footer })
 					;
 				
-				const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 				
 				result.forEach((article) => {
 					const date = new Date(article.releaseDate);

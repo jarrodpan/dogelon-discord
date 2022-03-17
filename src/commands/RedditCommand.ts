@@ -1,3 +1,4 @@
+import { Message, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
 
 /**
@@ -8,7 +9,7 @@ import { Command, MatchOn } from '../types/Command'
 export default class RedditCommand extends Command {
 	public expression = `(?:r\\/|\\/r\\/)\\S*`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (input: any) => {
+	public execute = (message: Message | TextChannel, input: any) => {
 		return "https://www.reddit.com" + (input.slice(0, 1) == "/" ? "" : "/") + input;
 	}
 }
