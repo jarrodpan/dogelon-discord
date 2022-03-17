@@ -108,8 +108,8 @@ export default class SubscribeCommand extends Command {
 						// binance-new
 						// TODO: generalise
 						
-						//const response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
-						const response = await axios.get("http://localhost:3000");
+						const response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
+						//const response = await axios.get("http://localhost:3000");
 						const data = response.data.data.catalogs[0];
 						console.log("Subscriber: polling for changes on " + cacheName);
 						
@@ -158,9 +158,9 @@ export default class SubscribeCommand extends Command {
 						// change last updated time
 						subscribers.lastUpdate = (new Date()).getTime();
 						this.db.set(cacheName, subscribers, Database.NEVER_EXPIRE);
-						
-					//}, 3600000); // poll once per hour
-					}, 2000); // poll once per second
+					// TODO: proper test configuration logic	
+					}, 3600000); // poll once per hour
+					//}, 2000); // poll once per second
 					
 					this.intervalList.set(cacheName, poller);
 					
