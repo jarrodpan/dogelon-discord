@@ -152,9 +152,14 @@ export default class SubscribeCommand extends Command {
 							});
 						});
 						
+						// change last updated time
+						subscribers.lastUpdate = Database.unixTime();
+						this.db.set(cacheName, subscribers, Database.NEVER_EXPIRE);
+						
 					}, 3600000); // poll once per hour
 					
 					this.intervalList.set(cacheName, poller);
+					
 				}
 				
 				
