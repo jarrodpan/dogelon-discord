@@ -5,3 +5,5 @@
 /bin/**
 /samples
 /samples/**
+/src/server/node_modules
+/src/server/server.js
