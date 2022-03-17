@@ -107,11 +107,18 @@ export default class SubscribeCommand extends Command {
 					const poller = setInterval(async () => {
 						// binance-new
 						// TODO: generalise
-						
-						const response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
-						//const response = await axios.get("http://localhost:3000");
-						const data = response.data.data.catalogs[0];
-						console.log("Subscriber: polling for changes on " + cacheName);
+						let data;
+						try {
+							const response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
+							//const response = await axios.get("http://localhost:3000");
+							data = response.data.data.catalogs[0];
+						} catch (e)
+						{
+							console.error(e)
+							return null;
+						}
+							
+							console.log("Subscriber: polling for changes on " + cacheName);
 						
 						const subscribers = this.db.get(cacheName) as Subscribers;
 						
