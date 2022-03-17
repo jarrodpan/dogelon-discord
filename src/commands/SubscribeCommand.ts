@@ -123,19 +123,26 @@ export default class SubscribeCommand extends Command {
 						
 						data.articles.forEach((article) => {
 							if (article.releaseDate > subscribers.lastUpdate) return;
+							
+							const date = new Date(article.releaseDate);
+							const year = date.getFullYear();
+							const month = date.getMonth();
+							const dt = date.getDate();
+							// build title string
+							const timestamp = `${year}-${month}-${dt}`;
+
+							const text = article.title;
+							const link = article.code;
 						
 							subscribers.channels.forEach((subscriberId) => {
 								queue.push(new Action(client.channels.fetch(subscriberId) as TextChannel, "", (msg, input) => {
 									return Promise.resolve().then(() => {
 										
-										const title = "";
-										const link = "";
-										
 										const embed = new MessageEmbed()
 											.setColor("#9B59B6")
-											.setTitle("🚀  New Binance Cryptocurrency Listing News")
+											.setTitle("🐶  New Binance Cryptocurrency Listing News - "+timestamp)
 											.setThumbnail(data.icon || "https://i.imgur.com/2vHF2jl.jpg")
-											.setDescription(`[${title}](${link})`)
+											.setDescription(`[${text}](${link})`)
 											.setTimestamp()
 											.setFooter({ text: "Dogelon  •  Subscription Service" })
 											;
