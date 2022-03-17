@@ -159,7 +159,7 @@ export default class SubscribeCommand extends Command {
 						subscribers.lastUpdate = (new Date()).getTime();
 						this.db.set(cacheName, subscribers, Database.NEVER_EXPIRE);
 					// TODO: proper test configuration logic	
-					}, 3600000); // poll once per hour
+					}, 1800000); // poll once per hour
 					//}, 2000); // poll once per second
 					
 					this.intervalList.set(cacheName, poller);
