@@ -116,6 +116,7 @@ export default class SubscribeCommand extends Command {
 						if (subscribers.channels.length == 0) {
 							// remove empty list from DB and stop polling
 							this.db.set(cacheName, {}, Database.EXPIRE);
+							clearInterval(this.intervalList.get(cacheName) as NodeJS.Timer);
 							this.intervalList.delete(cacheName);
 							return;
 						}
@@ -134,7 +135,7 @@ export default class SubscribeCommand extends Command {
 											.setColor("#9B59B6")
 											.setTitle("🚀  Dogelon Subscriber")
 											.setThumbnail(data.icon || "https://i.imgur.com/2vHF2jl.jpg")
-											.setDescription('Subscribed <#'+message.channelId+'> to feature `'+feature+'`')
+											.setDescription(`[${title}](${link})`)
 											.setTimestamp()
 											.setFooter({ text: "Dogelon  •  Subscription Service" })
 											;
