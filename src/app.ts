@@ -163,7 +163,7 @@ const newDeploy = (channels) => {
 	const embed = new MessageEmbed()
 		.setColor("#9B59B6")
 		.setTitle(`🚀  Dogelon Update - ` + title)
-		.setField("Notice:","Database is not persistent so you will have to rerun `!subscribe` for all feeds. This will be fixed in a future update.")
+		.addField("Notice:","Database is not persistent so you will have to rerun `!subscribe` for all feeds. This will be fixed in a future update.")
 		.setThumbnail("https://i.imgur.com/1LIQGWa.png")
 		//.setTimestamp()
 		.setFooter({ text: `Dogelon ${v}  •  ${a}` })
