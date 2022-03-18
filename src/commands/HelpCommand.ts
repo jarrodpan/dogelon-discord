@@ -25,11 +25,10 @@ export default class HelpCommand extends Command {
 			.addField("`${stock ticker}` (inline)", "Gets current price for a stock. Cached and/or delayed depending on API response and exchange opening times. Yahoo tickers, add `.AX` for Australian stocks.")
 			.addField("`%{crypto ticker}` (inline)", "Gets current price for a cryptocurrency. Cached and/or delayed. Sourced from [CoinGecko](https://www.coingecko.com).")
 			.addField("`/r/{subreddit}`, `r/{subreddit}` (inline)", "Converts a subreddit reference to a reddit link, regardless of if it exists or not.")
-			.addField("`!subscribe {feed name}`, `!s {feed}`", "Subscribe a channel to a news feed. Polls once every half hour. Current options:\n - [`binance-new`](https://www.binance.com/en/support/announcement/c-48)")
-			.addField("`!unsubscribe {feed name}`, `!uns {feed}`", "Unsubscribe from the above feeds.")
+			.addField("`!subscribe {feed}`, `!s {feed}`\n`!unsubscribe {feed}`, `!uns {feed}`", "Subscribe/unsubscribe a channel to a news feed. Polls once every half hour. Current options:\n - [`binance-new`](https://www.binance.com/en/support/announcement/c-48)")
 			.addField("`!binance`, `!b` (inline)", "Shows the latest cryptocurrency listing news from [Binance](https://www.binance.com/en/support/announcement/c-48)")
 			.addField("`!help`, `!h`", "Displays this message")
-			.setTimestamp()
+			//.setTimestamp()
 			.setFooter({ text: `Dogelon ${v}  •  ${a}` })
 			;
 

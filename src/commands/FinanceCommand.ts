@@ -57,7 +57,7 @@ export default class FinanceCommand extends Command {
 					.addField("💸  Price", price, true)
 					.addField("🪙  $ Change (D)", priceChange, true)
 					.addField("💹  % Change (D)", pcChange, true)
-					.setTimestamp()
+					//.setTimestamp()
 					.setFooter({ text: footer })
 					;
 			} else {

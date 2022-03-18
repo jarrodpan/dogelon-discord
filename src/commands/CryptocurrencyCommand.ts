@@ -100,7 +100,7 @@ export default class CryptocurrencyCommand extends Command {
 					.addField("💸  Price", price, true)
 					.addField("🪙  $ Change (24h)", priceChange, true)
 					.addField("💹  % Change (24h)", pcChange, true)
-					.setTimestamp()
+					//.setTimestamp()
 					.setFooter({ text: footer })
 					;
 				console.log("embed set");
