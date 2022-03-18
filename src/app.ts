@@ -2,7 +2,7 @@
 import Action from "./types/Action";
 import Commands from './commands';
 import { MatchOn } from "./types/Command";
-import { Channel, Message, TextChannel } from "discord.js";
+import { Channel, Message, MessageEmbed, TextChannel } from "discord.js";
 
 // following need to be 'require' to work
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -19,11 +19,11 @@ export const queue: Action[] = [];
 // initialise
 // TODO: refactor this
 client.once('ready', () => {
-	
+	//console.log();
 	setInterval(async () => {
 		// skip if empty queue
 		if (queue.length == 0) return;
-
+		//console.log(client.channels.cache);
 		// get next item from queue - definitely defined as we check above
 		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 		const action: Action = queue.shift()!;
@@ -41,17 +41,19 @@ client.once('ready', () => {
 			//console.log((action.message as TextChannel).isText());
 			console.log("sending to discord...", output);
 
+			try {
+				if (action.message instanceof Message) (action.message as Message).reply(output);
+				//if (action.message instanceof TextChannel) (action.message as TextChannel).send(output);
+				else (action.message as TextChannel).send(output);
+			} catch (e) { console.error(e); }
 			
-			if (action.message instanceof Message) (action.message as Message).reply(output);
-			//if (action.message instanceof TextChannel) (action.message as TextChannel).send(output);
-			else (action.message as TextChannel).send(output);
 			
 			return;
 		}).catch((e) => {
 			console.error(e);
 		});
 
-
+		
 		return;
 
 	}, 500); // 500ms is the rate limit of discord's bot API
@@ -60,6 +62,9 @@ client.once('ready', () => {
 	console.log('Ready!');
 	//console.debug(Commands);
 	//console.debug(Commands.matchOn);
+	
+	newDeploy(client.channels.cache);
+	
 });
 
 // login to discord
@@ -128,9 +133,55 @@ client.on('messageCreate', (message: any): void => {
 
 });
 
-const changeLog = () => {
+const newDeploy = (channels) => {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	const readme = require('fs').readFileSync('./../README.md')
-	const latestChange = readme.match(/(# Changelog)(\\X*?)##(\\X*?)(###(\\X*?)){1,3}##/);
+	const readme : string = require('fs').readFileSync('./README.md').toString();
+	const latestChange = readme.match(/# Changelog[\S\s]*?(?:###[\S\s]*?){1,3}## /)?.toString().replace(/\r/gm,"").split(/\n/gm); // chaotic regex to extract the latest change in the changelog
+	
+	//console.log(latestChange);
+	
+	let title;
+	const changed = { Added : new Array<string>() , Changed: new Array<string>() , Removed: new Array<string>() , } as object;
+	let state : "Added" | "Changed" | "Removed";
+	
+	let v;
+	
+	latestChange?.forEach((line) => {
+		if (line == "# Changelog" || line.length == 0) return;
+		if (line.startsWith("## ") && line.length > 3) (title = line.slice(3).replace("[","v").replace("]", "")) && (v = "v"+line.slice(line.indexOf("[")+1, line.indexOf("]")));
+		if (line.startsWith("### Added")) state = "Added";
+		if (line.startsWith("### Changed")) state = "Changed";
+		if (line.startsWith("### Removed")) state = "Removed";
+		
+		if (line.substring(0, 5).includes("-")) changed[state].push(line);
+	});
+	
+	
+	const a = "author";
+	const embed = new MessageEmbed()
+			.setColor("#9B59B6")
+			.setTitle(`🚀  Dogelon Update - `+title)
+			.setThumbnail("https://i.imgur.com/1LIQGWa.png")
+			//.setTimestamp()
+			.setFooter({ text: `Dogelon ${v}  •  ${a}` })
+		;
+	
+	console.log(changed);
+	
+	for (const [k,v] of Object.entries(changed)) {
+		if (v.length > 0) embed.addField(k, v.join("\n"));
+	}
+	
+	//console.log(channels);
+	
+	channels.forEach((subscriberId, v) => {
+		
+		const ch = channels.get(v);
+		//console.log(ch);
+		if (ch.viewable && ch instanceof TextChannel) queue.push(new Action(ch, "", (msg, input) => {
+			return { embeds: [embed] };
+		}));
+	});
+	
 	
 }
