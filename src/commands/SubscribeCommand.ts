@@ -16,6 +16,7 @@ export default class SubscribeCommand extends Command {
 	private intervalList = new Map<string, NodeJS.Timer>();
 	
 	public expression = `(!(un)?s(ubscribe)? \\S*)`;
+
 	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
 	public execute = (messageInput: Message | TextChannel, input: any) => {
 		
@@ -28,9 +29,11 @@ export default class SubscribeCommand extends Command {
 		
 		
 		const args = input.split(" ");
+
 		let action : "!s" | "!subscribe" | "!uns" | "!unsubscribe";
 		let feature;
 		let subscribe : boolean;
+
 		
 		// TODO: add unsubscribe function
 		// TODO: check for existing subscriptions
@@ -40,10 +43,12 @@ export default class SubscribeCommand extends Command {
 			// validation
 			if (!this.db) throw new Error("Subscribe: database not defined");
 			if (args.length != 2) throw new Error("Subscribe: argument count invalid (expect 2):" + args.length);
+
 			action = args[0];
 			feature = args[1];
 			subscribe = !(action === "!uns" || action === "!unsubscribe");
 			console.log(action, feature, subscribe);
+
 			if (!validFeatures.includes(feature)) throw new Error("Subscribe: argument is not valid: " + feature);
 			
 		} catch (e) {
@@ -81,8 +86,10 @@ export default class SubscribeCommand extends Command {
 				//console.log("cache hit:", subscribers);
 
 				if (!subscriberLookup) {
+
 					// if no subscribers do nothing
 					if (!subscribe) return null;
+
 					// new subscriber object 
 					subscribers = {
 						lastUpdate: (new Date()).getTime(),
@@ -93,6 +100,7 @@ export default class SubscribeCommand extends Command {
 					
 				}
 				else {
+
 					// subscriber list exists
 					subscribers = subscriberLookup as Subscribers;
 					if (subscribe) { // want to subscribe
@@ -115,6 +123,7 @@ export default class SubscribeCommand extends Command {
 						
 					}
 						
+
 				}
 				this.db.set(cacheName, subscribers, Database.NEVER_EXPIRE);
 				
@@ -122,14 +131,16 @@ export default class SubscribeCommand extends Command {
 					.setColor("#9B59B6")
 					.setTitle("🚀  Dogelon Subscriber")
 					.setThumbnail("https://i.imgur.com/2vHF2jl.jpg")
-					
+
 					.setTimestamp()
 					.setFooter({ text: "Dogelon  •  Subscription Service" })
 					;
 				
+
 				if (subscribe) embed.setDescription('Subscribed <#' + message.channelId + '> to feed `' + feature + '`');
 				else embed.setDescription('Unsubscribed <#' + message.channelId + '> from feed `' + feature + '`');
 				
+
 				// set polling interval if not already scheduled
 				if (!this.intervalList.has(cacheName)) {
 					//
@@ -179,7 +190,9 @@ export default class SubscribeCommand extends Command {
 										
 										const embed = new MessageEmbed()
 											.setColor("#9B59B6")
+
 											.setTitle("📰  New Binance Cryptocurrency Listing News - "+timestamp)
+
 											.setThumbnail(data.icon || "https://i.imgur.com/2vHF2jl.jpg")
 											.setDescription(`[${text}](${link})`)
 											.setTimestamp()
