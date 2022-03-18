@@ -35,10 +35,12 @@ client.once('ready', () => {
 			return output;
 
 		}).then((output) => {
-			console.log("sending to discord...", output);
+			
 			//console.log(action.message);
-			if (output == null) throw new Error("output is undefined");
+			if (output == null) return; //throw new Error("output is undefined");
 			//console.log((action.message as TextChannel).isText());
+			console.log("sending to discord...", output);
+
 			
 			if (action.message instanceof Message) (action.message as Message).reply(output);
 			//if (action.message instanceof TextChannel) (action.message as TextChannel).send(output);
