@@ -60,6 +60,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 ### Added
 
 - Notify all channels of upgrade from changelog.
+- Discord webhook integration for notification of deployment.
 
 ### Changed
 
