@@ -55,13 +55,19 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
-## [1.2.0] - date
+## [1.3.0] - 2022-03-18
+
+### Added
+
+- Added `!subscribe` and `!unsubscribe` command to subscribe channels to feeds. Current feeds: `binance-new`.
+
+## [1.2.0] - 2022-03-16
 
 ### Added
 
 - Added `!binance` command to show the latest 5 news articles on binance listings (feature request)
 
-## [1.1.0] - date
+## [1.1.0] - 2022-03-13
 
 ### Added
 
@@ -140,6 +146,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 - minimum viable product
 
+[1.3.0]: ./
 [1.2.0]: ./
 [1.1.0]: ./
 [1.0.6]: ./
