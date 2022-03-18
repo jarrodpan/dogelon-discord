@@ -128,3 +128,9 @@ client.on('messageCreate', (message: any): void => {
 
 });
 
+const changeLog = () => {
+	// eslint-disable-next-line @typescript-eslint/no-var-requires
+	const readme = require('fs').readFileSync('./../README.md')
+	const latestChange = readme.match(/(# Changelog)(\\X*?)##(\\X*?)(###(\\X*?)){1,3}##/);
+	
+}
