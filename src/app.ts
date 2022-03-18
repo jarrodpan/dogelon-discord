@@ -3,6 +3,7 @@ import Action from "./types/Action";
 import Commands from './commands';
 import { MatchOn } from "./types/Command";
 import { Channel, Message, MessageEmbed, TextChannel } from "discord.js";
+import axios from "axios";
 
 // following need to be 'require' to work
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -146,6 +147,7 @@ const newDeploy = (channels) => {
 	
 	let v;
 	
+	// extract all the junk
 	latestChange?.forEach((line) => {
 		if (line == "# Changelog" || line.length == 0) return;
 		if (line.startsWith("## ") && line.length > 3) (title = line.slice(3).replace("[","v").replace("]", "")) && (v = "v"+line.slice(line.indexOf("[")+1, line.indexOf("]")));
@@ -159,21 +161,21 @@ const newDeploy = (channels) => {
 	
 	const a = "author";
 	const embed = new MessageEmbed()
-			.setColor("#9B59B6")
-			.setTitle(`🚀  Dogelon Update - `+title)
-			.setThumbnail("https://i.imgur.com/1LIQGWa.png")
-			//.setTimestamp()
-			.setFooter({ text: `Dogelon ${v}  •  ${a}` })
+		.setColor("#9B59B6")
+		.setTitle(`🚀  Dogelon Update - ` + title)
+		.setDescription("*Notice*: database is not persistent so you will have to rerun `!subscribe` for all feeds. This will be fixed in a future update.")
+		.setThumbnail("https://i.imgur.com/1LIQGWa.png")
+		//.setTimestamp()
+		.setFooter({ text: `Dogelon ${v}  •  ${a}` })
 		;
 	
-	console.log(changed);
+	//console.log(changed);
 	
 	for (const [k,v] of Object.entries(changed)) {
 		if (v.length > 0) embed.addField(k, v.join("\n"));
 	}
 	
-	//console.log(channels);
-	
+	// queue notify for all channels
 	channels.forEach((subscriberId, v) => {
 		
 		const ch = channels.get(v);
@@ -182,6 +184,21 @@ const newDeploy = (channels) => {
 			return { embeds: [embed] };
 		}));
 	});
+	
+	let name = "Dogelon";
+	let env = "Heroku";
+	// determine environment, the below is only defined locally
+	if (process.env.DISCORD_TOKEN_PROD) (name = "Dogelon (development)") && (env = "Localhost");
+	// notify discord webhook about deployment
+	axios.post(process.env.DISCORD_WEBHOOK as string, {
+		content: `${name} ${v} successfully deployed to ${env}.`
+	}, {
+		headers: {
+			"Content-type": 'application/json'
+		}
+	});
+	
+	
 	
 	
 }
