@@ -61,7 +61,7 @@ export default class BinanceNewCommand extends Command {
 					.setColor("#FCD535")
 					.setTitle("🚀  " + title)
 					.setThumbnail(data.icon || 'https://i.imgur.com/AfFp7pu.png')
-					.setTimestamp()
+					//.setTimestamp()
 					.setFooter({ text: footer })
 					;
 				

@@ -132,7 +132,7 @@ export default class SubscribeCommand extends Command {
 					.setTitle("🚀  Dogelon Subscriber")
 					.setThumbnail("https://i.imgur.com/2vHF2jl.jpg")
 
-					.setTimestamp()
+					//.setTimestamp()
 					.setFooter({ text: "Dogelon  •  Subscription Service" })
 					;
 				
@@ -195,7 +195,7 @@ export default class SubscribeCommand extends Command {
 
 											.setThumbnail(data.icon || "https://i.imgur.com/2vHF2jl.jpg")
 											.setDescription(`[${text}](${link})`)
-											.setTimestamp()
+											//.setTimestamp()
 											.setFooter({ text: "Dogelon  •  Subscription Service" })
 											;
 										return { embeds: [embed] };
