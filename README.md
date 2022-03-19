@@ -25,13 +25,15 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 - Add little pictures of the stocks/coins,probably upload at first but will host eventually - coins done as of [1.0.5](#1.0.5)
 - idk can add like coin flips and d20 rolls or whatever
 - presence updates
-
 - private messages dont work
 - weather info might be cool to add
 - encapsulate async stuff in promises or whatever just do it properly
 - containerize with docker
 - find a proper API(s) and use that for financial stuff
 - refactor `Command` type with `Commands` class as `Command` is abstract and all of `Commands` is static so combining the two should be fine.
+- direct api from binance
+- dynamic coin tickers from coingecko/binance
+- db is sqlite in-memory, need to migrate to postgres
 
 ### Implemented Changes
 
@@ -54,6 +56,14 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 - ~make the whole thing event driven (where appropriate)~ - it already is durr
 
 # Changelog
+
+## [1.4.1] - 2022-03-19
+
+### Changed
+
+- Message replies/channel sends now await a response before sending another (I think discord is rate limiting the bot so this will mitigate bans).
+- Changed messaging interval to 750ms instead of 500ms to help with rate limiting issues.
+- Removed excess logging for production to help diagnose issues.
 
 ## [1.4.0] - 2022-03-18
 
@@ -162,6 +172,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 - minimum viable product
 
+[1.4.1]: ./
+[1.4.0]: ./
 [1.3.0]: ./
 [1.2.0]: ./
 [1.1.0]: ./

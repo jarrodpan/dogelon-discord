@@ -22,13 +22,14 @@ export default class BinanceNewCommand extends Command {
 			try {
 				if (this.db) {
 					response = this.db.get(cacheName);
-					console.log("cache hit:", response);
+					console.log("cache hit:");
+					console.debug(response);
 				}
 
 				if (response == false) {
 					console.log("fetching new result...");
 					response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
-					console.log("new data:",response);
+					console.debug("new data:",response);
 					response.request = undefined;
 					if (this.db) this.db.set(cacheName, response, 600);
 					console.log("cache updated");
@@ -83,7 +84,7 @@ export default class BinanceNewCommand extends Command {
 				});
 				
 				console.log("embed set");
-				console.log(embed);
+				console.debug(embed);
 			} else {
 				//embed = null;
 				// error case

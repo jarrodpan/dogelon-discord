@@ -17,6 +17,12 @@ export const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS
 // TODO: make this better
 export const queue: Action[] = [];
 
+// override console.debug for production
+if (process.env.NODE_ENV === "production") {
+	console.debug = (...msg: any[]) => { return; }
+}
+
+
 // initialise
 // TODO: refactor this
 client.once('ready', () => {
@@ -35,18 +41,18 @@ client.once('ready', () => {
 			// send message to channel
 			return output;
 
-		}).then((output) => {
+		}).then(async (output) => {
 			
 			//console.log(action.message);
 			if (output == null) return; //throw new Error("output is undefined");
 			//console.log((action.message as TextChannel).isText());
-			console.log("sending to discord...", output);
+			console.debug("sending to discord...", output);
 
-			try {
-				if (action.message instanceof Message) (action.message as Message).reply(output);
-				//if (action.message instanceof TextChannel) (action.message as TextChannel).send(output);
-				else (action.message as TextChannel).send(output);
-			} catch (e) { console.error(e); }
+			//try {
+			if (action.message instanceof Message) await action.message.reply(output);
+			if (action.message instanceof TextChannel) await action.message.send(output);
+			//else await (action.message as TextChannel).send(output);
+			//} catch (e) { console.error(e); }
 			
 			
 			return;
@@ -57,7 +63,7 @@ client.once('ready', () => {
 		
 		return;
 
-	}, 500); // 500ms is the rate limit of discord's bot API
+	}, 750); // 500ms is the rate limit of discord's bot API
 	
 	console.debug(Commands.matchOn);
 	console.log('Ready!');
@@ -134,7 +140,7 @@ client.on('messageCreate', (message: any): void => {
 
 });
 
-const newDeploy = (channels) => {
+const newDeploy = async (channels) => {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
 	const readme : string = require('fs').readFileSync('./README.md').toString();
 	const latestChange = readme.match(/# Changelog[\S\s]*?(?:###[\S\s]*?){1,3}## /)?.toString().replace(/\r/gm,"").split(/\n/gm); // chaotic regex to extract the latest change in the changelog
@@ -185,12 +191,12 @@ const newDeploy = (channels) => {
 		}));
 	});
 	
-	let name = "Dogelon";
-	let env = "Heroku";
+	let name = "Dogelon (development)";
+	let env = "localhost";
 	// determine environment, the below is only defined locally
-	if (process.env.DISCORD_TOKEN_PROD) (name = "Dogelon (development)") && (env = "Localhost");
+	if (process.env.NODE_ENV === "production") (name = "Dogelon") && (env = "Heroku");
 	// notify discord webhook about deployment
-	axios.post(process.env.DISCORD_WEBHOOK as string, {
+	await axios.post(process.env.DISCORD_WEBHOOK as string, {
 		content: `${name} ${v} successfully deployed to ${env}.`
 	}, {
 		headers: {

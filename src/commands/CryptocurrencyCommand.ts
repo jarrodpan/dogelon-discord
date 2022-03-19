@@ -46,13 +46,14 @@ export default class CryptocurrencyCommand extends Command {
 			try {
 				if (this.db) {
 					response = this.db.get(cacheName);
-					console.log("cache hit:", response);
+					console.log("cache hit:");
+					console.debug(response);
 				}
 
 				if (response == false) {
-					console.log("fetching new result...");
+					console.debug("fetching new result...");
 					response = await axios.get("https://api.coingecko.com/api/v3/coins/" + coin.id + "?tickers=false&market_data=true&community_data=false&developer_data=false");
-					console.log("new data:",response);
+					console.debug("new data:",response);
 					response.request = undefined;
 					if (this.db) this.db.set(cacheName, response);
 					console.log("cache updated");
@@ -79,7 +80,7 @@ export default class CryptocurrencyCommand extends Command {
 				const result = data.market_data;
 				const title = data.name + " (" + (data.symbol).toUpperCase() + ")";
 				console.log(title);
-				console.log("title set");
+				console.debug("title set");
 				// TODO: select currency dynamically
 				//let price = result.current_price[cc];
 				//let priceChange = result.price_change_24h_in_currency[cc]; 
@@ -88,7 +89,7 @@ export default class CryptocurrencyCommand extends Command {
 				const sigDigits = (coinPrice < 10 ? 5 : 2);
 
 				const price = (coinPrice).toFixed(sigDigits).toString();
-				const priceChange = '$' + (result.price_change_24h_in_currency.usd).toFixed(sigDigits).toString();
+				const priceChange = '$' + (result.price_change_24h_in_currency.usd)?.toFixed(sigDigits).toString();
 				const pcChange = (result.price_change_percentage_24h_in_currency.usd).toFixed(2).toString() + '%';
 				const footer = "CoinGecko  •  " + cc.toUpperCase();
 
@@ -104,7 +105,7 @@ export default class CryptocurrencyCommand extends Command {
 					.setFooter({ text: footer })
 					;
 				console.log("embed set");
-				console.log(embed);
+				console.debug(embed);
 			} else {
 				//embed = null;
 				// error case

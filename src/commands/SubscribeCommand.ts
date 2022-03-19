@@ -105,6 +105,7 @@ export default class SubscribeCommand extends Command {
 					subscribers = subscriberLookup as Subscribers;
 					if (subscribe) { // want to subscribe
 						// check if already subscribed
+						console.debug(subscribe);
 						if (!subscribers.channels.filter(x => x == message.channelId)) {
 							subscribers.channels.push(message.channelId); // add channel to list if not subscribed
 						} else return null; // otherwise do nothing
