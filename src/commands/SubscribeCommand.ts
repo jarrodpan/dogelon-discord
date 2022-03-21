@@ -92,7 +92,7 @@ export default class SubscribeCommand extends Command {
 
 					// new subscriber object 
 					subscribers = {
-						lastUpdate: (new Date()).getTime(),
+						lastUpdate: (new Date()).getTime() - 24*60*60*1000,
 						channels: [
 							message.channelId
 						]
@@ -106,7 +106,7 @@ export default class SubscribeCommand extends Command {
 					if (subscribe) { // want to subscribe
 						// check if already subscribed
 						console.debug(subscribe);
-						if (!subscribers.channels.filter(x => x == message.channelId)) {
+						if (subscribers.channels.filter(x => x == message.channelId).length == 0) {
 							subscribers.channels.push(message.channelId); // add channel to list if not subscribed
 						} else return null; // otherwise do nothing
 					} else {
@@ -145,7 +145,7 @@ export default class SubscribeCommand extends Command {
 				// set polling interval if not already scheduled
 				if (!this.intervalList.has(cacheName)) {
 					//
-					const poller = setInterval(async () => {
+					const poller = setIntervalImmediately(async () => {
 						// binance-new
 						// TODO: generalise
 						let data;
@@ -195,7 +195,7 @@ export default class SubscribeCommand extends Command {
 											.setTitle("📰  New Binance Cryptocurrency Listing News - "+timestamp)
 
 											.setThumbnail(data.icon || "https://i.imgur.com/2vHF2jl.jpg")
-											.setDescription(`[${text}](${link})`)
+											.setDescription(`[${text}](https://www.binance.com/en/support/announcement/${link})`)
 											//.setTimestamp()
 											.setFooter({ text: "Dogelon  •  Subscription Service" })
 											;
@@ -209,7 +209,7 @@ export default class SubscribeCommand extends Command {
 						subscribers.lastUpdate = (new Date()).getTime();
 						this.db.set(cacheName, subscribers, Database.NEVER_EXPIRE);
 					// TODO: proper test configuration logic	
-					}, 1800000); // poll once per hour
+					}, 1800000); // poll once per half hour
 					//}, 2000); // poll once per second
 					
 					this.intervalList.set(cacheName, poller);
@@ -248,56 +248,8 @@ export default class SubscribeCommand extends Command {
 	}
 }
 
-
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		/*}).then(([response, data, error]) => {
-			//console.log(data.error);
-			if (!error) {
-				console.log("setting up response");
-				const result = data.articles;
-				const title = "Latest Binance Cryptocurrency Listing News";
-				const footer = "Binance  •  New Cryptocurrency Listing";
-
-				
-				embed = new MessageEmbed()
-					.setColor("#FCD535")
-					.setTitle("🚀  " + title)
-					.setThumbnail(data.icon || 'https://i.imgur.com/AfFp7pu.png')
-					.setTimestamp()
-					.setFooter({ text: footer })
-					;
-				
-				const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-				
-				result.forEach((article) => {
-					const date = new Date(article.releaseDate);
-					const year = date.getFullYear();
-					const month = date.getMonth();
-					const dt = date.getDate();
-					// build title string
-					const timestamp = `${year}-${month}-${dt}`;
-					
-					const text = article.title;
-					const link = article.code;
-					// build body string
-					const body = `[${text}](https://www.binance.com/en/support/announcement/${link})`;
-					
-					embed.addField(timestamp, body);
-				});
-				
-				console.log("embed set");
-				console.log(embed);
-			} else {
-				//embed = null;
-				// error case
-
-				console.error("Binance: response error");
-				return null;
-			}
-			//console.log("finance return", embed);
-			if (embed == null) throw new Error("BinanceNewCommand: embed is undefined or null");
-			//if (typeof embed != null || typeof embed !== undefined) {
-			return { embeds: [embed] };
-			//}
-			*/
-			
+// https://stackoverflow.com/questions/6685396/execute-the-setinterval-function-without-delay-the-first-time
+function setIntervalImmediately(func, interval) {
+  func();
+  return setInterval(func, interval);
+}
