@@ -13,7 +13,7 @@ export default class SQLiteDatabase extends Database {
 			host: host || process.env.PGHOST,
 			database: process.env.PGDATABASE || 'mydb',
 			password: pword || process.env.PGPASSWORD,
-			port: port || process.env.PGPORT
+			port: Number.parseInt(port || "5432")
 		});
 		
 		pool.on('error', (err, client) => {
