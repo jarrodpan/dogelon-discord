@@ -25,13 +25,15 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 - Add little pictures of the stocks/coins,probably upload at first but will host eventually - coins done as of [1.0.5](#1.0.5)
 - idk can add like coin flips and d20 rolls or whatever
 - presence updates
-
 - private messages dont work
 - weather info might be cool to add
 - encapsulate async stuff in promises or whatever just do it properly
 - containerize with docker
 - find a proper API(s) and use that for financial stuff
 - refactor `Command` type with `Commands` class as `Command` is abstract and all of `Commands` is static so combining the two should be fine.
+- direct api from binance
+- dynamic coin tickers from coingecko/binance
+- db is sqlite in-memory, need to migrate to postgres
 
 ### Implemented Changes
 
@@ -55,13 +57,53 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
-## [1.2.0] - date
+## [1.4.2] - 2022-03-21
+
+### Changed
+
+- Fixed bug where only the first channel would subscribe to a feed.
+- Fixed `binance-new` feed embed to actually link the article that is found.
+- The first subscriber will get the last 24h news worth of updates, will potentially extend to all new subscribers in future.
+- When a feed is first subscribed to run the check immediately instead of after the delay.
+- Changed subscription poll interval from 30 to 20 minutes.
+
+## [1.4.1] - 2022-03-19
+
+### Changed
+
+- Message replies/channel sends now await a response before sending another (I think discord is rate limiting the bot so this will mitigate bans).
+- Changed messaging interval to 750ms instead of 500ms to help with rate limiting issues.
+- Removed excess logging for production to help diagnose issues.
+
+## [1.4.0] - 2022-03-18
+
+### Added
+
+- Notify all channels of upgrade from changelog.
+- Discord webhook integration for notification of deployment.
+
+### Changed
+
+- Removed timestamps from messages to channels.
+- Condensed `!subscribe` and `!unsubscribe` in help command.
+
+## [1.3.0] - 2022-03-18
+
+### Added
+
+- Added `!subscribe` and `!unsubscribe` command to subscribe channels to feeds. Current feeds: `binance-new`.
+
+### Changed
+
+- action queue can now accept channels as an argument to send directly instead of replying to messages.
+
+## [1.2.0] - 2022-03-16
 
 ### Added
 
 - Added `!binance` command to show the latest 5 news articles on binance listings (feature request)
 
-## [1.1.0] - date
+## [1.1.0] - 2022-03-13
 
 ### Added
 
@@ -140,6 +182,10 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 - minimum viable product
 
+[1.4.2]: ./
+[1.4.1]: ./
+[1.4.0]: ./
+[1.3.0]: ./
 [1.2.0]: ./
 [1.1.0]: ./
 [1.0.6]: ./

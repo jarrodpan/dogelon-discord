@@ -2,8 +2,8 @@
 	"compilerOptions": { /* Docs: https://www.typescriptlang.org/tsconfig */
 		"target": "esnext",
 		"module": "commonjs",
-		"outDir": "bin",
-		"rootDir": "src",
+		"outDir": ".",
+		"rootDir": ".",
 		"strict": true,
 		"noImplicitAny": false,
 		"strictNullChecks": true,
@@ -28,13 +28,11 @@
 		"useUnknownInCatchVariables": false, // TypeScript 4.4+ only!
 	},
 	"include": [
-		"./src/**/*.ts",
-		"./src/**/*.js",
-		"./src/**/*.json",
+		"./**/*.ts",
+		"./**/*.js",
 	],
 	"exclude": [
 		"node_modules",
 		"<node_internals>/**",
-		"src/api-dummy/**"
 	]
 }

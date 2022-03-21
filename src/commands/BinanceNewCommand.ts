@@ -1,21 +1,7 @@
 import axios from 'axios';
-import { MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
 import Database from '../types/Database';
-
-
-/**
- * Searches coin prices from coingecko.com
- * 
- * https://www.coingecko.com/en/api/documentation
- * 
- * Coin list sourced from https://api.coingecko.com/api/v3/coins/list
- */
-type Coin = {
-	id: string,
-	symbol: string,
-	name: string
-}
 
 export default class BinanceNewCommand extends Command {
 	private db: Database | undefined;
@@ -23,7 +9,7 @@ export default class BinanceNewCommand extends Command {
 	
 	public expression = `(!b(inance)?)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (input: any) => {
+	public execute = (message: Message | TextChannel, input: any) => {
 		let embed;
 
 		// coin exists
@@ -36,13 +22,14 @@ export default class BinanceNewCommand extends Command {
 			try {
 				if (this.db) {
 					response = this.db.get(cacheName);
-					console.log("cache hit:", response);
+					console.log("cache hit:");
+					console.debug(response);
 				}
 
 				if (response == false) {
 					console.log("fetching new result...");
 					response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
-					console.log("new data:",response);
+					console.debug("new data:",response);
 					response.request = undefined;
 					if (this.db) this.db.set(cacheName, response, 600);
 					console.log("cache updated");
@@ -75,11 +62,10 @@ export default class BinanceNewCommand extends Command {
 					.setColor("#FCD535")
 					.setTitle("🚀  " + title)
 					.setThumbnail(data.icon || 'https://i.imgur.com/AfFp7pu.png')
-					.setTimestamp()
+					//.setTimestamp()
 					.setFooter({ text: footer })
 					;
 				
-				const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 				
 				result.forEach((article) => {
 					const date = new Date(article.releaseDate);
@@ -98,7 +84,7 @@ export default class BinanceNewCommand extends Command {
 				});
 				
 				console.log("embed set");
-				console.log(embed);
+				console.debug(embed);
 			} else {
 				//embed = null;
 				// error case

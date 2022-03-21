@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { MessageEmbed } from 'discord.js';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../types/Command'
 import Database from '../types/Database';
 
@@ -14,7 +14,7 @@ export default class FinanceCommand extends Command {
 	
 	public expression = `(?:\\$\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (input: any) => {
+	public execute = (message: Message | TextChannel, input: any) => {
 		const ticker = input.slice(1);
 
 
@@ -57,7 +57,7 @@ export default class FinanceCommand extends Command {
 					.addField("💸  Price", price, true)
 					.addField("🪙  $ Change (D)", priceChange, true)
 					.addField("💹  % Change (D)", pcChange, true)
-					.setTimestamp()
+					//.setTimestamp()
 					.setFooter({ text: footer })
 					;
 			} else {
