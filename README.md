@@ -35,7 +35,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 - dynamic coin tickers from coingecko/binance
 - db is sqlite in-memory, need to migrate to postgres
 
-### Implemented Changes
+## Implemented Changes
 
 - API rate limiting, for outbound messages too (discord allows 120/min) - this is done from [1.0.0](#1.0.0) as the commands are queued to run one every half second to match discord's rates.
 - deploy to heroku for 24/7 madness - done as of [1.0.5](#1.0.5)
@@ -66,6 +66,11 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 - The first subscriber will get the last 24h news worth of updates, will potentially extend to all new subscribers in future.
 - When a feed is first subscribed to run the check immediately instead of after the delay.
 - Changed subscription poll interval from 30 to 20 minutes.
+
+# Previous Changes
+
+<details>
+<summary>Click to expand</summary>
 
 ## [1.4.1] - 2022-03-19
 
@@ -182,6 +187,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 - minimum viable product
 
+</details><br>
+
 [1.4.2]: ./
 [1.4.1]: ./
 [1.4.0]: ./
@@ -196,13 +203,15 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 [1.0.1]: ./
 [1.0.0]: ./
 
+<!--
 ```
-Changelog template
+# Changelog template
 ## [1.0.0] - date
 ### Added
 ### Changed
 ### Removed
 ```
+-->
 
 # Link dump for my use
 
