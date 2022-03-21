@@ -64,7 +64,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 - Fixed bug where only the first channel would subscribe to a feed.
 - Fixed `binance-new` feed embed to actually link the article that is found.
 - The first subscriber will get the last 24h news worth of updates, will potentially extend to all new subscribers in future.
-- When a feed is first subscribed to run the check immediately instead of after the delay (currently 30 mins).
+- When a feed is first subscribed to run the check immediately instead of after the delay.
+- Changed subscription poll interval from 30 to 20 minutes.
 
 ## [1.4.1] - 2022-03-19
 
