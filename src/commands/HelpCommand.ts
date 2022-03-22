@@ -1,24 +1,24 @@
-import { Message, MessageEmbed, TextChannel } from 'discord.js'
-import { Command, MatchOn } from '../types/Command'
-import Database from '../types/Database'
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
+import { Command, MatchOn } from '../types/Command';
+import Database from '../types/Database';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require('./../../package.json')
+const pkg = require('./../../package.json');
 /**
  * shows command list
  */
 export default class HelpCommand extends Command {
-	private db: Database | undefined
+	private db: Database | undefined;
 	public constructor(db?: Database | undefined) {
-		super()
-		if (db) this.db = db
+		super();
+		if (db) this.db = db;
 	}
 
-	public expression = '(!h(elp)?)'
-	public matchOn = MatchOn.MESSAGE
+	public expression = '(!h(elp)?)';
+	public matchOn = MatchOn.MESSAGE;
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public execute = (message: Message | TextChannel, _: unknown) => {
-		const v = `v${pkg.version}`
-		const a = 'author info here'
+		const v = `v${pkg.version}`;
+		const a = 'author info here';
 
 		const embed = new MessageEmbed()
 			.setColor('#9B59B6')
@@ -49,7 +49,7 @@ export default class HelpCommand extends Command {
 			)
 			.addField('`!help`, `!h`', 'Displays this message')
 			//.setTimestamp()
-			.setFooter({ text: `Dogelon ${v}  •  ${a}` })
-		return { embeds: [embed] }
-	}
+			.setFooter({ text: `Dogelon ${v}  •  ${a}` });
+		return { embeds: [embed] };
+	};
 }

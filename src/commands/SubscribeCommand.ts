@@ -1,37 +1,37 @@
-import axios from 'axios'
-import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js'
-import { Command, MatchOn } from '../types/Command'
-import Database from '../types/Database'
-import { client, queue } from '../app'
-import Action from '../types/Action'
+import axios from 'axios';
+import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
+import { Command, MatchOn } from '../types/Command';
+import Database from '../types/Database';
+import { client, queue } from '../app';
+import Action from '../types/Action';
 
 export interface Subscribers {
-	lastUpdate: number
-	channels: string[]
+	lastUpdate: number;
+	channels: string[];
 }
 export default class SubscribeCommand extends Command {
-	private db: Database
+	private db: Database;
 	public constructor(db: Database) {
-		super()
-		this.db = db
+		super();
+		this.db = db;
 	}
 
-	private intervalList = new Map<string, NodeJS.Timer>()
+	private intervalList = new Map<string, NodeJS.Timer>();
 
-	public expression = `(!(un)?s(ubscribe)? \\S*)`
+	public expression = `(!(un)?s(ubscribe)? \\S*)`;
 
-	public matchOn = MatchOn.MESSAGE // MatchOn.TOKEN
+	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
 	public execute = (messageInput: Message | TextChannel, input: any) => {
-		const message = messageInput as Message
+		const message = messageInput as Message;
 
 		// TODO: might want to refactor into modules if more subs required
-		const validFeatures = ['binance-new']
+		const validFeatures = ['binance-new'];
 
-		const args = input.split(' ')
+		const args = input.split(' ');
 
-		let action: '!s' | '!subscribe' | '!uns' | '!unsubscribe'
-		let feature
-		let subscribe: boolean
+		let action: '!s' | '!subscribe' | '!uns' | '!unsubscribe';
+		let feature;
+		let subscribe: boolean;
 
 		// TODO: add unsubscribe function
 		// TODO: check for existing subscriptions
@@ -39,23 +39,23 @@ export default class SubscribeCommand extends Command {
 
 		try {
 			// validation
-			if (!this.db) throw new Error('Subscribe: database not defined')
+			if (!this.db) throw new Error('Subscribe: database not defined');
 			if (args.length != 2)
 				throw new Error(
 					'Subscribe: argument count invalid (expect 2):' +
 						args.length
-				)
+				);
 
-			action = args[0]
-			feature = args[1]
-			subscribe = !(action === '!uns' || action === '!unsubscribe')
-			console.log(action, feature, subscribe)
+			action = args[0];
+			feature = args[1];
+			subscribe = !(action === '!uns' || action === '!unsubscribe');
+			console.log(action, feature, subscribe);
 
 			if (!validFeatures.includes(feature))
-				throw new Error('Subscribe: argument is not valid: ' + feature)
+				throw new Error('Subscribe: argument is not valid: ' + feature);
 		} catch (e) {
-			console.error(e)
-			return null
+			console.error(e);
+			return null;
 		}
 
 		// TODO: pseudocode
@@ -70,66 +70,66 @@ export default class SubscribeCommand extends Command {
 		 *
 		 */
 
-		let embed
+		let embed;
 
 		// coin exists
 		return Promise.resolve()
 			.then(async () => {
-				let subscribers: Subscribers
-				let data
-				let error = false
-				const cacheName = 'subscribe-' + feature
+				let subscribers: Subscribers;
+				let data;
+				let error = false;
+				const cacheName = 'subscribe-' + feature;
 
 				try {
-					const subscriberLookup = this.db.get(cacheName)
+					const subscriberLookup = this.db.get(cacheName);
 
 					//console.log("cache hit:", subscribers);
 
 					if (!subscriberLookup) {
 						// if no subscribers do nothing
-						if (!subscribe) return null
+						if (!subscribe) return null;
 
 						// new subscriber object
 						subscribers = {
 							lastUpdate:
 								new Date().getTime() - 24 * 60 * 60 * 1000,
 							channels: [message.channelId],
-						}
+						};
 					} else {
 						// subscriber list exists
-						subscribers = subscriberLookup as Subscribers
+						subscribers = subscriberLookup as Subscribers;
 						if (subscribe) {
 							// want to subscribe
 							// check if already subscribed
-							console.debug(subscribe)
+							console.debug(subscribe);
 							if (
 								subscribers.channels.filter(
 									(x) => x == message.channelId
 								).length == 0
 							) {
-								subscribers.channels.push(message.channelId) // add channel to list if not subscribed
-							} else return null // otherwise do nothing
+								subscribers.channels.push(message.channelId); // add channel to list if not subscribed
+							} else return null; // otherwise do nothing
 						} else {
 							// remove from subscription list
 							subscribers.channels = subscribers.channels.filter(
 								(x) => x !== message.channelId
-							)
+							);
 
 							// no subscribers left?
 							if (subscribers.channels.length == 0) {
 								// remove empty list from DB and stop polling
-								this.db.set(cacheName, {}, Database.EXPIRE)
+								this.db.set(cacheName, {}, Database.EXPIRE);
 								clearInterval(
 									this.intervalList.get(
 										cacheName
 									) as NodeJS.Timer
-								)
-								this.intervalList.delete(cacheName)
-								return
+								);
+								this.intervalList.delete(cacheName);
+								return;
 							}
 						}
 					}
-					this.db.set(cacheName, subscribers, Database.NEVER_EXPIRE)
+					this.db.set(cacheName, subscribers, Database.NEVER_EXPIRE);
 
 					embed = new MessageEmbed()
 						.setColor('#9B59B6')
@@ -137,7 +137,9 @@ export default class SubscribeCommand extends Command {
 						.setThumbnail('https://i.imgur.com/2vHF2jl.jpg')
 
 						//.setTimestamp()
-						.setFooter({ text: 'Dogelon  •  Subscription Service' })
+						.setFooter({
+							text: 'Dogelon  •  Subscription Service',
+						});
 
 					if (subscribe)
 						embed.setDescription(
@@ -146,7 +148,7 @@ export default class SubscribeCommand extends Command {
 								'> to feed `' +
 								feature +
 								'`'
-						)
+						);
 					else
 						embed.setDescription(
 							'Unsubscribed <#' +
@@ -154,7 +156,7 @@ export default class SubscribeCommand extends Command {
 								'> from feed `' +
 								feature +
 								'`'
-						)
+						);
 
 					// set polling interval if not already scheduled
 					if (!this.intervalList.has(cacheName)) {
@@ -162,37 +164,37 @@ export default class SubscribeCommand extends Command {
 						const poller = setIntervalImmediately(async () => {
 							// binance-new
 							// TODO: generalise
-							let data
+							let data;
 							try {
 								const response = await axios.get(
 									'https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5'
-								)
+								);
 								//const response = await axios.get("http://localhost:3000");
-								data = response.data.data.catalogs[0]
+								data = response.data.data.catalogs[0];
 							} catch (e) {
-								console.error(e)
-								return null
+								console.error(e);
+								return null;
 							}
 
 							console.log(
 								'Subscriber: polling for changes on ' +
 									cacheName
-							)
+							);
 
 							const subscribers = this.db.get(
 								cacheName
-							) as Subscribers
+							) as Subscribers;
 
 							if (subscribers.channels.length == 0) {
 								// remove empty list from DB and stop polling
-								this.db.set(cacheName, {}, Database.EXPIRE)
+								this.db.set(cacheName, {}, Database.EXPIRE);
 								clearInterval(
 									this.intervalList.get(
 										cacheName
 									) as NodeJS.Timer
-								)
-								this.intervalList.delete(cacheName)
-								return
+								);
+								this.intervalList.delete(cacheName);
+								return;
 							}
 
 							data.articles.forEach((article) => {
@@ -200,21 +202,21 @@ export default class SubscribeCommand extends Command {
 									article.releaseDate,
 									subscribers.lastUpdate,
 									article.releaseDate > subscribers.lastUpdate
-								)
+								);
 								if (
 									article.releaseDate < subscribers.lastUpdate
 								)
-									return
+									return;
 
-								const date = new Date(article.releaseDate)
-								const year = date.getFullYear()
-								const month = date.getMonth()
-								const dt = date.getDate()
+								const date = new Date(article.releaseDate);
+								const year = date.getFullYear();
+								const month = date.getMonth();
+								const dt = date.getDate();
 								// build title string
-								const timestamp = `${year}-${month}-${dt}`
+								const timestamp = `${year}-${month}-${dt}`;
 
-								const text = article.title
-								const link = article.code
+								const text = article.title;
+								const link = article.code;
 
 								subscribers.channels.forEach((subscriberId) => {
 									queue.push(
@@ -242,29 +244,29 @@ export default class SubscribeCommand extends Command {
 													//.setTimestamp()
 													.setFooter({
 														text: 'Dogelon  •  Subscription Service',
-													})
-												return { embeds: [embed] }
+													});
+												return { embeds: [embed] };
 											}
 										)
-									)
-								})
-							})
+									);
+								});
+							});
 
 							// change last updated time
-							subscribers.lastUpdate = new Date().getTime()
+							subscribers.lastUpdate = new Date().getTime();
 							this.db.set(
 								cacheName,
 								subscribers,
 								Database.NEVER_EXPIRE
-							)
+							);
 							// TODO: proper test configuration logic
-						}, 1200000) // poll once per 20 mins
+						}, 1200000); // poll once per 20 mins
 						//}, 2000); // poll once per second
 
-						this.intervalList.set(cacheName, poller)
+						this.intervalList.set(cacheName, poller);
 					}
 
-					return { embeds: [embed] }
+					return { embeds: [embed] };
 
 					//const response = await axios.get("https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5");
 
@@ -272,23 +274,23 @@ export default class SubscribeCommand extends Command {
 					//console.log(response);
 					//data = response.data.data.catalogs[0];
 				} catch (e) {
-					data = undefined
-					error = true
-					console.error('subscribe error')
+					data = undefined;
+					error = true;
+					console.error('subscribe error');
 				}
-				return null
+				return null;
 			})
 			.catch((_) => {
-				console.error(_)
-				embed = null
-			})
+				console.error(_);
+				embed = null;
+			});
 
-		return null
-	}
+		return null;
+	};
 }
 
 // https://stackoverflow.com/questions/6685396/execute-the-setinterval-function-without-delay-the-first-time
 function setIntervalImmediately(func, interval) {
-	func()
-	return setInterval(func, interval)
+	func();
+	return setInterval(func, interval);
 }

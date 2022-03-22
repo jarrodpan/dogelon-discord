@@ -1,11 +1,11 @@
-import Database from '../types/Database'
-import { Pool, Client } from 'pg'
-import { client } from '../app'
+import Database from '../types/Database';
+import { Pool, Client } from 'pg';
+import { client } from '../app';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config()
+require('dotenv').config();
 
 export default class SQLiteDatabase extends Database {
-	private db: any
+	private db: any;
 
 	public connect(
 		uname?: string,
@@ -20,21 +20,21 @@ export default class SQLiteDatabase extends Database {
 			database: process.env.PGDATABASE || 'mydb',
 			password: pword || process.env.PGPASSWORD,
 			port: Number.parseInt(process.env.PGPORT || port || '5432'),
-		})
+		});
 
 		pool.on('error', (err, client) => {
-			console.error('Unexpected error on idle client', err)
-			process.exit(-1)
-		})
+			console.error('Unexpected error on idle client', err);
+			process.exit(-1);
+		});
 
 		pool.query(
 			'CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData JSONB, cacheUntil INTEGER)'
-		)
+		);
 
-		this.db = pool
+		this.db = pool;
 		// create table
 		//this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData TEXT, cacheUntil INTEGER)').run();
-		return true
+		return true;
 	}
 
 	public async get(key: string) {
@@ -46,22 +46,22 @@ export default class SQLiteDatabase extends Database {
 						values: [key],
 					})
 					.then((res) => {
-						if (res.rowCount == 0) return false
-						const row = res.row[0]
+						if (res.rowCount == 0) return false;
+						const row = res.row[0];
 
-						if (row.cacheUntil < Database.unixTime()) return false // TODO: delete old entries
+						if (row.cacheUntil < Database.unixTime()) return false; // TODO: delete old entries
 
-						return row
-					})
-			})
+						return row;
+					});
+			});
 		} catch (e) {
-			console.error(e)
+			console.error(e);
 		}
-		return false
+		return false;
 	}
 
 	public set(key: string, val: any, setCache?: number) {
-		const cache = Database.unixTime() + (setCache ?? 60)
+		const cache = Database.unixTime() + (setCache ?? 60);
 		try {
 			return this.db.connect().then((client) => {
 				return client
@@ -70,23 +70,23 @@ export default class SQLiteDatabase extends Database {
 						values: [key, val, cache],
 					})
 					.then((res) => {
-						return res.rowCount
-					})
-			})
+						return res.rowCount;
+					});
+			});
 		} catch (e) {
-			console.error(e)
+			console.error(e);
 		}
-		return false
+		return false;
 	}
 
 	public clean(): number {
 		// TODO: convert to postgres
 		return this.db
 			.prepare('DELETE FROM dogelon WHERE cacheUntil < ?')
-			.run(Database.unixTime()).changes
+			.run(Database.unixTime()).changes;
 	}
 
 	public constructor() {
-		super()
+		super();
 	}
 }

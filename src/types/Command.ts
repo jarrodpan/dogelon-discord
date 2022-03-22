@@ -1,5 +1,5 @@
-import { Message, TextChannel } from 'discord.js'
-import Action from './Action'
+import { Message, TextChannel } from 'discord.js';
+import Action from './Action';
 
 export enum MatchOn {
 	TOKEN,
@@ -16,10 +16,10 @@ export enum MatchOn {
  * @param execute a callback that takes an *Action* type and returns a *Promise<any>* for asynchronous calls, an *any* type for synchronous callbacks, or *null* / *undefined* for a failure.
  */
 export abstract class Command {
-	public readonly expression!: string
-	public readonly matchOn!: MatchOn
+	public readonly expression!: string;
+	public readonly matchOn!: MatchOn;
 	public readonly execute!: (
 		message: Message | TextChannel,
 		input: any
-	) => Promise<any> | any
+	) => Promise<any> | any;
 }
