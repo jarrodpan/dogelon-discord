@@ -26,7 +26,10 @@ export default abstract class Database {
 	 * @param cache Optional. Set expiry time of the cache value.
 	 */
 	public abstract set(key: string, val: any, cache?: number): number | false;
-
+	/**
+	 * Removes all expired cache entries from the database.
+	 * @returns number of rows deleted
+	 */
 	public abstract clean(): number | false;
 
 	public static unixTime() {
