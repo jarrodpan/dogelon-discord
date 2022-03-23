@@ -7,7 +7,7 @@ import { PartialGroupDMChannel } from 'discord.js';
 require('dotenv').config();
 
 export default class PostgresDatabase extends Database {
-	private db: any;
+	private static db: any;
 
 	public connect(
 		uname?: string,
@@ -43,7 +43,7 @@ export default class PostgresDatabase extends Database {
 				return false;
 			});
 
-		this.db = pool;
+		PostgresDatabase.db = pool;
 
 		// create table
 		//this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData TEXT, cacheUntil INTEGER)').run();
@@ -53,7 +53,7 @@ export default class PostgresDatabase extends Database {
 	public get(key: string) {
 		return Promise.resolve()
 			.then(async () => {
-				return await this.db.connect();
+				return await PostgresDatabase.db.connect();
 			})
 			.then(async (client) => {
 				return await client
@@ -79,36 +79,6 @@ export default class PostgresDatabase extends Database {
 						return res;
 					});
 			});
-
-		/*
-		
-		try {
-			return await this.db.connect().then((client) => {
-				return client
-					.query({
-						text: 'SELECT jsonData, cacheUntil FROM dogelon WHERE key = $1::text',
-						values: [key],
-					})
-					.then((res) => {
-						if (res.rowCount == 0) return false;
-						console.log('result', res);
-						const row = res.row[0];
-
-						if (row.cacheUntil < Database.unixTime()) return false; // TODO: delete old entries
-
-						return row;
-					})
-					.catch((e) => {
-						console.error(e);
-						return false;
-					})
-					.release();
-			});
-		} catch (e) {
-			console.error(e);
-		}
-		return false;
-		*/
 	}
 
 	public async set(key: string, val: any, setCache?: number) {
@@ -116,7 +86,7 @@ export default class PostgresDatabase extends Database {
 
 		return Promise.resolve()
 			.then(async () => {
-				return await this.db.connect();
+				return await PostgresDatabase.db.connect();
 			})
 			.then(async (client) => {
 				return await client
@@ -129,7 +99,7 @@ export default class PostgresDatabase extends Database {
 						values: [key, val, cache],
 					})
 					.then(async (res) => {
-						console.log(res);
+						//console.log(res);
 						if (res.rowCount == 0) return false;
 						return res.rowCount;
 					})
@@ -142,36 +112,12 @@ export default class PostgresDatabase extends Database {
 						return res;
 					});
 			});
-
-		/*
-		try {
-			return await this.db.connect().then((client) => {
-				return client
-					.query({
-						text: 'INSERT OR REPLACE INTO dogelon (key, jsonData, cacheUntil) VALUES ($1::text, $2, $3::integer)',
-						values: [key, val, cache],
-					})
-					.then((res) => {
-						console.debug('result', res);
-						return res.rowCount;
-					})
-					.catch((e) => {
-						console.error(e);
-						return false;
-					})
-					.release();
-			});
-		} catch (e) {
-			console.error(e);
-		}
-		return false;
-		*/
 	}
 
 	public clean(): number {
 		// TODO: convert to postgres
 		return 1;
-		return this.db
+		return PostgresDatabase.db
 			.prepare('DELETE FROM dogelon WHERE cacheUntil < ?')
 			.run(Database.unixTime()).changes;
 	}

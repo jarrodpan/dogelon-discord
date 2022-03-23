@@ -2,7 +2,7 @@ import Database from '../types/Database';
 import SQLiteDb from 'better-sqlite3'; // alias of 'Database'
 
 export default class SQLiteDatabase extends Database {
-	private db: any;
+	private static db: any;
 
 	public connect(
 		uname?: string,
@@ -10,10 +10,10 @@ export default class SQLiteDatabase extends Database {
 		host?: string,
 		port?: string
 	) {
-		this.db = new SQLiteDb(':memory:');
+		SQLiteDatabase.db = new SQLiteDb(':memory:');
 
 		// create table
-		this.db
+		SQLiteDatabase.db
 			.prepare(
 				'CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData TEXT, cacheUntil INTEGER)'
 			)
@@ -22,7 +22,7 @@ export default class SQLiteDatabase extends Database {
 	}
 
 	public get(key: string) {
-		const stmt = this.db.prepare(
+		const stmt = SQLiteDatabase.db.prepare(
 			'SELECT jsonData, cacheUntil FROM dogelon WHERE key = ?'
 		);
 		try {
@@ -31,7 +31,9 @@ export default class SQLiteDatabase extends Database {
 			if (!res) return false;
 			if (res.cacheUntil < Database.unixTime()) {
 				//console.log("cache expired");
-				this.db.prepare('DELETE FROM dogelon WHERE key = ?').run(key);
+				SQLiteDatabase.db
+					.prepare('DELETE FROM dogelon WHERE key = ?')
+					.run(key);
 				return false;
 			}
 			return JSON.parse(res.jsonData);
@@ -43,7 +45,7 @@ export default class SQLiteDatabase extends Database {
 
 	public set(key: string, val: any, setCache?: number) {
 		const cache = Database.unixTime() + (setCache ?? 60);
-		const stmt = this.db.prepare(
+		const stmt = SQLiteDatabase.db.prepare(
 			'INSERT OR REPLACE INTO dogelon (key, jsonData, cacheUntil) VALUES (?, ?, ?)'
 		);
 		try {
@@ -57,7 +59,7 @@ export default class SQLiteDatabase extends Database {
 	}
 
 	public clean(): number {
-		return this.db
+		return SQLiteDatabase.db
 			.prepare('DELETE FROM dogelon WHERE cacheUntil < ?')
 			.run(Database.unixTime()).changes;
 	}
