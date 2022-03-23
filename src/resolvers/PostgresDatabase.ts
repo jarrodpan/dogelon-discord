@@ -114,12 +114,31 @@ export default class PostgresDatabase extends Database {
 			});
 	}
 
-	public clean(): number {
-		// TODO: convert to postgres
-		return 1;
-		return PostgresDatabase.db
-			.prepare('DELETE FROM dogelon WHERE cacheUntil < ?')
-			.run(Database.unixTime()).changes;
+	public async clean() {
+		return Promise.resolve()
+			.then(async () => {
+				return await PostgresDatabase.db.connect();
+			})
+			.then(async (client) => {
+				return await client
+					.query({
+						text: 'DELETE FROM "public"."dogelon" WHERE "cacheUntil" < $1',
+						values: [Database.unixTime()],
+					})
+					.then(async (res) => {
+						//console.log(res);
+						return res.rowCount;
+					})
+					.catch(async (e?) => {
+						console.error(e);
+						return -1;
+					})
+					.finally(async (res) => {
+						await client.release();
+						console.log('PostgresDatabase: cache cleaned');
+						return res;
+					});
+			});
 	}
 
 	public constructor() {
