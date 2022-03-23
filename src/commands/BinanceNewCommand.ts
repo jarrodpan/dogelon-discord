@@ -25,7 +25,7 @@ export default class BinanceNewCommand extends Command {
 
 				try {
 					if (this.db) {
-						response = this.db.get(cacheName);
+						response = await this.db.get(cacheName);
 						console.log('cache hit:');
 						console.debug(response);
 					}
@@ -37,7 +37,8 @@ export default class BinanceNewCommand extends Command {
 						);
 						console.debug('new data:', response);
 						response.request = undefined;
-						if (this.db) this.db.set(cacheName, response, 600);
+						if (this.db)
+							await this.db.set(cacheName, response, 600);
 						console.log('cache updated');
 					}
 					//console.log(response);

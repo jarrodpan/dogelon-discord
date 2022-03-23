@@ -53,7 +53,7 @@ export default class CryptocurrencyCommand extends Command {
 
 				try {
 					if (this.db) {
-						response = this.db.get(cacheName);
+						response = await this.db.get(cacheName);
 						console.log('cache hit:');
 						console.debug(response);
 					}
@@ -67,7 +67,7 @@ export default class CryptocurrencyCommand extends Command {
 						);
 						console.debug('new data:', response);
 						response.request = undefined;
-						if (this.db) this.db.set(cacheName, response);
+						if (this.db) await this.db.set(cacheName, response);
 						console.log('cache updated');
 					}
 					//console.log(response);

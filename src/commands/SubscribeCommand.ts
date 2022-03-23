@@ -81,7 +81,7 @@ export default class SubscribeCommand extends Command {
 				const cacheName = 'subscribe-' + feature;
 
 				try {
-					const subscriberLookup = this.db.get(cacheName);
+					const subscriberLookup = await this.db.get(cacheName);
 
 					//console.log("cache hit:", subscribers);
 
@@ -118,7 +118,11 @@ export default class SubscribeCommand extends Command {
 							// no subscribers left?
 							if (subscribers.channels.length == 0) {
 								// remove empty list from DB and stop polling
-								this.db.set(cacheName, {}, Database.EXPIRE);
+								await this.db.set(
+									cacheName,
+									{},
+									Database.EXPIRE
+								);
 								clearInterval(
 									this.intervalList.get(
 										cacheName
@@ -187,7 +191,11 @@ export default class SubscribeCommand extends Command {
 
 							if (subscribers.channels.length == 0) {
 								// remove empty list from DB and stop polling
-								this.db.set(cacheName, {}, Database.EXPIRE);
+								await this.db.set(
+									cacheName,
+									{},
+									Database.EXPIRE
+								);
 								clearInterval(
 									this.intervalList.get(
 										cacheName
@@ -254,7 +262,7 @@ export default class SubscribeCommand extends Command {
 
 							// change last updated time
 							subscribers.lastUpdate = new Date().getTime();
-							this.db.set(
+							await this.db.set(
 								cacheName,
 								subscribers,
 								Database.NEVER_EXPIRE
