@@ -1,10 +1,12 @@
 import Database from '../types/Database';
 import { Pool, Client } from 'pg';
 import { client } from '../app';
+import { reduceEachTrailingCommentRange, resolveModuleName } from 'typescript';
+import { PartialGroupDMChannel } from 'discord.js';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
-export default class SQLiteDatabase extends Database {
+export default class PostgresDatabase extends Database {
 	private db: any;
 
 	public connect(
@@ -17,7 +19,7 @@ export default class SQLiteDatabase extends Database {
 		const pool = new Pool({
 			user: uname || process.env.PGUSER,
 			host: host || process.env.PGHOST,
-			database: process.env.PGDATABASE || 'mydb',
+			database: process.env.PGDATABASE || 'dogelon',
 			password: pword || process.env.PGPASSWORD,
 			port: Number.parseInt(process.env.PGPORT || port || '5432'),
 		});
@@ -27,60 +29,152 @@ export default class SQLiteDatabase extends Database {
 			process.exit(-1);
 		});
 
-		pool.query(
-			'CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData JSONB, cacheUntil INTEGER)'
-		);
+		Promise.resolve()
+			.then(() => {
+				return pool.query(
+					'drop table if exists "dogelon";' +
+						'CREATE TABLE IF NOT EXISTS "dogelon" ("key" TEXT PRIMARY KEY, "jsonData" JSONB not null, "cacheUntil" BIGINT not null)'
+				);
+			})
+			.then(() => {
+				return pool.query(
+					//'CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData JSONB not null, cacheUntil BIGINT not null)'
+					'CREATE TABLE IF NOT EXISTS dogelon("key" TEXT PRIMARY KEY, "jsonData" JSONB not null, "cacheUntil" BIGINT not null)'
+				);
+			})
+			.catch((e?) => {
+				console.error(e);
+				return false;
+			});
 
 		this.db = pool;
+
 		// create table
 		//this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData TEXT, cacheUntil INTEGER)').run();
 		return true;
 	}
 
-	public async get(key: string) {
+	public get(key: string) {
+		return Promise.resolve()
+			.then(async () => {
+				return await this.db.connect();
+			})
+			.then(async (client) => {
+				return await client
+					.query({
+						text: 'SELECT "jsonData", "cacheUntil" FROM "public"."dogelon" WHERE key = $1::text',
+						values: [key],
+					})
+					.then(async (res) => {
+						if (res.rowCount == 0) return false;
+						if (
+							Number.parseInt(res?.rows[0]?.cacheUntil) <
+							Database.unixTime()
+						)
+							return false;
+						return res.rows[0].jsonData;
+					})
+					.catch(async (e?) => {
+						console.error(e);
+						return false;
+					})
+					.finally(async (res) => {
+						await client.release();
+						return res;
+					});
+			});
+
+		/*
+		
 		try {
-			this.db.connect().then(() => {
+			return await this.db.connect().then((client) => {
 				return client
 					.query({
-						text: 'SELECT jsonData, cacheUntil FROM dogelon WHERE key = $1::string',
+						text: 'SELECT jsonData, cacheUntil FROM dogelon WHERE key = $1::text',
 						values: [key],
 					})
 					.then((res) => {
 						if (res.rowCount == 0) return false;
+						console.log('result', res);
 						const row = res.row[0];
 
 						if (row.cacheUntil < Database.unixTime()) return false; // TODO: delete old entries
 
 						return row;
-					});
+					})
+					.catch((e) => {
+						console.error(e);
+						return false;
+					})
+					.release();
 			});
 		} catch (e) {
 			console.error(e);
 		}
 		return false;
+		*/
 	}
 
-	public set(key: string, val: any, setCache?: number) {
+	public async set(key: string, val: any, setCache?: number) {
 		const cache = Database.unixTime() + (setCache ?? 60);
+
+		return Promise.resolve()
+			.then(async () => {
+				return await this.db.connect();
+			})
+			.then(async (client) => {
+				return await client
+					.query({
+						text: 'INSERT INTO "public"."dogelon" ("key", "jsonData", "cacheUntil") \
+								VALUES ($1::text, $2::jsonb, $3::bigint) \
+								ON CONFLICT ("key") DO \
+								UPDATE SET "jsonData" = EXCLUDED."jsonData", "cacheUntil" = EXCLUDED."cacheUntil" \
+								WHERE "public"."dogelon"."key" = EXCLUDED."key"',
+						values: [key, val, cache],
+					})
+					.then(async (res) => {
+						console.log(res);
+						if (res.rowCount == 0) return false;
+						return res.rowCount;
+					})
+					.catch(async (e?) => {
+						console.error(e);
+						return false;
+					})
+					.finally(async (res) => {
+						await client.release();
+						return res;
+					});
+			});
+
+		/*
 		try {
-			return this.db.connect().then((client) => {
+			return await this.db.connect().then((client) => {
 				return client
 					.query({
-						text: 'INSERT OR REPLACE INTO dogelon (key, jsonData, cacheUntil) VALUES ($1::text, $2::jsonb, $3::integer)',
+						text: 'INSERT OR REPLACE INTO dogelon (key, jsonData, cacheUntil) VALUES ($1::text, $2, $3::integer)',
 						values: [key, val, cache],
 					})
 					.then((res) => {
+						console.debug('result', res);
 						return res.rowCount;
-					});
+					})
+					.catch((e) => {
+						console.error(e);
+						return false;
+					})
+					.release();
 			});
 		} catch (e) {
 			console.error(e);
 		}
 		return false;
+		*/
 	}
 
 	public clean(): number {
 		// TODO: convert to postgres
+		return 1;
 		return this.db
 			.prepare('DELETE FROM dogelon WHERE cacheUntil < ?')
 			.run(Database.unixTime()).changes;
