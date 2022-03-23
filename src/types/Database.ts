@@ -17,7 +17,7 @@ export default abstract class Database {
 	 * @returns The cached object if found and not expired, false otherwise
 	 * @param key Cache key to query for
 	 */
-	public abstract get(key: string): object | false;
+	public abstract get(key: string): Promise<any> | object | false;
 	/**
 	 * Sets or updates the cached object at the specified key.
 	 * @returns 1 if the row is updated, false if an error occurs.
@@ -25,12 +25,16 @@ export default abstract class Database {
 	 * @param val JSON object to set
 	 * @param cache Optional. Set expiry time of the cache value.
 	 */
-	public abstract set(key: string, val: any, cache?: number): number | false;
+	public abstract set(
+		key: string,
+		val: any,
+		cache?: number
+	): Promise<any> | number | false; //number | false;
 	/**
 	 * Removes all expired cache entries from the database.
 	 * @returns number of rows deleted
 	 */
-	public abstract clean(): number | false;
+	public abstract clean(): Promise<any> | number | false;
 
 	public static unixTime() {
 		return Math.ceil(Date.now() / 1000);
