@@ -2,6 +2,7 @@ import { Command, MatchOn } from '../types/Command';
 import * as fs from 'fs';
 import Database from '../types/Database';
 import SQLiteDatabase from '../resolvers/SQLiteDatabase';
+import PostgresDatabase from '../resolvers/PostgresDatabase';
 export default class Commands {
 	/**
 	 * all the command classes
@@ -20,7 +21,7 @@ export default class Commands {
 	private static _initialize = Promise.resolve()
 		.then(async () => {
 			// initialise database
-			Commands.db = new SQLiteDatabase();
+			Commands.db = new PostgresDatabase();
 			await Commands.db.connect();
 
 			// load commands from file
