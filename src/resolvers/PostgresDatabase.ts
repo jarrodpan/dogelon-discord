@@ -16,14 +16,25 @@ export default class PostgresDatabase extends Database {
 		port?: string
 	) {
 		if (PostgresDatabase.db) return true;
+
+		let pgConfig;
+
+		if (process.env.DATABASE_URL) {
+			const url = process.env.DATABASE_URL + '?sslmode=require';
+			pgConfig = {
+				url,
+			};
+		} else
+			pgConfig = {
+				user: uname || process.env.PGUSER,
+				host: host || process.env.PGHOST,
+				database: process.env.PGDATABASE || 'dogelon',
+				password: pword || process.env.PGPASSWORD,
+				port: Number.parseInt(process.env.PGPORT || port || '5432'),
+			};
+
 		// new postgres pool
-		const pool = new Pool({
-			user: uname || process.env.PGUSER,
-			host: host || process.env.PGHOST,
-			database: process.env.PGDATABASE || 'dogelon',
-			password: pword || process.env.PGPASSWORD,
-			port: Number.parseInt(process.env.PGPORT || port || '5432'),
-		});
+		const pool = new Pool(pgConfig);
 
 		pool.on('error', (err, client) => {
 			console.error('Unexpected error on idle client', err);
