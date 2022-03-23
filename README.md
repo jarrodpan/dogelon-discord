@@ -69,6 +69,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   uplifted `Database.ts` to allow Promises as a return value.
 -   switch db from sqlite to postgres
 -   unit tests no longer compile because that's dumb
+-   stop spamming channels on every reset, only on upgrades.
 -   Changelog is easier to read in readme now
 
 # Previous Changes
