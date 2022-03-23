@@ -31,16 +31,12 @@ export default class PostgresDatabase extends Database {
 
 		Promise.resolve()
 			.then(() => {
-				return pool.query(
-					'drop table if exists "dogelon";' +
-						'CREATE TABLE IF NOT EXISTS "dogelon" ("key" TEXT PRIMARY KEY, "jsonData" JSONB not null, "cacheUntil" BIGINT not null)'
-				);
-			})
-			.then(() => {
-				return pool.query(
-					//'CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData JSONB not null, cacheUntil BIGINT not null)'
-					'CREATE TABLE IF NOT EXISTS dogelon("key" TEXT PRIMARY KEY, "jsonData" JSONB not null, "cacheUntil" BIGINT not null)'
-				);
+				let q = '';
+				if (process.env.NODE_ENV === 'development')
+					q += 'drop table if exists "dogelon";';
+				q +=
+					'CREATE TABLE IF NOT EXISTS "dogelon" ("key" TEXT PRIMARY KEY, "jsonData" JSONB not null, "cacheUntil" BIGINT not null)';
+				return pool.query(q);
 			})
 			.catch((e?) => {
 				console.error(e);
