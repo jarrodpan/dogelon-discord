@@ -1,7 +1,6 @@
 import { Command, MatchOn } from '../types/Command';
 import * as fs from 'fs';
 import Database from '../types/Database';
-import SQLiteDatabase from '../resolvers/SQLiteDatabase';
 import PostgresDatabase from '../resolvers/PostgresDatabase';
 export default class Commands {
 	/**
