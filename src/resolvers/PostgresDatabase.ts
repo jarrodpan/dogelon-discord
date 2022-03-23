@@ -33,8 +33,7 @@ export default class PostgresDatabase extends Database {
 		Promise.resolve()
 			.then(() => {
 				let q = '';
-				if (process.env.NODE_ENV === 'development')
-					q += 'drop table if exists "dogelon";';
+				//if (process.env.NODE_ENV === 'development') q += 'drop table if exists "dogelon";';
 				q +=
 					'CREATE TABLE IF NOT EXISTS "dogelon" ("key" TEXT PRIMARY KEY, "jsonData" JSONB not null, "cacheUntil" BIGINT not null)';
 				return pool.query(q);
