@@ -75,7 +75,7 @@ export default class Commands {
 			// clear db expired data every 5 mins
 			setInterval(() => {
 				Commands.db?.clean();
-			}, 360);
+			}, 300000);
 
 			return;
 		});
