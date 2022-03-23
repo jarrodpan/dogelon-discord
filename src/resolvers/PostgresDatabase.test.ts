@@ -7,35 +7,35 @@ describe('postgres wrapper class', () => {
 	const key = 'sampleKey';
 	const val = { object: 1 };
 
-	test('connect to db', () => {
-		expect(db.connect()).toBeTruthy();
+	test('connect to db', async () => {
+		expect(await db.connect()).toBeTruthy();
 	});
 
-	test('insert 5 min cache value', () => {
-		expect(db.set(key, val, +360)).toBe(1);
+	test('insert 5 min cache value', async () => {
+		expect(await db.set(key, val, +360)).toBe(1);
 	});
 
-	test('retrieve 5 min cached value', () => {
-		expect(db.get(key)).toMatchObject(val);
+	test('retrieve 5 min cached value', async () => {
+		expect(await db.get(key)).toMatchObject(val);
 	});
 
-	test('replace with expired cache value', () => {
-		expect(db.set(key, val, -360)).toBe(1);
+	test('replace with expired cache value', async () => {
+		expect(await db.set(key, val, -360)).toBe(1);
 	});
 
-	test('retrieve expired cache value', () => {
-		expect(db.get(key)).toBe(false);
+	test('retrieve expired cache value', async () => {
+		expect(await db.get(key)).toBe(false);
 	});
 
-	test('retrieve nonexistant value', () => {
-		expect(db.get('no')).toBe(false);
+	test('retrieve nonexistant value', async () => {
+		expect(await db.get('no')).toBe(false);
 	});
 
-	test('insert expired cache value', () => {
-		expect(db.set(key, val, -360)).toBe(1);
+	test('insert expired cache value', async () => {
+		expect(await db.set(key, val, -360)).toBe(1);
 	});
 
-	test('clean cache', () => {
-		expect(db.clean()).toBe(1);
+	test('clean cache', async () => {
+		expect(await db.clean()).toBe(1);
 	});
 });
