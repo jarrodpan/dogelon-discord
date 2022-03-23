@@ -265,8 +265,9 @@ const newDeploy = async (channels) => {
 		});
 	}
 
-	let name = 'Dogelon (development)';
+	let name = 'Dogelon-Dev';
 	let env = 'localhost';
+	const re = firstRun ? '' : 're';
 	// determine environment, the below is only defined locally
 	if (process.env.NODE_ENV === 'production')
 		(name = 'Dogelon') && (env = 'Heroku');
@@ -274,7 +275,7 @@ const newDeploy = async (channels) => {
 	await axios.post(
 		process.env.DISCORD_WEBHOOK as string,
 		{
-			content: `${name} ${v} launched on ${env}.`,
+			content: `${name} ${v} ${re}launched on ${env}.`,
 		},
 		{
 			headers: {
