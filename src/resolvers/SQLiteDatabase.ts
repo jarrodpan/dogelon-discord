@@ -10,6 +10,7 @@ export default class SQLiteDatabase extends Database {
 		host?: string,
 		port?: string
 	) {
+		if (SQLiteDatabase.db) return true;
 		SQLiteDatabase.db = new SQLiteDb(':memory:');
 
 		// create table

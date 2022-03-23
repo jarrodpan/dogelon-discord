@@ -15,6 +15,7 @@ export default class PostgresDatabase extends Database {
 		host?: string,
 		port?: string
 	) {
+		if (PostgresDatabase.db) return true;
 		// new postgres pool
 		const pool = new Pool({
 			user: uname || process.env.PGUSER,
