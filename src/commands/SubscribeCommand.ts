@@ -133,7 +133,11 @@ export default class SubscribeCommand extends Command {
 							}
 						}
 					}
-					this.db.set(cacheName, subscribers, Database.NEVER_EXPIRE);
+					await this.db.set(
+						cacheName,
+						subscribers,
+						Database.NEVER_EXPIRE
+					);
 
 					embed = new MessageEmbed()
 						.setColor('#9B59B6')
@@ -185,9 +189,9 @@ export default class SubscribeCommand extends Command {
 									cacheName
 							);
 
-							const subscribers = this.db.get(
+							const subscribers = (await this.db.get(
 								cacheName
-							) as Subscribers;
+							)) as Subscribers;
 
 							if (subscribers.channels.length == 0) {
 								// remove empty list from DB and stop polling
