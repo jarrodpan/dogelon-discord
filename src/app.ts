@@ -4,6 +4,8 @@ import Commands from './commands';
 import { MatchOn } from './types/Command';
 import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
 import axios from 'axios';
+import { DatabaseError } from 'pg';
+import Database from './types/Database';
 
 // following need to be 'require' to work
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -214,34 +216,54 @@ const newDeploy = async (channels) => {
 		if (line.substring(0, 5).includes('-')) changed[state].push(line);
 	});
 
-	const a = 'author';
-	const embed = new MessageEmbed()
-		.setColor('#9B59B6')
-		.setTitle(`🚀  Dogelon Update - ` + title)
-		.addField(
-			'Notice:',
-			'Database is not persistent so you will have to rerun `!subscribe` for all feeds. This will be fixed in a future update.'
-		)
-		.setThumbnail('https://i.imgur.com/1LIQGWa.png')
-		//.setTimestamp()
-		.setFooter({ text: `Dogelon ${v}  •  ${a}` });
-	//console.log(changed);
+	// check for first run variable in Commands class db assuming Commands has been loaded
+	// this is terrible code and should be refactored to elevate db to main so we dont get surprises
+	const dbKey = 'firstRun';
+	let firstRun = true;
+	let runDetails = await Commands.db?.get(dbKey);
 
-	for (const [k, v] of Object.entries(changed)) {
-		if (v.length > 0) embed.addField(k, v.join('\n'));
+	if (runDetails == false) {
+		// this is the first run and no object so update db
+		runDetails = {
+			deployTime: Database.unixTime(),
+			version: v,
+		};
+		await Commands.db?.set(dbKey, runDetails, Database.NEVER_EXPIRE);
+	} else {
+		// version check hack
+		if (runDetails.version >= v) firstRun = false; // this will stop reset spam
 	}
 
-	// queue notify for all channels
-	channels.forEach((subscriberId, v) => {
-		const ch = channels.get(v);
-		//console.log(ch);
-		if (ch.viewable && ch instanceof TextChannel)
-			queue.push(
-				new Action(ch, '', (msg, input) => {
-					return { embeds: [embed] };
-				})
-			);
-	});
+	if (firstRun) {
+		const a = 'author';
+		const embed = new MessageEmbed()
+			.setColor('#9B59B6')
+			.setTitle(`🚀  Dogelon Update - ` + title)
+			.addField(
+				'Notice:',
+				'Database is not persistent so you will have to rerun `!subscribe` for all feeds. This will be fixed in a future update.'
+			)
+			.setThumbnail('https://i.imgur.com/1LIQGWa.png')
+			//.setTimestamp()
+			.setFooter({ text: `Dogelon ${v}  •  ${a}` });
+		//console.log(changed);
+
+		for (const [k, v] of Object.entries(changed)) {
+			if (v.length > 0) embed.addField(k, v.join('\n'));
+		}
+
+		// queue notify for all channels
+		channels.forEach((subscriberId, v) => {
+			const ch = channels.get(v);
+			//console.log(ch);
+			if (ch.viewable && ch instanceof TextChannel)
+				queue.push(
+					new Action(ch, '', (msg, input) => {
+						return { embeds: [embed] };
+					})
+				);
+		});
+	}
 
 	let name = 'Dogelon (development)';
 	let env = 'localhost';
