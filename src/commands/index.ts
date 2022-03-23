@@ -21,7 +21,7 @@ export default class Commands {
 		.then(async () => {
 			// initialise database
 			Commands.db = new SQLiteDatabase();
-			Commands.db.connect();
+			await Commands.db.connect();
 
 			// load commands from file
 			const commandList: Map<any, any> = new Map();
