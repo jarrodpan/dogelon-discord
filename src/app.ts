@@ -221,6 +221,7 @@ const newDeploy = async (channels) => {
 	const dbKey = 'firstRun';
 	let firstRun = true;
 	const runDetails = await Commands.db?.get(dbKey);
+	console.log(runDetails);
 	const newRunDetails = {
 		deployTime: Database.unixTime(),
 		version: v,
