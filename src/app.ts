@@ -282,4 +282,7 @@ const newDeploy = async (channels) => {
 			},
 		}
 	);
+
+	// clean db on new deploy
+	await Commands.db?.clean();
 };
