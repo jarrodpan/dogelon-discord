@@ -230,7 +230,7 @@ const newDeploy = async (channels) => {
 		// this is the first run and no object so update db
 		await Commands.db?.set(dbKey, newRunDetails, Database.NEVER_EXPIRE);
 	} else {
-		// version check hack
+		// TODO: version check hack... that doesnt work after vx.y.9. fix me in another update
 		if (runDetails.version >= v) firstRun = false; // this will stop reset spam
 		await Commands.db?.set(dbKey, newRunDetails, Database.NEVER_EXPIRE); // update database
 	}
