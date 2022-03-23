@@ -220,18 +220,19 @@ const newDeploy = async (channels) => {
 	// this is terrible code and should be refactored to elevate db to main so we dont get surprises
 	const dbKey = 'firstRun';
 	let firstRun = true;
-	let runDetails = await Commands.db?.get(dbKey);
+	const runDetails = await Commands.db?.get(dbKey);
+	const newRunDetails = {
+		deployTime: Database.unixTime(),
+		version: v,
+	};
 
 	if (runDetails == false) {
 		// this is the first run and no object so update db
-		runDetails = {
-			deployTime: Database.unixTime(),
-			version: v,
-		};
-		await Commands.db?.set(dbKey, runDetails, Database.NEVER_EXPIRE);
+		await Commands.db?.set(dbKey, newRunDetails, Database.NEVER_EXPIRE);
 	} else {
 		// version check hack
 		if (runDetails.version >= v) firstRun = false; // this will stop reset spam
+		await Commands.db?.set(dbKey, newRunDetails, Database.NEVER_EXPIRE); // update database
 	}
 
 	if (firstRun) {
