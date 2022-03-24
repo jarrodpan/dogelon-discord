@@ -149,10 +149,9 @@ export default class PostgresDatabase extends Database {
 			.then(async (client) => {
 				let dev = '';
 				if (process.env.NODE_ENV === 'production')
-					dev =
-						'; DELETE FROM "public"."dogelon" WHERE "public"."dogelon"."key" LIKE \'dev-%\'';
+					dev = 'OR ("public"."dogelon"."key" LIKE \'dev-%\')';
 				const q =
-					'DELETE FROM "public"."dogelon" WHERE "cacheUntil" < $1' +
+					'DELETE FROM "public"."dogelon" WHERE ("cacheUntil" < $1)' +
 					dev;
 				return await client
 					.query({
