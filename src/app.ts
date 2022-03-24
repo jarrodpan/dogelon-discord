@@ -77,7 +77,7 @@ client.once('ready', () => {
 			});
 
 		return;
-	}, 750); // 500ms is the rate limit of discord's bot API
+	}, 550); // 500ms is the rate limit of discord's bot API
 
 	console.debug(Commands.matchOn);
 	//console.debug(Commands.db);
