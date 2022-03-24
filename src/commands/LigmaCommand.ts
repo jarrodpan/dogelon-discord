@@ -8,7 +8,8 @@ import Database from '../types/Database';
  * Example of message matching.
  */
 export default class LigmaCommand extends Command {
-	public expression = "what(?:'{0,1}| | i)s ligma\\?*"; //"what's ligma";
+	public expression =
+		"(?:\\s|\\S)*what(?:'{0,1}| | i)s ligma\\?*(?:\\s|\\S)*"; //"what's ligma";
 	public matchOn = MatchOn.MESSAGE;
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public execute = (message: Message | TextChannel, _: unknown) => {
