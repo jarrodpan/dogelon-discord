@@ -1,10 +1,11 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
+
 import Database from '../types/Database';
 import { Pool, Client } from 'pg';
 import { client } from '../app';
 import { reduceEachTrailingCommentRange, resolveModuleName } from 'typescript';
 import { PartialGroupDMChannel } from 'discord.js';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
 
 export default class PostgresDatabase extends Database {
 	private static db: any;
@@ -15,14 +16,18 @@ export default class PostgresDatabase extends Database {
 		host?: string,
 		port?: string
 	) {
-		if (PostgresDatabase.db) return true;
+		//if (PostgresDatabase.db) return true;
 
 		let pgConfig;
 
 		if (process.env.DATABASE_URL) {
-			const url = process.env.DATABASE_URL + '?sslmode=require';
+			console.log('DATABASE_URL present');
+			//const url = process.env.DATABASE_URL + '?sslmode=require';
 			pgConfig = {
-				url,
+				connectionString: process.env.DATABASE_URL,
+				ssl: {
+					rejectUnauthorized: false,
+				},
 			};
 		} else
 			pgConfig = {
@@ -34,27 +39,30 @@ export default class PostgresDatabase extends Database {
 			};
 
 		// new postgres pool
-		const pool = new Pool(pgConfig);
+		PostgresDatabase.db = pgConfig;
 
-		pool.on('error', (err, client) => {
-			console.error('Unexpected error on idle client', err);
-			process.exit(-1);
-		});
+		const client = new Client(PostgresDatabase.db);
 
 		Promise.resolve()
+			.then(() => {
+				client.connect();
+			})
 			.then(() => {
 				let q = '';
 				//if (process.env.NODE_ENV === 'development') q += 'drop table if exists "dogelon";';
 				q +=
 					'CREATE TABLE IF NOT EXISTS "dogelon" ("key" TEXT PRIMARY KEY, "jsonData" JSONB not null, "cacheUntil" BIGINT not null)';
-				return pool.query(q);
+				return client.query(q);
 			})
 			.catch((e?) => {
 				console.error(e);
 				return false;
+			})
+			.finally(() => {
+				client.end();
 			});
 
-		PostgresDatabase.db = pool;
+		//PostgresDatabase.db = pool;
 
 		// create table
 		//this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData TEXT, cacheUntil INTEGER)').run();
@@ -62,9 +70,12 @@ export default class PostgresDatabase extends Database {
 	}
 
 	public get(key: string) {
+		if (process.env.NODE_ENV === 'development') key = 'dev-' + key;
 		return Promise.resolve()
 			.then(async () => {
-				return await PostgresDatabase.db.connect();
+				const client = new Client(PostgresDatabase.db);
+				await client.connect();
+				return client;
 			})
 			.then(async (client) => {
 				return await client
@@ -85,19 +96,22 @@ export default class PostgresDatabase extends Database {
 						console.error(e);
 						return false;
 					})
-					.finally(async (res) => {
-						await client.release();
-						return res;
+					.finally(async () => {
+						await client.end();
+						//return res;
 					});
 			});
 	}
 
 	public async set(key: string, val: any, setCache?: number) {
+		if (process.env.NODE_ENV === 'development') key = 'dev-' + key;
 		const cache = Database.unixTime() + (setCache ?? 60);
 
 		return Promise.resolve()
 			.then(async () => {
-				return await PostgresDatabase.db.connect();
+				const client = new Client(PostgresDatabase.db);
+				await client.connect();
+				return client;
 			})
 			.then(async (client) => {
 				return await client
@@ -118,9 +132,9 @@ export default class PostgresDatabase extends Database {
 						console.error(e);
 						return false;
 					})
-					.finally(async (res) => {
-						await client.release();
-						return res;
+					.finally(async () => {
+						await client.end();
+						//return res;
 					});
 			});
 	}
@@ -128,7 +142,9 @@ export default class PostgresDatabase extends Database {
 	public async clean() {
 		return Promise.resolve()
 			.then(async () => {
-				return await PostgresDatabase.db.connect();
+				const client = new Client(PostgresDatabase.db);
+				await client.connect();
+				return client;
 			})
 			.then(async (client) => {
 				return await client
@@ -144,15 +160,16 @@ export default class PostgresDatabase extends Database {
 						console.error(e);
 						return -1;
 					})
-					.finally(async (res) => {
-						await client.release();
+					.finally(async () => {
+						await client.end();
 						console.log('PostgresDatabase: cache cleaned');
-						return res;
+						//return res;
 					});
 			});
 	}
 
 	public constructor() {
 		super();
+		//this.connect();
 	}
 }

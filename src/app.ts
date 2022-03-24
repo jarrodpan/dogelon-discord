@@ -1,4 +1,7 @@
 'use strict';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+require('dotenv').config();
+
 import Action from './types/Action';
 import Commands from './commands';
 import { MatchOn } from './types/Command';
@@ -10,8 +13,6 @@ import Database from './types/Database';
 // following need to be 'require' to work
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { Client, Intents } = require('discord.js');
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-require('dotenv').config();
 
 // set up discord client api
 export const client = new Client({
@@ -79,6 +80,7 @@ client.once('ready', () => {
 	}, 750); // 500ms is the rate limit of discord's bot API
 
 	console.debug(Commands.matchOn);
+	//console.debug(Commands.db);
 	console.log('Ready!');
 	//console.debug(Commands);
 	//console.debug(Commands.matchOn);
@@ -240,7 +242,7 @@ const newDeploy = async (channels) => {
 			.setTitle(`🚀  Dogelon Update - ` + title)
 			.addField(
 				'Notice:',
-				'Database is not persistent so you will have to rerun `!subscribe` for all feeds. This will be fixed in a future update.'
+				'Database is now persistent, please resubscribe to all feeds.'
 			)
 			.setThumbnail('https://i.imgur.com/1LIQGWa.png')
 			//.setTimestamp()

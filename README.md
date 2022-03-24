@@ -57,7 +57,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
-## [1.5.0] - TBC
+## [1.5.0] - 2022-03-25
 
 ### Added
 
@@ -69,6 +69,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   database calls are now awaited on before proceeding.
 -   uplifted `Database.ts` to allow Promises as a return value.
 -   switch db from sqlite to postgres
+-   all data is now persistent between deploys
 -   unit tests no longer compile because that's dumb
 -   stop spamming channels on every reset, only on upgrades.
 -   Changelog is easier to read in readme now
