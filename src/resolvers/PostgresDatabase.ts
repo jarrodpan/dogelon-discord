@@ -2,10 +2,7 @@
 require('dotenv').config();
 
 import Database from '../types/Database';
-import { Pool, Client } from 'pg';
-import { client } from '../app';
-import { reduceEachTrailingCommentRange, resolveModuleName } from 'typescript';
-import { PartialGroupDMChannel } from 'discord.js';
+import { Client } from 'pg';
 
 export default class PostgresDatabase extends Database {
 	private static db: any;
@@ -62,10 +59,6 @@ export default class PostgresDatabase extends Database {
 				client.end();
 			});
 
-		//PostgresDatabase.db = pool;
-
-		// create table
-		//this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData TEXT, cacheUntil INTEGER)').run();
 		return true;
 	}
 
@@ -149,10 +142,9 @@ export default class PostgresDatabase extends Database {
 			.then(async (client) => {
 				let dev = '';
 				if (process.env.NODE_ENV === 'production')
-					dev =
-						'; DELETE FROM "public"."dogelon" WHERE "public"."dogelon"."key" LIKE \'dev-%\'';
+					dev = 'OR ("public"."dogelon"."key" LIKE \'dev-%\')';
 				const q =
-					'DELETE FROM "public"."dogelon" WHERE "cacheUntil" < $1' +
+					'DELETE FROM "public"."dogelon" WHERE ("cacheUntil" < $1)' +
 					dev;
 				return await client
 					.query({
@@ -177,6 +169,5 @@ export default class PostgresDatabase extends Database {
 
 	public constructor() {
 		super();
-		//this.connect();
 	}
 }

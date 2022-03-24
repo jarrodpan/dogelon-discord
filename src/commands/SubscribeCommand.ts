@@ -33,10 +33,6 @@ export default class SubscribeCommand extends Command {
 		let feature;
 		let subscribe: boolean;
 
-		// TODO: add unsubscribe function
-		// TODO: check for existing subscriptions
-		// TODO: check for no subscriptions and remove interval if so
-
 		try {
 			// validation
 			if (!this.db) throw new Error('Subscribe: database not defined');
@@ -276,8 +272,7 @@ export default class SubscribeCommand extends Command {
 								Database.NEVER_EXPIRE
 							);
 							// TODO: proper test configuration logic
-						}, 1200000); // poll once per 20 mins
-						//}, 2000); // poll once per second
+						}, 600000); // poll once per 10 mins
 
 						this.intervalList.set(cacheName, poller);
 					}
