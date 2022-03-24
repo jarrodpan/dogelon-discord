@@ -210,11 +210,15 @@ export default class SubscribeCommand extends Command {
 							}
 
 							data.articles.forEach((article) => {
-								console.log(
-									article.releaseDate,
-									subscribers.lastUpdate,
+								if (
 									article.releaseDate > subscribers.lastUpdate
-								);
+								)
+									console.log(
+										article.releaseDate,
+										subscribers.lastUpdate,
+										article.releaseDate >
+											subscribers.lastUpdate
+									);
 								if (
 									article.releaseDate < subscribers.lastUpdate
 								)
