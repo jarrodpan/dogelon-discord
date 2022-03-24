@@ -209,8 +209,7 @@ const newDeploy = async (channels) => {
 		if (line == '# Changelog' || line.length == 0) return;
 		if (line.startsWith('## ') && line.length > 3)
 			(title = line.slice(3).replace('[', 'v').replace(']', '')) &&
-				(v =
-					'v' + line.slice(line.indexOf('[') + 1, line.indexOf(']')));
+				(v = line.slice(line.indexOf('[') + 1, line.indexOf(']')));
 		if (line.startsWith('### Added')) state = 'Added';
 		if (line.startsWith('### Changed')) state = 'Changed';
 		if (line.startsWith('### Removed')) state = 'Removed';
@@ -230,20 +229,37 @@ const newDeploy = async (channels) => {
 	};
 
 	if (runDetails) {
-		// TODO: version check hack... that doesnt work after vx.y.9. fix me in another update
-		if (runDetails.version >= v) firstRun = false; // this will stop reset spam
+		const oldVer = runDetails.version
+			.replace('v', '')
+			.split('.')
+			.map(Number);
+		const newVer = v.replace('v', '').split('.').map(Number);
+
+		for (let i = 0; i < 3; i++) {
+			if (oldVer[i] >= newVer[i]) {
+				firstRun = false;
+				break;
+			}
+		}
+
+		//if (runDetails.version >= v) firstRun = false; // this will stop reset spam
 	}
 	await Commands.db?.set(dbKey, newRunDetails, Database.NEVER_EXPIRE);
 
 	if (firstRun) {
+		const quoteObj = (
+			await axios.get('http://quotes.stormconsultancy.co.uk/random.json')
+		).data;
+		const quote = quoteObj.quote;
+		const auth = quoteObj.author;
+		const qLink = quoteObj.permalink;
+		const motd = `${quote} \n\t— [${auth}](${qLink})`;
+
 		const a = 'author';
 		const embed = new MessageEmbed()
 			.setColor('#9B59B6')
 			.setTitle(`🚀  Dogelon Update - ` + title)
-			.addField(
-				'Notice:',
-				'Database is now persistent, please resubscribe to all feeds.'
-			)
+			.addField('Message of the Day', motd)
 			.setThumbnail('https://i.imgur.com/1LIQGWa.png')
 			//.setTimestamp()
 			.setFooter({ text: `Dogelon ${v}  •  ${a}` });
