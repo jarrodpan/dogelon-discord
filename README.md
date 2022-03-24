@@ -62,6 +62,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 ### Added
 
 -   `PostgresDatabase.ts` and unit test. Postgres is now the default database.
+-   Heroku does not allow pools on free postgres, had to refactor to single client connect.
 
 ### Changed
 
