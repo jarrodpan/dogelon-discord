@@ -1,26 +1,40 @@
-import Database from "../types/Database";
+import Database from '../types/Database';
 import SQLiteDb from 'better-sqlite3'; // alias of 'Database'
 
 export default class SQLiteDatabase extends Database {
-	private db: any;
-	
-	public connect(uname?: string, pword?: string, host?: string, port?: string) {
-		this.db = new SQLiteDb(':memory:');
-		
+	private static db: any;
+
+	public connect(
+		uname?: string,
+		pword?: string,
+		host?: string,
+		port?: string
+	) {
+		if (SQLiteDatabase.db) return true;
+		SQLiteDatabase.db = new SQLiteDb(':memory:');
+
 		// create table
-		this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData TEXT, cacheUntil INTEGER)').run();
+		SQLiteDatabase.db
+			.prepare(
+				'CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData TEXT, cacheUntil INTEGER)'
+			)
+			.run();
 		return true;
 	}
-	
+
 	public get(key: string) {
-		const stmt = this.db.prepare("SELECT jsonData, cacheUntil FROM dogelon WHERE key = ?");
+		const stmt = SQLiteDatabase.db.prepare(
+			'SELECT jsonData, cacheUntil FROM dogelon WHERE key = ?'
+		);
 		try {
 			const res = stmt.get(key);
 			//console.log("db response:", res);
 			if (!res) return false;
 			if (res.cacheUntil < Database.unixTime()) {
 				//console.log("cache expired");
-				this.db.prepare('DELETE FROM dogelon WHERE key = ?').run(key);
+				SQLiteDatabase.db
+					.prepare('DELETE FROM dogelon WHERE key = ?')
+					.run(key);
 				return false;
 			}
 			return JSON.parse(res.jsonData);
@@ -29,10 +43,12 @@ export default class SQLiteDatabase extends Database {
 		}
 		return false;
 	}
-	
+
 	public set(key: string, val: any, setCache?: number) {
 		const cache = Database.unixTime() + (setCache ?? 60);
-		const stmt = this.db.prepare("INSERT OR REPLACE INTO dogelon (key, jsonData, cacheUntil) VALUES (?, ?, ?)");
+		const stmt = SQLiteDatabase.db.prepare(
+			'INSERT OR REPLACE INTO dogelon (key, jsonData, cacheUntil) VALUES (?, ?, ?)'
+		);
 		try {
 			const info = stmt.run(key, JSON.stringify(val), cache);
 			//console.log(info);
@@ -42,11 +58,14 @@ export default class SQLiteDatabase extends Database {
 		}
 		return false;
 	}
-	
+
 	public clean(): number {
-		return (this.db.prepare('DELETE FROM dogelon WHERE cacheUntil < ?').run(Database.unixTime())).changes;
+		return SQLiteDatabase.db
+			.prepare('DELETE FROM dogelon WHERE cacheUntil < ?')
+			.run(Database.unixTime()).changes;
 	}
-	
-	public constructor() { super(); }
-	
+
+	public constructor() {
+		super();
+	}
 }
