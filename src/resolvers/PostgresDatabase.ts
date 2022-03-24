@@ -2,10 +2,7 @@
 require('dotenv').config();
 
 import Database from '../types/Database';
-import { Pool, Client } from 'pg';
-import { client } from '../app';
-import { reduceEachTrailingCommentRange, resolveModuleName } from 'typescript';
-import { PartialGroupDMChannel } from 'discord.js';
+import { Client } from 'pg';
 
 export default class PostgresDatabase extends Database {
 	private static db: any;
@@ -62,10 +59,6 @@ export default class PostgresDatabase extends Database {
 				client.end();
 			});
 
-		//PostgresDatabase.db = pool;
-
-		// create table
-		//this.db.prepare('CREATE TABLE IF NOT EXISTS dogelon(key TEXT PRIMARY KEY, jsonData TEXT, cacheUntil INTEGER)').run();
 		return true;
 	}
 
@@ -176,6 +169,5 @@ export default class PostgresDatabase extends Database {
 
 	public constructor() {
 		super();
-		//this.connect();
 	}
 }
