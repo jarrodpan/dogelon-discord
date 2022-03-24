@@ -57,6 +57,15 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
+## [1.5.1] - 2022-03-25
+
+### Changed
+
+-   reduced discord message sending to 550ms from 750ms
+-   fixed issue #36 with multiple queries in one transaction (made it an `OR` statement)
+-   fixed issue #8 where the statement would not match partial of a whole message with a space.
+-   implemented issue #18 to poll every 10 mins for subscription feed `binance-new`
+
 ## [1.5.0] - 2022-03-25
 
 ### Added
