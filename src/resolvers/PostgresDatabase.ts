@@ -2,10 +2,10 @@
 require('dotenv').config();
 
 import Database from '../types/Database';
-import { Client } from 'pg';
+import { Client, ClientConfig } from 'pg';
 
 export default class PostgresDatabase extends Database {
-	private static db: any;
+	private static db: ClientConfig;
 
 	public connect(
 		uname?: string,
@@ -96,7 +96,7 @@ export default class PostgresDatabase extends Database {
 			});
 	}
 
-	public async set(key: string, val: any, setCache?: number) {
+	public async set(key: string, val: object, setCache?: number) {
 		if (process.env.NODE_ENV === 'development') key = 'dev-' + key;
 		const cache = Database.unixTime() + (setCache ?? 60);
 
