@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../types/Command';
+import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('./../../package.json');

@@ -1,8 +1,21 @@
-import { Command, MatchOn } from '../types/Command';
+//import { Command, MatchOn } from '../types/Command';
 import * as fs from 'fs';
 import Database from '../types/Database';
 import PostgresDatabase from '../resolvers/PostgresDatabase';
-export default class Commands {
+import { Message, TextChannel } from 'discord.js';
+
+export enum MatchOn {
+	TOKEN,
+	MESSAGE,
+}
+export abstract class Command {
+	public readonly expression!: string;
+	public readonly matchOn!: MatchOn;
+	public readonly execute!: (
+		message: Message | TextChannel,
+		input: any
+	) => Promise<any> | any;
+
 	/**
 	 * all the command classes
 	 */
@@ -20,8 +33,8 @@ export default class Commands {
 	private static _initialize = Promise.resolve()
 		.then(async () => {
 			// initialise database
-			Commands.db = new PostgresDatabase();
-			await Commands.db.connect();
+			Command.db = new PostgresDatabase();
+			await Command.db.connect();
 
 			// load commands from file
 			const commandList: Map<any, any> = new Map();
@@ -39,12 +52,12 @@ export default class Commands {
 					// import code
 					const commandClass: Command = new (
 						await import(`./${commandName}`)
-					).default(Commands.db);
+					).default(Command.db);
 					console.debug('new command:', commandClass);
 					//console.debug("match string:", commandClass.expression);
 
 					// push regex match on to correct queue
-					Commands.matchOn
+					Command.matchOn
 						.get(commandClass.matchOn)
 						.push(
 							`^(?<${commandName}>` +
@@ -57,7 +70,7 @@ export default class Commands {
 				});
 
 			// assign static variables at runtime
-			Commands.commandMap = commandList;
+			Command.commandMap = commandList;
 
 			return;
 		})
@@ -65,16 +78,16 @@ export default class Commands {
 			// for each command
 			// take the regex string and append to either messageRegex or tokenRegex with named groups
 			const newMatch: Map<MatchOn, RegExp> = new Map();
-			Commands.matchOn.forEach((val: string[], key) => {
+			Command.matchOn.forEach((val: string[], key) => {
 				//console.log("MATCHon", key, val.join("|"));
 				newMatch.set(key, new RegExp(val.join('|'), 'gm'));
 			});
 			// save compiled regexes
-			Commands.matchOn = newMatch;
+			Command.matchOn = newMatch;
 
 			// clear db expired data every 5 mins
 			setInterval(() => {
-				Commands.db?.clean();
+				Command.db?.clean();
 			}, 300000);
 
 			return;

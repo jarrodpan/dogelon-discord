@@ -1,6 +1,5 @@
 import { Message, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../types/Command';
-import Database from '../types/Database';
+import { Command, MatchOn } from '../commands/';
 
 /**
  * what's ligma?

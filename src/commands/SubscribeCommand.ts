@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../types/Command';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
+import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 import { client, queue } from '../app';
 import Action from '../types/Action';
