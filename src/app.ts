@@ -5,9 +5,8 @@ require('dotenv').config();
 import Action from './types/Action';
 import Commands from './commands';
 import { MatchOn } from './types/Command';
-import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import axios from 'axios';
-import { DatabaseError } from 'pg';
 import Database from './types/Database';
 
 // following need to be 'require' to work
@@ -29,7 +28,8 @@ export const queue: Action[] = [];
 
 // override console.debug for production
 if (process.env.NODE_ENV === 'production') {
-	console.debug = (...msg: any[]) => {
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	console.debug = (..._msg: any[]) => {
 		return;
 	};
 }
@@ -117,7 +117,8 @@ client.on('messageCreate', (message: any): void => {
 		//console.log("match found:", Object.entries(matchOnMessage));
 		// filter out unmatched expressions
 		msgMatchCommands = Object.entries(matchOnMessage).filter(
-			([_, matchString]) => {
+			// eslint-disable-next-line @typescript-eslint/no-unused-vars
+			([_s, matchString]) => {
 				return matchString != undefined;
 			}
 		);
@@ -144,7 +145,8 @@ client.on('messageCreate', (message: any): void => {
 			// filter out unmatched expressions
 			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			tokenMatchCommands = Object.entries(matchOnToken).filter(
-				([_, matchString]) => {
+				// eslint-disable-next-line @typescript-eslint/no-unused-vars
+				([_s, matchString]) => {
 					return matchString != undefined;
 				}
 			);
@@ -229,15 +231,15 @@ const newDeploy = async (channels) => {
 	};
 
 	if (runDetails) {
-		const oldVer = runDetails.version
-			.replace('v', '')
-			.split('.')
-			.map(Number);
-		const newVer = v.replace('v', '').split('.').map(Number);
+		const oldVer = runDetails.version.split('.').map(Number);
+		const newVer = v.split('.').map(Number);
 
 		for (let i = 0; i < 3; i++) {
 			if (oldVer[i] >= newVer[i]) {
+				// whatever, this works, deal with it 😎
 				firstRun = false;
+			} else {
+				firstRun = true;
 				break;
 			}
 		}
@@ -262,7 +264,7 @@ const newDeploy = async (channels) => {
 			.addField('Message of the Day', motd)
 			.setThumbnail('https://i.imgur.com/1LIQGWa.png')
 			//.setTimestamp()
-			.setFooter({ text: `Dogelon ${v}  •  ${a}` });
+			.setFooter({ text: `Dogelon v${v}  •  ${a}` });
 		//console.log(changed);
 
 		for (const [k, v] of Object.entries(changed)) {
@@ -270,12 +272,13 @@ const newDeploy = async (channels) => {
 		}
 
 		// queue notify for all channels
-		channels.forEach((subscriberId, v) => {
+		channels.forEach((_subscriberId, v) => {
 			const ch = channels.get(v);
 			//console.log(ch);
 			if (ch.viewable && ch instanceof TextChannel)
 				queue.push(
-					new Action(ch, '', (msg, input) => {
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
+					new Action(ch, '', (_msg, _input) => {
 						return { embeds: [embed] };
 					})
 				);

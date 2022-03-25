@@ -53,7 +53,11 @@ export default class FinanceCommand extends Command {
 				if (!error) {
 					console.log('setting up response');
 					const result = data.result[0].price;
-					const title = result.longName + ' (' + result.symbol + ')';
+					const title =
+						(result.longName ? result.longName : result.shortName) +
+						' (' +
+						result.symbol +
+						')';
 					const price =
 						result.currencySymbol +
 						result.regularMarketPreviousClose.fmt;

@@ -94,18 +94,24 @@ export default class SubscribeCommand extends Command {
 					} else {
 						// subscriber list exists
 						subscribers = subscriberLookup as Subscribers;
+						const inList =
+							subscribers.channels.filter(
+								(x) => x == message.channelId
+							).length == 0;
+
 						if (subscribe) {
 							// want to subscribe
 							// check if already subscribed
 							console.debug(subscribe);
-							if (
-								subscribers.channels.filter(
-									(x) => x == message.channelId
-								).length == 0
-							) {
+							if (inList) {
 								subscribers.channels.push(message.channelId); // add channel to list if not subscribed
 							} else return null; // otherwise do nothing
 						} else {
+							// if already unsubscribed, do nothing
+							if (inList) {
+								return null;
+							}
+
 							// remove from subscription list
 							subscribers.channels = subscribers.channels.filter(
 								(x) => x !== message.channelId
@@ -125,7 +131,7 @@ export default class SubscribeCommand extends Command {
 									) as NodeJS.Timer
 								);
 								this.intervalList.delete(cacheName);
-								return;
+								//return;
 							}
 						}
 					}

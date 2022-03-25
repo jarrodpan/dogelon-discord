@@ -29,7 +29,7 @@ export default class HelpCommand extends Command {
 			)
 			.addField(
 				'`${stock ticker}` (inline)',
-				'Gets current price for a stock. Cached and/or delayed depending on API response and exchange opening times. Yahoo tickers, add `.AX` for Australian stocks.'
+				'Gets current price for a stock. Cached and/or delayed depending on API response and exchange opening times. Sourced from [Yahoo Finance](https://finance.yahoo.com/).'
 			)
 			.addField(
 				'`%{crypto ticker}` (inline)',
