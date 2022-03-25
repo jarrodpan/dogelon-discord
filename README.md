@@ -66,8 +66,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ### Changed
 
--   refactored Command and Commands classes into one class
--   broke and fixed subscriber function again
+-   refactored Command and Commands classes into one class (issue #22)
+-   broke and fixed subscriber function again (issue #46)
 
 ## [1.5.2] - 2022-03-25
 
