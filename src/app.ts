@@ -3,8 +3,8 @@
 require('dotenv').config();
 
 import Action from './types/Action';
-import Commands from './commands';
-import { MatchOn } from './types/Command';
+import { Command, MatchOn } from './commands';
+//import { MatchOn } from './types/Command';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import axios from 'axios';
 import Database from './types/Database';
@@ -79,7 +79,7 @@ client.once('ready', () => {
 		return;
 	}, 550); // 500ms is the rate limit of discord's bot API
 
-	console.debug(Commands.matchOn);
+	console.debug(Command.matchOn);
 	//console.debug(Commands.db);
 	console.log('Ready!');
 	//console.debug(Commands);
@@ -111,7 +111,7 @@ client.on('messageCreate', (message: any): void => {
 
 	try {
 		// TODO: refactor this into Commands module
-		const matchOnMessage: any = Commands.matchOn
+		const matchOnMessage: any = Command.matchOn
 			.get(MatchOn.MESSAGE)
 			.exec(message.content).groups;
 		//console.log("match found:", Object.entries(matchOnMessage));
@@ -127,7 +127,7 @@ client.on('messageCreate', (message: any): void => {
 			'message matching commands:',
 			msgMatchCommands
 		);
-		Commands.matchOn.get(MatchOn.MESSAGE).lastIndex = 0;
+		Command.matchOn.get(MatchOn.MESSAGE).lastIndex = 0;
 	} catch (e) {
 		//console.error(message.content, "=>\tno message matching groups found");
 		msgMatchCommands = [];
@@ -138,7 +138,7 @@ client.on('messageCreate', (message: any): void => {
 	tokens.forEach((token) => {
 		try {
 			// TODO: refactor this into Commands module
-			const matchOnToken = Commands.matchOn
+			const matchOnToken = Command.matchOn
 				.get(MatchOn.TOKEN)
 				.exec(token).groups;
 			//console.log("match found:", Object.entries(matchOnToken));
@@ -155,7 +155,7 @@ client.on('messageCreate', (message: any): void => {
 				'token matching commands:',
 				tokenMatchCommands.toString()
 			);
-			Commands.matchOn.get(MatchOn.TOKEN).lastIndex = 0;
+			Command.matchOn.get(MatchOn.TOKEN).lastIndex = 0;
 		} catch (e) {
 			//console.error(token, "=>\tno token matching groups found");
 			tokenMatchCommands = [];
@@ -167,7 +167,7 @@ client.on('messageCreate', (message: any): void => {
 				new Action(
 					message,
 					token,
-					Commands.commandMap.get(commandName).execute
+					Command.commandMap.get(commandName).execute
 				)
 			);
 		});
@@ -179,7 +179,7 @@ client.on('messageCreate', (message: any): void => {
 			new Action(
 				message,
 				message.content,
-				Commands.commandMap.get(commandName).execute
+				Command.commandMap.get(commandName).execute
 			)
 		);
 	});
@@ -223,7 +223,7 @@ const newDeploy = async (channels) => {
 	// this is terrible code and should be refactored to elevate db to main so we dont get surprises
 	const dbKey = 'firstRun';
 	let firstRun = true;
-	const runDetails = await Commands.db?.get(dbKey);
+	const runDetails = await Command.db?.get(dbKey);
 	console.log(runDetails);
 	const newRunDetails = {
 		deployTime: Database.unixTime(),
@@ -246,7 +246,7 @@ const newDeploy = async (channels) => {
 
 		//if (runDetails.version >= v) firstRun = false; // this will stop reset spam
 	}
-	await Commands.db?.set(dbKey, newRunDetails, Database.NEVER_EXPIRE);
+	await Command.db?.set(dbKey, newRunDetails, Database.NEVER_EXPIRE);
 
 	if (firstRun) {
 		const quoteObj = (
@@ -305,5 +305,5 @@ const newDeploy = async (channels) => {
 	);
 
 	// clean db on new deploy
-	await Commands.db?.clean();
+	await Command.db?.clean();
 };

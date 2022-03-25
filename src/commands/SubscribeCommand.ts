@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { Channel, Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../types/Command';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
+import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 import { client, queue } from '../app';
 import Action from '../types/Action';
@@ -45,7 +45,14 @@ export default class SubscribeCommand extends Command {
 			action = args[0];
 			feature = args[1];
 			subscribe = !(action === '!uns' || action === '!unsubscribe');
-			console.log(action, feature, subscribe);
+			console.log(
+				action,
+				feature,
+				'channel:',
+				message.channelId,
+				'subscribing:',
+				subscribe
+			);
 
 			if (!validFeatures.includes(feature))
 				throw new Error('Subscribe: argument is not valid: ' + feature);
@@ -79,36 +86,44 @@ export default class SubscribeCommand extends Command {
 				try {
 					const subscriberLookup = await this.db.get(cacheName);
 
-					//console.log("cache hit:", subscribers);
+					console.debug('subscriber cache hit:', subscriberLookup);
 
 					if (!subscriberLookup) {
-						// if no subscribers do nothing
+						// if no subscribers and not subscribing do nothing
 						if (!subscribe) return null;
-
+						console.debug('generating new subscriber list...');
 						// new subscriber object
 						subscribers = {
 							lastUpdate:
 								new Date().getTime() - 24 * 60 * 60 * 1000,
 							channels: [message.channelId],
-						};
+						} as Subscribers;
 					} else {
 						// subscriber list exists
 						subscribers = subscriberLookup as Subscribers;
-						const inList =
-							subscribers.channels.filter(
-								(x) => x == message.channelId
-							).length == 0;
+						const subList = subscribers.channels.filter(
+							(x) => x == message.channelId
+						);
+
+						console.debug('subscribers in list?', subList);
+
+						const inList = subList.length != 0;
+
+						console.debug(
+							'subscriber channel in database: ',
+							inList
+						);
 
 						if (subscribe) {
 							// want to subscribe
 							// check if already subscribed
 							console.debug(subscribe);
-							if (inList) {
+							if (!inList) {
 								subscribers.channels.push(message.channelId); // add channel to list if not subscribed
 							} else return null; // otherwise do nothing
 						} else {
 							// if already unsubscribed, do nothing
-							if (inList) {
+							if (!inList) {
 								return null;
 							}
 

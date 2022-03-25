@@ -1,5 +1,5 @@
 import { Message, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../types/Command';
+import { Command, MatchOn } from '../commands/';
 
 /**
  * a command to turn r/ and /r/ references and reply with the link (as discord doesnt do it automatically for some reason)
