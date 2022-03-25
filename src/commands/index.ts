@@ -15,6 +15,7 @@ export abstract class Command {
 		message: Message | TextChannel,
 		input: any
 	) => Promise<any> | any;
+	public readonly init?: () => void;
 
 	/**
 	 * all the command classes
@@ -55,6 +56,11 @@ export abstract class Command {
 					).default(Command.db);
 					console.debug('new command:', commandClass);
 					//console.debug("match string:", commandClass.expression);
+
+					if (commandClass.init) {
+						console.debug('running init() on', commandName);
+						commandClass.init();
+					}
 
 					// push regex match on to correct queue
 					Command.matchOn
