@@ -66,7 +66,9 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ### Changed
 
--   fixed notification on new versions lol
+-   fixed notification on new versions (issue #40)
+-   fixed subscribe/unsubscribe notifications (issue #29)
+-   fixed forex labels on Finance command (issue #4)
 
 ## [1.5.1] - 2022-03-25
 
