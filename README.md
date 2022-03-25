@@ -33,9 +33,11 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   refactor `Command` type with `Commands` class as `Command` is abstract and all of `Commands` is static so combining the two should be fine.
 -   direct api from binance
 -   dynamic coin tickers from coingecko/binance
--   db is sqlite in-memory, need to migrate to postgres
 
 ## Implemented Changes
+
+<details>
+<summary>Click to expand</summary>
 
 -   API rate limiting, for outbound messages too (discord allows 120/min) - this is done from [1.0.0](#1.0.0) as the commands are queued to run one every half second to match discord's rates.
 -   deploy to heroku for 24/7 madness - done as of [1.0.5](#1.0.5)
@@ -52,10 +54,19 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
             -   could be slow with lots of commands
             -   also, its regex
 -   help command - done in [1.0.3](#1.0.3)
+-   db is sqlite in-memory, need to migrate to postgres - done in [1.5.0](#1.5.0)
 -   ~write API classes and interfaces and stuff to encapsulate things - is this really needed?~ - dont bother with this
 -   ~make the whole thing event driven (where appropriate)~ - it already is durr
 
+</details>
+
 # Changelog
+
+## [1.5.2] - 2022-03-25
+
+### Changed
+
+-   fixed notification on new versions lol
 
 ## [1.5.1] - 2022-03-25
 
@@ -215,6 +226,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 </details><br>
 
+[1.5.2]: ./
+[1.5.1]: ./
 [1.5.0]: ./
 [1.4.2]: ./
 [1.4.1]: ./
