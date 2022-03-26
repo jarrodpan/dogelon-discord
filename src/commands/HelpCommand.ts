@@ -47,6 +47,7 @@ export default class HelpCommand extends Command {
 				'`!binance`, `!b` (inline)',
 				'Shows the latest cryptocurrency listing news from [Binance](https://www.binance.com/en/support/announcement/c-48)'
 			)
+			.addField('`!changes`, `!c`', 'Displays latest changelog entry')
 			.addField('`!help`, `!h`', 'Displays this message')
 			//.setTimestamp()
 			.setFooter({ text: `Dogelon ${v}  •  ${a}` });
