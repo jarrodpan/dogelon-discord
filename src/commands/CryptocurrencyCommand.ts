@@ -61,8 +61,13 @@ export default class CryptocurrencyCommand extends Command {
 
 	public expression = `(?:\\%\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (message: Message | TextChannel, input: any) => {
-		const ticker = input.slice(1);
+	public execute = (message: Message | TextChannel, input: string) => {
+		const args = input.split('/');
+		const ticker = args[0].slice(1);
+		const cc = args[1] ? this.validateCurrency(args[1]) : 'usd';
+		const timeframe = args[2] ? this.validateTimeframe(args[2]) : '24h';
+
+		console.debug('Crypto: arguments=', ticker, timeframe, cc);
 
 		let embed;
 
@@ -73,7 +78,7 @@ export default class CryptocurrencyCommand extends Command {
 		if (coin == undefined) return null;
 
 		console.log(coin);
-		const cc = 'usd';
+		//const cc = 'usd';
 		// coin exists
 		return Promise.resolve()
 			.then(async () => {
@@ -86,7 +91,7 @@ export default class CryptocurrencyCommand extends Command {
 					if (this.db) {
 						response = await this.db.get(cacheName);
 						console.log('cache hit:');
-						console.debug(response);
+						//console.debug(response);
 					}
 
 					if (response == false) {
@@ -96,7 +101,7 @@ export default class CryptocurrencyCommand extends Command {
 								coin.id +
 								'?tickers=false&market_data=true&community_data=false&developer_data=false'
 						);
-						console.debug('new data:', response);
+						//console.debug('new data:', response);
 						response.request = undefined;
 						if (this.db) await this.db.set(cacheName, response);
 						console.log('cache updated');
@@ -130,20 +135,45 @@ export default class CryptocurrencyCommand extends Command {
 					//let price = result.current_price[cc];
 					//let priceChange = result.price_change_24h_in_currency[cc];
 					//let pcChange = result.price_change_24h_in_currency[cc];
-					const coinPrice = result.current_price.usd;
-					const sigDigits = coinPrice < 10 ? 5 : 2;
+					const coinPrice: number = result.current_price[cc];
+					const sigDigits: number = coinPrice < 10 ? 5 : 2;
+
+					console.debug(`price ${cc}`, coinPrice);
 
 					const price = coinPrice.toFixed(sigDigits).toString();
-					const priceChange =
-						'$' +
-						result.price_change_24h_in_currency.usd
-							?.toFixed(sigDigits)
-							.toString();
+					console.debug(`price_change_${timeframe}_in_currency`);
+					const priceChange = // read response if 24h otherwise derive from %
+						timeframe === '24h'
+							? '$' +
+							  //result.price_change_24h_in_currency.usd
+							  result[`price_change_${timeframe}_in_currency`][
+									cc
+							  ]
+									?.toFixed(sigDigits)
+									.toString()
+							: '$' +
+							  (
+									coinPrice /
+									(result[
+										`price_change_percentage_${timeframe}_in_currency`
+									][cc] /
+										100 +
+										1)
+							  )
+									?.toFixed(sigDigits)
+									.toString();
+					console.debug(`change ${cc}`, priceChange);
 					const pcChange =
-						result.price_change_percentage_24h_in_currency.usd
+						//result.price_change_percentage_24h_in_currency.usd
+						result[
+							`price_change_percentage_${timeframe}_in_currency`
+						][cc]
 							.toFixed(2)
 							.toString() + '%';
-					const footer = 'CoinGecko  •  ' + cc.toUpperCase();
+
+					console.debug(`change pc ${cc}`, pcChange);
+					const ccUpper = cc.toUpperCase();
+					const footer = 'CoinGecko  •  ' + ccUpper;
 
 					console.log(
 						'variables set',
@@ -160,8 +190,12 @@ export default class CryptocurrencyCommand extends Command {
 								'https://i.imgur.com/AfFp7pu.png'
 						)
 						.addField('💸  Price', price, true)
-						.addField('🪙  $ Change (24h)', priceChange, true)
-						.addField('💹  % Change (24h)', pcChange, true)
+						.addField(
+							`🪙  ${ccUpper}$ Change (${timeframe})`,
+							priceChange,
+							true
+						)
+						.addField(`💹  % Change (${timeframe})`, pcChange, true)
 						//.setTimestamp()
 						.setFooter({ text: footer });
 					console.log('embed set');
@@ -191,5 +225,145 @@ export default class CryptocurrencyCommand extends Command {
 				embed = null;
 				return null;
 			});
+	};
+
+	private validateCurrency = (cc: string) => {
+		cc = cc.trim().toLowerCase();
+		const ccList = [
+			'aed',
+			'ars',
+			'aud',
+			'bch',
+			'bdt',
+			'bhd',
+			'bmd',
+			'bnb',
+			'brl',
+			'btc',
+			'cad',
+			'chf',
+			'clp',
+			'cny',
+			'czk',
+			'dkk',
+			'dot',
+			'eos',
+			'eth',
+			'eur',
+			'gbp',
+			'hkd',
+			'huf',
+			'idr',
+			'ils',
+			'inr',
+			'jpy',
+			'krw',
+			'kwd',
+			'lkr',
+			'ltc',
+			'mmk',
+			'mxn',
+			'myr',
+			'ngn',
+			'nok',
+			'nzd',
+			'php',
+			'pkr',
+			'pln',
+			'rub',
+			'sar',
+			'sek',
+			'sgd',
+			'thb',
+			'try',
+			'twd',
+			'uah',
+			'usd',
+			'vef',
+			'vnd',
+			'xag',
+			'xau',
+			'xdr',
+			'xlm',
+			'xrp',
+			'yfi',
+			'zar',
+			'bits',
+			'link',
+			'sats',
+		];
+
+		if (ccList.includes(cc)) return cc;
+		return 'usd';
+	};
+
+	private validateTimeframe = (tf: string) => {
+		tf = tf.trim().toLowerCase();
+		const tfList = ['1h', '24h', '7d', '14d', '30d', '60d', '200d', '1y'];
+		if (tfList.includes(tf)) return tf;
+		switch (
+			tf // switch of doom and despair
+		) {
+			case 'h':
+			case 'hour':
+			case 'hourly':
+				return '1h';
+			case 'd':
+			case 'daily':
+			case '24hour':
+			case '24hours':
+			case '24 hour':
+			case '24 hours':
+				return '24h';
+			case 'w':
+			case '1w':
+			case 'week':
+			case '1week':
+			case 'weekly':
+			case 'oneweek':
+			case 'one week':
+				return '7d';
+			case '2w':
+			case '2week':
+			case '2weeks':
+			case '2 week':
+			case '2 weeks':
+			case 'biweekly':
+			case 'fortnight':
+			case 'fortnightly':
+			case 'twoweek':
+			case 'two week':
+			case 'twoweeks':
+			case 'two weeks':
+				return '14d';
+			case 'm':
+			case '1m':
+			case 'month':
+			case 'monthly':
+				return '30d';
+			case '2m':
+			case 'bimonth':
+			case '2month':
+			case '2months':
+			case '2 month':
+			case '2 months':
+			case 'two month':
+			case 'two months':
+			case 'twomonth':
+			case 'twomonths':
+			case 'bimonthly':
+			case '60day':
+			case '60days':
+			case '60 day':
+			case '60 days':
+				return '60d';
+			case 'y':
+			case '1y':
+			case 'year':
+			case '1year':
+			case 'yearly':
+				return '1y';
+		}
+		return '24h';
 	};
 }
