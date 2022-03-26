@@ -68,6 +68,13 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 -   refactored Command and Commands classes into one class (issue #22)
 -   broke and fixed subscriber function again (issue #46)
+-   uplift commands to have optional initialisers called after definition (issue #44)
+-   coingecko api now updates the coin list once per week (issue #26)
+
+# Previous Changes
+
+<details>
+<summary>Click to expand</summary>
 
 ## [1.5.2] - 2022-03-25
 
@@ -103,11 +110,6 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   unit tests no longer compile because that's dumb
 -   stop spamming channels on every reset, only on upgrades.
 -   Changelog is easier to read in readme now
-
-# Previous Changes
-
-<details>
-<summary>Click to expand</summary>
 
 ## [1.4.2] - 2022-03-21
 
@@ -236,6 +238,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 </details><br>
 
+[1.6.0]: ./
 [1.5.2]: ./
 [1.5.1]: ./
 [1.5.0]: ./

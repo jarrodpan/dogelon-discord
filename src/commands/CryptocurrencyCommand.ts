@@ -5,10 +5,10 @@ import {
 	TextChannel,
 	UserContextMenuInteraction,
 } from 'discord.js';
+import { ExitStatus } from 'typescript';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const coins = require('./../types/coingeckocoins.json');
 
 /**
  * Searches coin prices from coingecko.com
@@ -25,10 +25,39 @@ type Coin = {
 
 export default class CryptocurrencyCommand extends Command {
 	private db: Database | undefined;
-	public constructor(db?: Database | undefined) {
+	public constructor(db: Database) {
 		super();
 		if (db) this.db = db;
 	}
+
+	private static coins;
+
+	public init = () => {
+		const cacheName = 'crypto-coinlist';
+
+		return Promise.resolve()
+			.then(async () => {
+				return await this.db?.get(cacheName);
+			})
+			.then(async (coinList) => {
+				let coins = coinList;
+				if (!coinList) {
+					console.debug('fetching new result...');
+					coinList = await axios.get(
+						'https://api.coingecko.com/api/v3/coins/list?include_platform=false'
+					);
+					coins = coinList.data;
+					await this.db?.set(cacheName, { coins }, Database.ONE_WEEK);
+					return { coins };
+				} else return coins;
+			})
+			.then((coins) => {
+				CryptocurrencyCommand.coins = coins.coins;
+			})
+			.catch((e) => {
+				console.error(e);
+			});
+	};
 
 	public expression = `(?:\\%\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
@@ -38,7 +67,9 @@ export default class CryptocurrencyCommand extends Command {
 		let embed;
 
 		// find coin ticker
-		const coin: Coin = coins.find((item) => item.symbol == ticker);
+		const coin: Coin = CryptocurrencyCommand.coins.find(
+			(item) => item.symbol == ticker
+		);
 		if (coin == undefined) return null;
 
 		console.log(coin);
