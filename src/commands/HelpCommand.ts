@@ -32,8 +32,8 @@ export default class HelpCommand extends Command {
 				'Gets current price for a stock. Cached and/or delayed depending on API response and exchange opening times. Sourced from [Yahoo Finance](https://finance.yahoo.com/).'
 			)
 			.addField(
-				'`%{crypto ticker}` (inline)',
-				'Gets current price for a cryptocurrency. Cached and/or delayed. Sourced from [CoinGecko](https://www.coingecko.com).'
+				'`%{crypto ticker}(:time:currency)` (inline)',
+				'Gets current price for a cryptocurrency. Cached and/or delayed. Usage: `%eth`, `%btc:1y:aud`, `%doge::sats`. Sourced from [CoinGecko](https://www.coingecko.com).'
 			)
 			.addField(
 				'`/r/{subreddit}`, `r/{subreddit}` (inline)',
