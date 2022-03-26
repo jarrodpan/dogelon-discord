@@ -197,12 +197,13 @@ const newDeploy = async (channels) => {
 	const v = Command.commandMap.get('ChangesCommand').version;
 
 	if (runDetails) {
-		const oldVer = runDetails.version.split('.').map(Number);
+		const oldVer = runDetails.prevVersion.split('.').map(Number);
 		const newVer = v.split('.').map(Number);
 
 		for (let i = 0; i < 3; i++) {
 			if (oldVer[i] >= newVer[i]) {
 				// whatever, this works, deal with it 😎
+				console.debug(oldVer[i], newVer[i], oldVer[i] >= newVer[i]);
 				firstRun = false;
 			} else {
 				firstRun = true;

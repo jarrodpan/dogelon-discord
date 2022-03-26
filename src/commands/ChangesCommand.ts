@@ -58,9 +58,15 @@ export default class ChangesCommand extends Command {
 		// check for first run variable in Commands class db assuming Commands has been loaded
 		// this is terrible code and should be refactored to elevate db to main so we dont get surprises
 		const dbKey = 'firstRun';
+
+		const oldRun = await this.db.get(dbKey);
+
+		const oldVer = oldRun ? oldRun.version : v;
+
 		const newRunDetails = {
 			deployTime: Database.unixTime(),
 			version: v,
+			prevVersion: oldVer,
 		};
 
 		await Command.db?.set(dbKey, newRunDetails, Database.NEVER_EXPIRE);

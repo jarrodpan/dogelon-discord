@@ -62,7 +62,14 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
-## [1.6.0] - 2022-03-25
+## [1.6.1] - 2022-03-26
+
+### Changed
+
+-   fix security vulnerablility in package (issue #53)
+-   fixed new deployment notifications, again
+
+## [1.6.0] - 2022-03-26
 
 ### Added
 
