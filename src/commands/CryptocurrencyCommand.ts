@@ -64,8 +64,8 @@ export default class CryptocurrencyCommand extends Command {
 	public execute = (message: Message | TextChannel, input: string) => {
 		const args = input.split(':');
 		const ticker = args[0].slice(1);
-		const timeframe = args[1] ? this.validateTimeframe(args[1]) : '24h';
-		const cc = args[2] ? this.validateCurrency(args[2]) : 'usd';
+		const cc = args[1] ? this.validateCurrency(args[1]) : 'usd';
+		const timeframe = args[2] ? this.validateTimeframe(args[2]) : '24h';
 
 		console.debug('Crypto: arguments=', ticker, timeframe, cc);
 
