@@ -76,6 +76,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   broke and fixed subscriber function again (issue #46)
 -   uplift commands to have optional initialisers called after definition (improvement #44)
 -   refactored first run to utilise `ChangesCommand` (improvement #35)
+-   `binance-new` feed now expands the timestamp on reported news (improvement #19)
 
 # Previous Changes
 
