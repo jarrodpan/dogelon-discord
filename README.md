@@ -62,14 +62,18 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
-## [1.6.0-alpha] - 2022-03-25
+## [1.6.0] - 2022-03-25
+
+### Added
+
+-   coingecko api now updates the coin list once per week (improvement #26)
+-   crypto command now take arguments for timeframe and currency (improvements #42 and #45)
 
 ### Changed
 
--   refactored Command and Commands classes into one class (issue #22)
+-   refactored Command and Commands classes into one class (improvement #22)
 -   broke and fixed subscriber function again (issue #46)
--   uplift commands to have optional initialisers called after definition (issue #44)
--   coingecko api now updates the coin list once per week (issue #26)
+-   uplift commands to have optional initialisers called after definition (improvement #44)
 
 # Previous Changes
 
