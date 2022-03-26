@@ -67,6 +67,8 @@ export default class CryptocurrencyCommand extends Command {
 		const timeframe = args[1] ? this.validateTimeframe(args[1]) : '24h';
 		const cc = args[2] ? this.validateCurrency(args[2]) : 'usd';
 
+		console.debug('Crypto: arguments=', ticker, timeframe, cc);
+
 		let embed;
 
 		// find coin ticker
@@ -89,7 +91,7 @@ export default class CryptocurrencyCommand extends Command {
 					if (this.db) {
 						response = await this.db.get(cacheName);
 						console.log('cache hit:');
-						console.debug(response);
+						//console.debug(response);
 					}
 
 					if (response == false) {
@@ -99,7 +101,7 @@ export default class CryptocurrencyCommand extends Command {
 								coin.id +
 								'?tickers=false&market_data=true&community_data=false&developer_data=false'
 						);
-						console.debug('new data:', response);
+						//console.debug('new data:', response);
 						response.request = undefined;
 						if (this.db) await this.db.set(cacheName, response);
 						console.log('cache updated');
@@ -133,20 +135,44 @@ export default class CryptocurrencyCommand extends Command {
 					//let price = result.current_price[cc];
 					//let priceChange = result.price_change_24h_in_currency[cc];
 					//let pcChange = result.price_change_24h_in_currency[cc];
-					const coinPrice = result.current_price.usd;
+					const coinPrice = result.current_price[cc];
 					const sigDigits = coinPrice < 10 ? 5 : 2;
 
+					console.debug(`price ${cc}`, coinPrice);
+
 					const price = coinPrice.toFixed(sigDigits).toString();
-					const priceChange =
-						'$' +
-						result.price_change_24h_in_currency.usd
-							?.toFixed(sigDigits)
-							.toString();
+					console.debug(`price_change_${timeframe}_in_currency`);
+					const priceChange = // read response if 24h otherwise derive from %
+						timeframe === '24h'
+							? '$' +
+							  //result.price_change_24h_in_currency.usd
+							  result[`price_change_${timeframe}_in_currency`][
+									cc
+							  ]
+									?.toFixed(sigDigits)
+									.toString()
+							: (
+									coinPrice /
+									(result[
+										`price_change_percentage_${timeframe}_in_currency`
+									][cc] /
+										100 +
+										1)
+							  )
+									?.toFixed(sigDigits)
+									.toString();
+					console.debug(`change ${cc}`, priceChange);
 					const pcChange =
-						result.price_change_percentage_24h_in_currency.usd
+						//result.price_change_percentage_24h_in_currency.usd
+						result[
+							`price_change_percentage_${timeframe}_in_currency`
+						][cc]
 							.toFixed(2)
 							.toString() + '%';
-					const footer = 'CoinGecko  •  ' + cc.toUpperCase();
+
+					console.debug(`change pc ${cc}`, pcChange);
+					const ccUpper = cc.toUpperCase();
+					const footer = 'CoinGecko  •  ' + ccUpper;
 
 					console.log(
 						'variables set',
@@ -163,8 +189,12 @@ export default class CryptocurrencyCommand extends Command {
 								'https://i.imgur.com/AfFp7pu.png'
 						)
 						.addField('💸  Price', price, true)
-						.addField('🪙  $ Change (24h)', priceChange, true)
-						.addField('💹  % Change (24h)', pcChange, true)
+						.addField(
+							`🪙  ${ccUpper}$ Change (${timeframe})`,
+							priceChange,
+							true
+						)
+						.addField(`💹  % Change (${timeframe})`, pcChange, true)
 						//.setTimestamp()
 						.setFooter({ text: footer });
 					console.log('embed set');
@@ -285,7 +315,9 @@ export default class CryptocurrencyCommand extends Command {
 			case '24 hours':
 				return '24h';
 			case 'w':
+			case '1w':
 			case 'week':
+			case '1week':
 			case 'weekly':
 			case 'oneweek':
 			case 'one week':
@@ -302,7 +334,7 @@ export default class CryptocurrencyCommand extends Command {
 			case 'two week':
 			case 'twoweeks':
 			case 'two weeks':
-				return '2w';
+				return '14d';
 			case 'm':
 			case 'month':
 			case 'monthly':
