@@ -62,7 +62,7 @@ export default class CryptocurrencyCommand extends Command {
 	public expression = `(?:\\%\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
 	public execute = (message: Message | TextChannel, input: string) => {
-		const args = input.split(':');
+		const args = input.split('/');
 		const ticker = args[0].slice(1);
 		const cc = args[1] ? this.validateCurrency(args[1]) : 'usd';
 		const timeframe = args[2] ? this.validateTimeframe(args[2]) : '24h';
@@ -135,8 +135,8 @@ export default class CryptocurrencyCommand extends Command {
 					//let price = result.current_price[cc];
 					//let priceChange = result.price_change_24h_in_currency[cc];
 					//let pcChange = result.price_change_24h_in_currency[cc];
-					const coinPrice = result.current_price[cc];
-					const sigDigits = coinPrice < 10 ? 5 : 2;
+					const coinPrice: number = result.current_price[cc];
+					const sigDigits: number = coinPrice < 10 ? 5 : 2;
 
 					console.debug(`price ${cc}`, coinPrice);
 
@@ -151,7 +151,8 @@ export default class CryptocurrencyCommand extends Command {
 							  ]
 									?.toFixed(sigDigits)
 									.toString()
-							: (
+							: '$' +
+							  (
 									coinPrice /
 									(result[
 										`price_change_percentage_${timeframe}_in_currency`
@@ -336,6 +337,7 @@ export default class CryptocurrencyCommand extends Command {
 			case 'two weeks':
 				return '14d';
 			case 'm':
+			case '1m':
 			case 'month':
 			case 'monthly':
 				return '30d';
@@ -356,7 +358,9 @@ export default class CryptocurrencyCommand extends Command {
 			case '60 days':
 				return '60d';
 			case 'y':
+			case '1y':
 			case 'year':
+			case '1year':
 			case 'yearly':
 				return '1y';
 		}
