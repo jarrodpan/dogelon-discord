@@ -187,37 +187,6 @@ client.on('messageCreate', (message: any): void => {
 
 const newDeploy = async (channels) => {
 	// eslint-disable-next-line @typescript-eslint/no-var-requires
-	const readme: string = require('fs').readFileSync('./README.md').toString();
-	const latestChange = readme
-		.match(/# Changelog[\S\s]*?(?:###[\S\s]*?){1,3}## /)
-		?.toString()
-		.replace(/\r/gm, '')
-		.split(/\n/gm); // chaotic regex to extract the latest change in the changelog
-
-	//console.log(latestChange);
-
-	let title;
-	const changed = {
-		Added: new Array<string>(),
-		Changed: new Array<string>(),
-		Removed: new Array<string>(),
-	} as object;
-	let state: 'Added' | 'Changed' | 'Removed';
-
-	let v;
-
-	// extract all the junk
-	latestChange?.forEach((line) => {
-		if (line == '# Changelog' || line.length == 0) return;
-		if (line.startsWith('## ') && line.length > 3)
-			(title = line.slice(3).replace('[', 'v').replace(']', '')) &&
-				(v = line.slice(line.indexOf('[') + 1, line.indexOf(']')));
-		if (line.startsWith('### Added')) state = 'Added';
-		if (line.startsWith('### Changed')) state = 'Changed';
-		if (line.startsWith('### Removed')) state = 'Removed';
-
-		if (line.substring(0, 5).includes('-')) changed[state].push(line);
-	});
 
 	// check for first run variable in Commands class db assuming Commands has been loaded
 	// this is terrible code and should be refactored to elevate db to main so we dont get surprises
@@ -225,10 +194,7 @@ const newDeploy = async (channels) => {
 	let firstRun = true;
 	const runDetails = await Command.db?.get(dbKey);
 	console.log(runDetails);
-	const newRunDetails = {
-		deployTime: Database.unixTime(),
-		version: v,
-	};
+	const v = Command.commandMap.get('ChangesCommand').version;
 
 	if (runDetails) {
 		const oldVer = runDetails.version.split('.').map(Number);
@@ -240,50 +206,26 @@ const newDeploy = async (channels) => {
 				firstRun = false;
 			} else {
 				firstRun = true;
+				channels.forEach((_subscriberId, v) => {
+					const ch = channels.get(v);
+					//console.log(ch);
+					if (ch.viewable && ch instanceof TextChannel)
+						queue.push(
+							// eslint-disable-next-line @typescript-eslint/no-unused-vars
+							new Action(
+								ch,
+								'',
+								Command.commandMap.get('ChangesCommand').execute
+							)
+						);
+				});
 				break;
 			}
 		}
 
 		//if (runDetails.version >= v) firstRun = false; // this will stop reset spam
 	}
-	await Command.db?.set(dbKey, newRunDetails, Database.NEVER_EXPIRE);
-
-	if (firstRun) {
-		const quoteObj = (
-			await axios.get('http://quotes.stormconsultancy.co.uk/random.json')
-		).data;
-		const quote = quoteObj.quote;
-		const auth = quoteObj.author;
-		const qLink = quoteObj.permalink;
-		const motd = `${quote} \n\t— [${auth}](${qLink})`;
-
-		const a = 'author';
-		const embed = new MessageEmbed()
-			.setColor('#9B59B6')
-			.setTitle(`🚀  Dogelon Update - ` + title)
-			.addField('Message of the Day', motd)
-			.setThumbnail('https://i.imgur.com/1LIQGWa.png')
-			//.setTimestamp()
-			.setFooter({ text: `Dogelon v${v}  •  ${a}` });
-		//console.log(changed);
-
-		for (const [k, v] of Object.entries(changed)) {
-			if (v.length > 0) embed.addField(k, v.join('\n'));
-		}
-
-		// queue notify for all channels
-		channels.forEach((_subscriberId, v) => {
-			const ch = channels.get(v);
-			//console.log(ch);
-			if (ch.viewable && ch instanceof TextChannel)
-				queue.push(
-					// eslint-disable-next-line @typescript-eslint/no-unused-vars
-					new Action(ch, '', (_msg, _input) => {
-						return { embeds: [embed] };
-					})
-				);
-		});
-	}
+	//await Command.db?.set(dbKey, newRunDetails, Database.NEVER_EXPIRE);
 
 	let name = 'Dogelon-Dev';
 	let env = 'localhost';
