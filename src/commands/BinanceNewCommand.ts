@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../types/Command';
+import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 
 export default class BinanceNewCommand extends Command {

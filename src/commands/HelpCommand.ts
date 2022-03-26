@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../types/Command';
+import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('./../../package.json');
@@ -32,8 +32,8 @@ export default class HelpCommand extends Command {
 				'Gets current price for a stock. Cached and/or delayed depending on API response and exchange opening times. Sourced from [Yahoo Finance](https://finance.yahoo.com/).'
 			)
 			.addField(
-				'`%{crypto ticker}` (inline)',
-				'Gets current price for a cryptocurrency. Cached and/or delayed. Sourced from [CoinGecko](https://www.coingecko.com).'
+				'`%{crypto ticker}(/currency/time)` (inline)',
+				'Gets current price for a cryptocurrency. Cached and/or delayed. Usage: `%eth`, `%btc/aud/1y`, `%doge//2w`. Sourced from [CoinGecko](https://www.coingecko.com).'
 			)
 			.addField(
 				'`/r/{subreddit}`, `r/{subreddit}` (inline)',
@@ -47,6 +47,7 @@ export default class HelpCommand extends Command {
 				'`!binance`, `!b` (inline)',
 				'Shows the latest cryptocurrency listing news from [Binance](https://www.binance.com/en/support/announcement/c-48)'
 			)
+			.addField('`!changes`, `!c`', 'Displays latest changelog entry')
 			.addField('`!help`, `!h`', 'Displays this message')
 			//.setTimestamp()
 			.setFooter({ text: `Dogelon ${v}  •  ${a}` });
