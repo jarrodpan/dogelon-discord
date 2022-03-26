@@ -61,8 +61,11 @@ export default class CryptocurrencyCommand extends Command {
 
 	public expression = `(?:\\%\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (message: Message | TextChannel, input: any) => {
-		const ticker = input.slice(1);
+	public execute = (message: Message | TextChannel, input: string) => {
+		const args = input.split(':');
+		const ticker = args[0].slice(1);
+		const timeframe = args[1] ? this.validateTimeframe(args[1]) : '24h';
+		const cc = args[2] ? this.validateCurrency(args[2]) : 'usd';
 
 		let embed;
 
@@ -73,7 +76,7 @@ export default class CryptocurrencyCommand extends Command {
 		if (coin == undefined) return null;
 
 		console.log(coin);
-		const cc = 'usd';
+		//const cc = 'usd';
 		// coin exists
 		return Promise.resolve()
 			.then(async () => {
@@ -191,5 +194,140 @@ export default class CryptocurrencyCommand extends Command {
 				embed = null;
 				return null;
 			});
+	};
+
+	private validateCurrency = (cc: string) => {
+		cc = cc.trim().toLowerCase();
+		const ccList = [
+			'aed',
+			'ars',
+			'aud',
+			'bch',
+			'bdt',
+			'bhd',
+			'bmd',
+			'bnb',
+			'brl',
+			'btc',
+			'cad',
+			'chf',
+			'clp',
+			'cny',
+			'czk',
+			'dkk',
+			'dot',
+			'eos',
+			'eth',
+			'eur',
+			'gbp',
+			'hkd',
+			'huf',
+			'idr',
+			'ils',
+			'inr',
+			'jpy',
+			'krw',
+			'kwd',
+			'lkr',
+			'ltc',
+			'mmk',
+			'mxn',
+			'myr',
+			'ngn',
+			'nok',
+			'nzd',
+			'php',
+			'pkr',
+			'pln',
+			'rub',
+			'sar',
+			'sek',
+			'sgd',
+			'thb',
+			'try',
+			'twd',
+			'uah',
+			'usd',
+			'vef',
+			'vnd',
+			'xag',
+			'xau',
+			'xdr',
+			'xlm',
+			'xrp',
+			'yfi',
+			'zar',
+			'bits',
+			'link',
+			'sats',
+		];
+
+		if (ccList.includes(cc)) return cc;
+		return 'usd';
+	};
+
+	private validateTimeframe = (tf: string) => {
+		tf = tf.trim().toLowerCase();
+		const tfList = ['1h', '24h', '7d', '14d', '30d', '60d', '200d', '1y'];
+		if (tfList.includes(tf)) return tf;
+		switch (
+			tf // switch of doom and despair
+		) {
+			case 'h':
+			case 'hour':
+			case 'hourly':
+				return '1h';
+			case 'd':
+			case 'daily':
+			case '24hour':
+			case '24hours':
+			case '24 hour':
+			case '24 hours':
+				return '24h';
+			case 'w':
+			case 'week':
+			case 'weekly':
+			case 'oneweek':
+			case 'one week':
+				return '7d';
+			case '2w':
+			case '2week':
+			case '2weeks':
+			case '2 week':
+			case '2 weeks':
+			case 'biweekly':
+			case 'fortnight':
+			case 'fortnightly':
+			case 'twoweek':
+			case 'two week':
+			case 'twoweeks':
+			case 'two weeks':
+				return '2w';
+			case 'm':
+			case 'month':
+			case 'monthly':
+				return '30d';
+			case '2m':
+			case 'bimonth':
+			case '2month':
+			case '2months':
+			case '2 month':
+			case '2 months':
+			case 'two month':
+			case 'two months':
+			case 'twomonth':
+			case 'twomonths':
+			case 'bimonthly':
+			case '60day':
+			case '60days':
+			case '60 day':
+			case '60 days':
+				return '60d';
+			case 'y':
+			case 'year':
+			case 'yearly':
+				return '1y';
+		}
+		return '24h';
 	};
 }
