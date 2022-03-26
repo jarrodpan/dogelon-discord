@@ -68,12 +68,15 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 -   coingecko api now updates the coin list once per week (improvement #26)
 -   crypto command now take arguments for timeframe and currency (improvements #42 and #45)
+-   `!changes` to show the latest changelog entry (improvement #35)
 
 ### Changed
 
 -   refactored Command and Commands classes into one class (improvement #22)
 -   broke and fixed subscriber function again (issue #46)
 -   uplift commands to have optional initialisers called after definition (improvement #44)
+-   refactored first run to utilise `ChangesCommand` (improvement #35)
+-   `binance-new` feed now expands the timestamp on reported news (improvement #19)
 
 # Previous Changes
 

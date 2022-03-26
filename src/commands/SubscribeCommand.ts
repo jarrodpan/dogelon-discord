@@ -242,11 +242,31 @@ export default class SubscribeCommand extends Command {
 									return;
 
 								const date = new Date(article.releaseDate);
-								const year = date.getFullYear();
-								const month = date.getMonth();
-								const dt = date.getDate();
+								const year = date.getUTCFullYear();
+								const month = date
+									.getUTCMonth()
+									.toString()
+									.padStart(2, '0');
+								const dt = date
+									.getUTCDate()
+									.toString()
+									.padStart(2, '0');
+
+								const hr = date
+									.getUTCHours()
+									.toString()
+									.padStart(2, '0');
+								const mi = date
+									.getUTCMinutes()
+									.toString()
+									.padStart(2, '0');
+								const se = date
+									.getUTCSeconds()
+									.toString()
+									.padStart(2, '0');
+								const tz = 'UTC';
 								// build title string
-								const timestamp = `${year}-${month}-${dt}`;
+								const timestamp = `${year}-${month}-${dt} ${hr}:${mi}:${se} ${tz}`;
 
 								const text = article.title;
 								const link = article.code;
@@ -263,15 +283,15 @@ export default class SubscribeCommand extends Command {
 													.setColor('#9B59B6')
 
 													.setTitle(
-														'📰  New Binance Cryptocurrency Listing News - ' +
-															timestamp
+														'📰  New Binance Cryptocurrency Listing News'
 													)
 
 													.setThumbnail(
 														data.icon ||
 															'https://i.imgur.com/2vHF2jl.jpg'
 													)
-													.setDescription(
+													.addField(
+														timestamp,
 														`[${text}](https://www.binance.com/en/support/announcement/${link})`
 													)
 													//.setTimestamp()
