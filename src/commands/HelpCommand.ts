@@ -18,7 +18,7 @@ export default class HelpCommand extends Command {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public execute = (message: Message | TextChannel, _: unknown) => {
 		const v = `v${pkg.version}`;
-		const a = 'author info here';
+		//const a = '<@944798462053089300>';
 
 		const embed = new MessageEmbed()
 			.setColor('#9B59B6')
@@ -50,7 +50,11 @@ export default class HelpCommand extends Command {
 			.addField('`!changes`, `!c`', 'Displays latest changelog entry')
 			.addField('`!help`, `!h`', 'Displays this message')
 			//.setTimestamp()
-			.setFooter({ text: `Dogelon ${v}  •  ${a}` });
+			.setFooter({
+				text: `Dogelon ${v}`,
+				iconURL:
+					'https://cdn.discordapp.com/app-icons/945669693576994877/c11dde4d4f016ffcc820418864efd9f4.png?size=64',
+			});
 		return { embeds: [embed] };
 	};
 }

@@ -79,14 +79,18 @@ export default class ChangesCommand extends Command {
 		const qLink = quoteObj.permalink;
 		const motd = `${quote} \n\t— [${auth}](${qLink})`;
 
-		const a = 'author';
+		//const a =	'[phantomagic](https://discordapp.com/users/944798462053089300/)';
 		const embed = new MessageEmbed()
 			.setColor('#9B59B6')
 			.setTitle(`🚀  Dogelon Update - ` + title)
 			.addField('Message of the Day', motd)
 			.setThumbnail('https://i.imgur.com/1LIQGWa.png')
 			//.setTimestamp()
-			.setFooter({ text: `Dogelon v${v}  •  ${a}` });
+			.setFooter({
+				text: `Dogelon v${v}`,
+				iconURL:
+					'https://cdn.discordapp.com/app-icons/945669693576994877/c11dde4d4f016ffcc820418864efd9f4.png?size=64',
+			});
 		//console.log(changed);
 
 		for (const [k, v] of Object.entries(changed)) {

@@ -153,12 +153,13 @@ export default class CryptocurrencyCommand extends Command {
 									.toString()
 							: '$' +
 							  (
+									coinPrice -
 									coinPrice /
-									(result[
-										`price_change_percentage_${timeframe}_in_currency`
-									][cc] /
-										100 +
-										1)
+										(result[
+											`price_change_percentage_${timeframe}_in_currency`
+										][cc] /
+											100 +
+											1)
 							  )
 									?.toFixed(sigDigits)
 									.toString();

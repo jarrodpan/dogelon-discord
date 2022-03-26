@@ -26,6 +26,32 @@ export const client = new Client({
 // TODO: make this better
 export const queue: Action[] = [];
 
+const oLog = console.log;
+
+const newLog = (...msg: any[]) => {
+	//let e = new Error();
+	try {
+		throw new Error();
+	} catch (e) {
+		const stackline = e.stack
+			.split('\n')[2]
+			.trim()
+			.replace('(', '')
+			.replace(')', '')
+			.split(' ') as string[];
+		const caller =
+			stackline.length == 2
+				? stackline[1].slice(stackline[1].indexOf('bin') + 4)
+				: stackline[2].slice(stackline[2].indexOf('bin') + 4) +
+				  ' ' +
+				  stackline[1];
+		oLog.apply(this, new Array().concat('[' + caller + ']', msg));
+	}
+};
+
+console.log = newLog;
+console.debug = newLog;
+
 // override console.debug for production
 if (process.env.NODE_ENV === 'production') {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -194,11 +220,11 @@ const newDeploy = async (channels) => {
 	let firstRun = true;
 	const runDetails = await Command.db?.get(dbKey);
 	console.log(runDetails);
-	const v = Command.commandMap.get('ChangesCommand').version;
+	const v = runDetails.version;
 
 	if (runDetails) {
 		const oldVer = runDetails.prevVersion.split('.').map(Number);
-		const newVer = v.split('.').map(Number);
+		const newVer = runDetails.version.split('.').map(Number);
 
 		for (let i = 0; i < 3; i++) {
 			if (oldVer[i] >= newVer[i]) {

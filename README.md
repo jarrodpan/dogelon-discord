@@ -62,6 +62,14 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
+## [1.6.2] - 2022-03-26
+
+### Changed
+
+-   fix crypto math for longer time frames (issue #54)
+-   internal logging is now more detailed with file and function calls
+-   added little icon to footer and removed author placeholder.
+
 ## [1.6.1] - 2022-03-26
 
 ### Changed
