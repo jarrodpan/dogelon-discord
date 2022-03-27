@@ -24,20 +24,20 @@ type Coin = {
 };
 
 export default class CryptocurrencyCommand extends Command {
-	private db: Database | undefined;
+	private db: Database;
 	public constructor(db: Database) {
 		super();
-		if (db) this.db = db;
+		this.db = db;
 	}
 
-	private static coins;
+	private static coins: Coin[];
 
 	public init = () => {
 		const cacheName = 'crypto-coinlist';
 
 		return Promise.resolve()
 			.then(async () => {
-				return await this.db?.get(cacheName);
+				return await this.db.get(cacheName);
 			})
 			.then(async (coinList) => {
 				let coins = coinList;
@@ -47,7 +47,7 @@ export default class CryptocurrencyCommand extends Command {
 						'https://api.coingecko.com/api/v3/coins/list?include_platform=false'
 					);
 					coins = coinList.data;
-					await this.db?.set(cacheName, { coins }, Database.ONE_WEEK);
+					await this.db.set(cacheName, { coins }, Database.ONE_WEEK);
 					return { coins };
 				} else return coins;
 			})
@@ -61,24 +61,146 @@ export default class CryptocurrencyCommand extends Command {
 
 	public expression = `(?:\\%\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (message: Message | TextChannel, input: string) => {
+	public execute = async (message: Message | TextChannel, input: string) => {
 		const args = input.split('/');
-		const ticker = args[0].slice(1);
+		const tickerArgs = args[0].slice(1).split(':');
+		let ticker = tickerArgs[0];
+
+		// logic for preference setting detection
+		let setPref = false;
+		if (ticker.startsWith('!')) {
+			ticker = ticker.slice(1);
+			setPref = true;
+		}
+
 		const cc = args[1] ? this.validateCurrency(args[1]) : 'usd';
 		const timeframe = args[2] ? this.validateTimeframe(args[2]) : '24h';
-
-		console.debug('Crypto: arguments=', ticker, timeframe, cc);
 
 		let embed;
 
 		// find coin ticker
-		const coin: Coin = CryptocurrencyCommand.coins.find(
+		const coinArr: Coin[] | undefined = CryptocurrencyCommand.coins.filter(
 			(item) => item.symbol == ticker
 		);
-		if (coin == undefined) return null;
+		if (coinArr === undefined) return null;
 
-		console.log(coin);
-		//const cc = 'usd';
+		let prefSpecified = false;
+		let pref: string | number = 'all';
+
+		if (tickerArgs[1] !== undefined) {
+			pref = tickerArgs[1]
+				? this.validatePreference(
+						tickerArgs[1].toLowerCase(),
+						coinArr.length
+				  )
+				: 'all';
+			prefSpecified = true;
+		}
+
+		/**
+		 * Arguments parsed
+		 */
+		console.debug(
+			'Crypto: arguments=',
+			ticker,
+			pref,
+			timeframe,
+			cc,
+			`setPref:${setPref}`
+		);
+		console.log('Coin list:', coinArr);
+
+		// check for existing preference
+		// TODO: should skip this if only one currency in list but cbf
+		const prefCache = 'crypto-preferences';
+		let dbPref: object | false = await this.db.get(prefCache);
+		const channel = (message as Message).channelId.toString();
+		// if no preferences in db and we want to set a preference
+		if (!dbPref && setPref) dbPref = {};
+
+		if (setPref) {
+			if (pref !== 'all') {
+				// we have a preference object we want to update ('all' = no preference)
+
+				if (!dbPref[channel]) dbPref[channel] = {};
+				dbPref[channel][ticker] = pref;
+				// return notification
+			} else {
+				// pref is 'all' which is unset pref
+				if (dbPref[channel][ticker]) delete dbPref[channel][ticker];
+				else return null; // preference is already unset // delete preference
+			}
+			await this.db.set(prefCache, dbPref, Database.NEVER_EXPIRE);
+
+			const coinName =
+				pref === 'all'
+					? '`all`'
+					: `\`${pref.toString()}\`` +
+					  ' (id: `' +
+					  coinArr[pref].id +
+					  '`)';
+
+			embed = new MessageEmbed()
+				.setColor('#0099ff')
+				.setTitle('🚀  Crypto Preferences Changed')
+				.setDescription(
+					`Set <#${channel}> preference for \`${ticker}\` to ${coinName}.`
+				)
+				.setFooter({ text: 'CoinGecko' });
+			return { embeds: [embed] };
+		}
+		console.debug('dbPref:', dbPref);
+		console.debug('channel pref:', dbPref[channel][ticker]);
+		// load preference from db
+		if (dbPref[channel][ticker] !== undefined && !prefSpecified) {
+			pref = dbPref[channel][ticker];
+			console.debug('preference set:', channel, ticker, pref);
+		}
+
+		//let coin: Coin;
+		if (coinArr.length == 0) return null;
+		if (coinArr.length == 1) pref = 0;
+		if (!setPref && pref === 'all') {
+			// return list of coins
+			embed = new MessageEmbed()
+				.setColor('#0099ff')
+				.setTitle('🚀  Multiple Coins Detected')
+				.setDescription(
+					'Multiple coins have this ticker. Select one of the following:'
+				)
+				.setFooter({ text: 'CoinGecko' });
+
+			// enumerate options
+			coinArr.forEach((coin, index) => {
+				embed.addField(
+					'`%' + coin.symbol + ':' + index + '`',
+					coin.name + ' (id: `' + coin.id + '`)'
+				);
+			});
+
+			// instructions on setting preferences
+			const sym = coinArr[0].symbol;
+			embed
+				.addField('\u200b', '**Special options**')
+				.addField(
+					'`%' + sym + ':all`',
+					'Show this list when a preference is set.'
+				)
+				.addField(
+					'`%!' + sym + ':{index}`',
+					'Set preference for this ticker e.g. `%!' + sym + ':1`.'
+				)
+				.addField(
+					'`%!' + sym + ':all`',
+					'Remove preference for this ticker.'
+				);
+
+			return { embeds: [embed] };
+		}
+
+		// definitely have a number here within range
+		const coin: Coin = coinArr[pref];
+
 		// coin exists
 		return Promise.resolve()
 			.then(async () => {
@@ -107,22 +229,15 @@ export default class CryptocurrencyCommand extends Command {
 						console.log('cache updated');
 					}
 					//console.log(response);
-					//console.log(response);
 					data = response.data;
 				} catch (e) {
-					//if (typeof response.data != undefined) data = {};
-					//if (typeof response.data.quoteSummary != undefined) data = response.data.quoteSummary;
-					//else if (typeof response.data.finance != undefined) data = response.data.finance;
-
-					//data = (response.data.quoteSummary ?? response.data.finance ?? {});
 					data = undefined;
 					error = true;
 					console.error('cyrpto error');
 				}
 				return [response, data, error];
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			})
-			.then(([response, data, error]) => {
+			.then(([_response, data, error]) => {
 				//console.log(data.error);
 				if (!error) {
 					console.log('setting up response');
@@ -131,28 +246,25 @@ export default class CryptocurrencyCommand extends Command {
 						data.name + ' (' + data.symbol.toUpperCase() + ')';
 					console.log(title);
 					console.debug('title set');
-					// TODO: select currency dynamically
-					//let price = result.current_price[cc];
-					//let priceChange = result.price_change_24h_in_currency[cc];
-					//let pcChange = result.price_change_24h_in_currency[cc];
+
 					const coinPrice: number = result.current_price[cc];
 					const sigDigits: number = coinPrice < 10 ? 5 : 2;
 
 					console.debug(`price ${cc}`, coinPrice);
 
+					const ccUpper = cc.toUpperCase();
+
 					const price = coinPrice.toFixed(sigDigits).toString();
 					console.debug(`price_change_${timeframe}_in_currency`);
 					const priceChange = // read response if 24h otherwise derive from %
 						timeframe === '24h'
-							? '$' +
-							  //result.price_change_24h_in_currency.usd
+							? //result.price_change_24h_in_currency.usd
 							  result[`price_change_${timeframe}_in_currency`][
 									cc
 							  ]
 									?.toFixed(sigDigits)
 									.toString()
-							: '$' +
-							  (
+							: (
 									coinPrice -
 									coinPrice /
 										(result[
@@ -172,8 +284,16 @@ export default class CryptocurrencyCommand extends Command {
 							.toFixed(2)
 							.toString() + '%';
 
+					const marketCap = result.market_cap[cc].toString();
+					const marketCapChange =
+						result.market_cap_change_24h_in_currency[cc].toString();
+					const marketCapPcChange =
+						result.market_cap_change_percentage_24h_in_currency[cc]
+							.toFixed(2)
+							.toString() + '%';
+
 					console.debug(`change pc ${cc}`, pcChange);
-					const ccUpper = cc.toUpperCase();
+
 					const footer = 'CoinGecko  •  ' + ccUpper;
 
 					console.log(
@@ -190,42 +310,53 @@ export default class CryptocurrencyCommand extends Command {
 							data.image.large ||
 								'https://i.imgur.com/AfFp7pu.png'
 						)
-						.addField('💸  Price', price, true)
+						.addField(`💸  Price ${ccUpper}$`, price, true)
 						.addField(
-							`🪙  ${ccUpper}$ Change (${timeframe})`,
+							`🪙  Change ${ccUpper}$ (${timeframe})`,
 							priceChange,
 							true
 						)
-						.addField(`💹  % Change (${timeframe})`, pcChange, true)
+						.addField(`💹  Change % (${timeframe})`, pcChange, true)
+
+						.addField(`🏦  Market Cap ${ccUpper}$`, marketCap, true)
+						.addField(
+							`💵  MC Change ${ccUpper}$ (24h)`,
+							marketCapChange,
+							true
+						)
+						.addField(
+							`📈  MC Change % (24h)`,
+							marketCapPcChange,
+							true
+						)
 						//.setTimestamp()
 						.setFooter({ text: footer });
 					console.log('embed set');
 					console.debug(embed);
 				} else {
-					//embed = null;
-					// error case
-					/*embed
-					.setColor("RED")
-					.setTitle(data.error.code)
-					.setDescription(data.error.description)
-					;*/
 					console.error('Crypto: response error');
 					return null;
 				}
-				//console.log("finance return", embed);
+
 				if (embed == null)
 					throw new Error(
 						'CryptoCommand: embed is undefined or null'
 					);
-				//if (typeof embed != null || typeof embed !== undefined) {
+
 				return { embeds: [embed] };
-				//}
 			})
 			.catch((_) => {
 				console.error(_);
 				embed = null;
 				return null;
 			});
+	};
+
+	private validatePreference = (pref: string, cap: number) => {
+		const n = Number.parseInt(pref);
+		if (Number.isNaN(n) || n < 0) return 'all';
+		if (n > cap - 1) return 'all';
+		return n;
 	};
 
 	private validateCurrency = (cc: string) => {

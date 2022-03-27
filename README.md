@@ -62,7 +62,28 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
+## [1.7.0] - 2022-03-26
+
+[1.7.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.7.0
+
+### Added
+
+-   crypto command allows for multiple ticker matches to be specified (enhancement #58)
+-   added market cap to crypto output (enhancement #59)
+-   crypto command also allows saving of preferences for channels (enhancement #61)
+
+### Changed
+
+-   icon on footer of embeds is now applied globally.
+
+# Previous Changes
+
+<details>
+<summary>Click to expand</summary>
+
 ## [1.6.2] - 2022-03-26
+
+[1.6.2]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.6.2
 
 ### Changed
 
@@ -72,12 +93,16 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.6.1] - 2022-03-26
 
+[1.6.1]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.6.1
+
 ### Changed
 
 -   fix security vulnerablility in package (issue #53)
 -   fixed new deployment notifications, again
 
 ## [1.6.0] - 2022-03-26
+
+[1.6.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.6.0
 
 ### Added
 
@@ -93,12 +118,9 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   refactored first run to utilise `ChangesCommand` (improvement #35)
 -   `binance-new` feed now expands the timestamp on reported news (improvement #19)
 
-# Previous Changes
-
-<details>
-<summary>Click to expand</summary>
-
 ## [1.5.2] - 2022-03-25
+
+[1.5.2]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.5.2
 
 ### Changed
 
@@ -109,6 +131,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.5.1] - 2022-03-25
 
+[1.5.1]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.5.1
+
 ### Changed
 
 -   reduced discord message sending to 550ms from 750ms
@@ -117,6 +141,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   implemented issue #18 to poll every 10 mins for subscription feed `binance-new`
 
 ## [1.5.0] - 2022-03-25
+
+[1.5.0]: ./
 
 ### Added
 
@@ -135,6 +161,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.4.2] - 2022-03-21
 
+[1.4.2]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.4.2
+
 ### Changed
 
 -   Fixed bug where only the first channel would subscribe to a feed.
@@ -145,6 +173,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.4.1] - 2022-03-19
 
+[1.4.1]: ./
+
 ### Changed
 
 -   Message replies/channel sends now await a response before sending another (I think discord is rate limiting the bot so this will mitigate bans).
@@ -152,6 +182,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   Removed excess logging for production to help diagnose issues.
 
 ## [1.4.0] - 2022-03-18
+
+[1.4.0]: ./
 
 ### Added
 
@@ -165,6 +197,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.3.0] - 2022-03-18
 
+[1.3.0]: ./
+
 ### Added
 
 -   Added `!subscribe` and `!unsubscribe` command to subscribe channels to feeds. Current feeds: `binance-new`.
@@ -175,17 +209,23 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.2.0] - 2022-03-16
 
+[1.2.0]: ./
+
 ### Added
 
 -   Added `!binance` command to show the latest 5 news articles on binance listings (feature request)
 
 ## [1.1.0] - 2022-03-13
 
+[1.1.0]: ./
+
 ### Added
 
 -   Added Database class and sample implementation of SQLite in-memory , as well as cache checking on CryptocurrencyCommand.
 
 ## [1.0.6] - 2022-03-10
+
+[1.0.6]: ./
 
 ### Changed
 
@@ -194,6 +234,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   cleaned up some stuff in the typescript
 
 ## [1.0.5] - 2022-03-07
+
+[1.0.5]: ./
 
 ### Added
 
@@ -206,6 +248,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.0.4] - 2022-03-07
 
+[1.0.4]: ./
+
 ### Added
 
 -   cryptocurrency command, use `%{ticker}` to fetch a price
@@ -215,6 +259,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   fixed bug where message regex would not reset until run twice.
 
 ## [1.0.3] - 2022-03-05
+
+[1.0.3]: ./
 
 ### Added
 
@@ -229,6 +275,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.0.2] - 2022-03-05
 
+[1.0.2]: ./
+
 ### Added
 
 -   Commands now load dyanamically from directory `./src/commands/`
@@ -242,6 +290,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.0.1] - 2022-03-01
 
+[1.0.1]: ./
+
 ### Added
 
 -   Added new types/classes `Action`, `Command` and a few sample commands `LigmaCommand` and `RedditCommand`.
@@ -254,29 +304,13 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.0.0] - TODO date etc
 
+[1.0.0]: ./
+
 ### Added
 
 -   minimum viable product
 
 </details><br>
-
-[1.6.0]: ./
-[1.5.2]: ./
-[1.5.1]: ./
-[1.5.0]: ./
-[1.4.2]: ./
-[1.4.1]: ./
-[1.4.0]: ./
-[1.3.0]: ./
-[1.2.0]: ./
-[1.1.0]: ./
-[1.0.6]: ./
-[1.0.5]: ./
-[1.0.4]: ./
-[1.0.3]: ./
-[1.0.2]: ./
-[1.0.1]: ./
-[1.0.0]: ./
 
 <!--
 ```
@@ -311,3 +345,5 @@ Get a class name reflectively https://stackoverflow.com/questions/13613524/get-a
 heroku webhooks? https://stackoverflow.com/questions/50358737/connecting-heroku-webhooks-with-discord
 
 more: https://github.com/muan/discord-webhooks
+
+free apis: https://github.com/toddmotto/public-apis

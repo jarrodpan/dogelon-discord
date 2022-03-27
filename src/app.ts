@@ -85,6 +85,13 @@ client.once('ready', () => {
 			.then(async (output) => {
 				//console.log(action.message);
 				if (output == null) return; //throw new Error("output is undefined");
+
+				// global footer icon
+				if (output.embeds) {
+					output.embeds[0].footer.iconURL =
+						'https://cdn.discordapp.com/app-icons/945669693576994877/c11dde4d4f016ffcc820418864efd9f4.png?size=64';
+				}
+
 				//console.log((action.message as TextChannel).isText());
 				console.debug('sending to discord...', output);
 
