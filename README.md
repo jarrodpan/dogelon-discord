@@ -62,6 +62,17 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
+## [1.7.0-alpha] - 2022-03-26
+
+### Added
+
+-   crypto command allows for multiple ticker matches to be specified (issue #58)
+
+# Previous Changes
+
+<details>
+<summary>Click to expand</summary>
+
 ## [1.6.2] - 2022-03-26
 
 ### Changed
@@ -92,11 +103,6 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   uplift commands to have optional initialisers called after definition (improvement #44)
 -   refactored first run to utilise `ChangesCommand` (improvement #35)
 -   `binance-new` feed now expands the timestamp on reported news (improvement #19)
-
-# Previous Changes
-
-<details>
-<summary>Click to expand</summary>
 
 ## [1.5.2] - 2022-03-25
 
