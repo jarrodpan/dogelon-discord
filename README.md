@@ -62,9 +62,9 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
-## [1.7.0-alpha] - 2022-03-26
+## [1.7.0] - 2022-03-26
 
-[1.7.0-alpha]: ./
+[1.7.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.7.0
 
 ### Added
 
