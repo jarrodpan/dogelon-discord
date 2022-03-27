@@ -280,7 +280,8 @@ export default class CryptocurrencyCommand extends Command {
 	private validatePreference = (pref: string, cap: number) => {
 		const n = Number.parseInt(pref);
 		if (Number.isNaN(n) || n < 0) return 'all';
-		return n > cap ? cap : n;
+		if (n > cap) return 'all';
+		return n;
 	};
 
 	private validateCurrency = (cc: string) => {
