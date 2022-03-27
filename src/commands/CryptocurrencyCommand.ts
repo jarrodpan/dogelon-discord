@@ -61,10 +61,17 @@ export default class CryptocurrencyCommand extends Command {
 
 	public expression = `(?:\\%\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (message: Message | TextChannel, input: string) => {
+	public execute = async (message: Message | TextChannel, input: string) => {
 		const args = input.split('/');
 		const tickerArgs = args[0].slice(1).split(':');
-		const ticker = tickerArgs[0];
+		let ticker = tickerArgs[0];
+
+		// TODO: logic for preference setting detection
+		let setPref = false;
+		if (ticker.startsWith('!')) {
+			ticker = ticker.slice(1);
+			setPref = true;
+		}
 
 		const cc = args[1] ? this.validateCurrency(args[1]) : 'usd';
 		const timeframe = args[2] ? this.validateTimeframe(args[2]) : '24h';
@@ -77,20 +84,79 @@ export default class CryptocurrencyCommand extends Command {
 		);
 		if (coinArr == undefined) return null;
 
-		let pref = tickerArgs[1]
-			? this.validatePreference(
-					tickerArgs[1].toLowerCase(),
-					coinArr.length
-			  )
-			: 'all';
+		let prefSpecified = false;
+		let pref: string | number = 'all';
 
-		console.debug('Crypto: arguments=', ticker, pref, timeframe, cc);
+		if (tickerArgs[1] !== undefined) {
+			pref = tickerArgs[1]
+				? this.validatePreference(
+						tickerArgs[1].toLowerCase(),
+						coinArr.length
+				  )
+				: 'all';
+			prefSpecified = true;
+		}
+
+		console.debug(
+			'Crypto: arguments=',
+			ticker,
+			pref,
+			timeframe,
+			cc,
+			`setPref:${setPref}`
+		);
 		console.log('Coin list:', coinArr);
+
+		// check for existing preference
+		const prefCache = 'crypto-preferences';
+		let dbPref: object | false = await this.db.get(prefCache);
+		const channel = (message as Message).channelId.toString();
+		// if no preferences in db and we want to set a preference
+		if (!dbPref && setPref) dbPref = {};
+
+		if (setPref) {
+			if (pref !== 'all') {
+				// we have a preference object we want to update ('all' = no preference)
+
+				if (!dbPref[channel]) dbPref[channel] = {};
+				dbPref[channel][ticker] = pref;
+				// return notification
+			} else {
+				// pref is 'all' which is unset pref
+				if (!dbPref[channel][ticker]) return null; // preference is already unset
+				delete dbPref[channel][ticker]; // delete preference
+			}
+			await this.db.set(prefCache, dbPref, Database.NEVER_EXPIRE);
+
+			const coinName =
+				pref === 'all'
+					? '`all`'
+					: `\`${pref.toString()}\`` +
+					  ' (' +
+					  coinArr[pref].name +
+					  ')';
+
+			embed = new MessageEmbed()
+				.setColor('#0099ff')
+				.setTitle('🚀  Crypto Preferences Changed')
+				.setDescription(
+					`Set <#${channel}> preference for \`${ticker}\` to ${coinName}.`
+				)
+				.setFooter({ text: 'CoinGecko' });
+			return { embeds: [embed] };
+		}
+		console.debug('dbPref:', dbPref);
+		console.debug('channel pref:', dbPref[channel][ticker]);
+		// load preference from db
+		if (dbPref[channel][ticker] !== undefined && !prefSpecified) {
+			pref = dbPref[channel][ticker];
+			console.debug('preference set:', channel, ticker, pref);
+		}
 
 		//let coin: Coin;
 		if (coinArr.length == 0) return null;
 		if (coinArr.length == 1) pref = 0;
-		if (pref === 'all') {
+		if (!setPref && pref === 'all') {
 			// return list of coins
 
 			embed = new MessageEmbed()

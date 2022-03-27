@@ -69,11 +69,12 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 ### Added
 
 -   crypto command allows for multiple ticker matches to be specified (enhancement #58)
+-   added market cap to crypto output (enhancement #59)
+-   crypto command also allows saving of preferences for channels (enhancement #61)
 
 ### Changed
 
--   added icon to footer of embeds globally.
--   added market cap to crypto output (enhancement #59)
+-   icon on footer of embeds is now applied globally.
 
 # Previous Changes
 
