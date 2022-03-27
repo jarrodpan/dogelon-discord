@@ -87,7 +87,7 @@ export default class CryptocurrencyCommand extends Command {
 		console.debug('Crypto: arguments=', ticker, pref, timeframe, cc);
 		console.log('Coin list:', coinArr);
 
-		let coin: Coin;
+		//let coin: Coin;
 		if (coinArr.length == 0) return null;
 		if (coinArr.length == 1) pref = 0;
 		if (pref === 'all') {
@@ -127,7 +127,7 @@ export default class CryptocurrencyCommand extends Command {
 		}
 
 		// definitely have a number here within range
-		coin = coinArr[pref];
+		const coin: Coin = coinArr[pref];
 
 		//const cc = 'usd';
 		// coin exists
