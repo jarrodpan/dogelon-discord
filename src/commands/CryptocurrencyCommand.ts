@@ -63,11 +63,11 @@ export default class CryptocurrencyCommand extends Command {
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
 	public execute = (message: Message | TextChannel, input: string) => {
 		const args = input.split('/');
-		const ticker = args[0].slice(1);
+		const tickerArgs = args[0].slice(1).split(':');
+		const ticker = tickerArgs[0];
+
 		const cc = args[1] ? this.validateCurrency(args[1]) : 'usd';
 		const timeframe = args[2] ? this.validateTimeframe(args[2]) : '24h';
-
-		console.debug('Crypto: arguments=', ticker, timeframe, cc);
 
 		let embed;
 
@@ -77,8 +77,56 @@ export default class CryptocurrencyCommand extends Command {
 		);
 		if (coinArr == undefined) return null;
 
-		console.log(coinArr);
-		const coin: Coin = coinArr[0];
+		const pref = tickerArgs[1]
+			? this.validatePreference(
+					tickerArgs[1].toLowerCase(),
+					coinArr.length
+			  )
+			: 'all';
+
+		console.debug('Crypto: arguments=', ticker, pref, timeframe, cc);
+		console.log('Coin list:', coinArr);
+
+		let coin: Coin;
+		if (coinArr.length == 0) return null;
+		if (Number.isInteger(pref)) coin = coinArr[pref];
+		if (coinArr.length == 1) coin = coinArr[0];
+		if (pref === 'all') {
+			// return list of coins
+
+			embed = new MessageEmbed()
+				.setColor('#0099ff')
+				.setTitle('🚀  Multiple Coins Detected')
+				.setDescription(
+					'Multiple coins have this ticker. Select one of the following:'
+				)
+				//	.setThumbnail(					data.image.large || 'https://i.imgur.com/AfFp7pu.png'				)
+				//	.addField('💸  Price', price, true)
+
+				//.setTimestamp()
+				.setFooter({ text: 'Dogelon Cryptocurrency Service' });
+
+			coinArr.forEach((coin, index) => {
+				embed.addField(
+					'`%' + coin.symbol + ':' + index + '`',
+					coin.name + ' (id: `' + coin.id + '`)'
+				);
+			});
+
+			embed.addField(
+				'`%!' +
+					coinArr[0].symbol +
+					'/' +
+					coinArr[0].symbol +
+					':{index}`',
+				'Set preference to this coin. To see this list again type `%' +
+					coinArr[0].symbol +
+					':all`'
+			);
+
+			return { embeds: [embed] };
+		}
+
 		//const cc = 'usd';
 		// coin exists
 		return Promise.resolve()
@@ -227,6 +275,12 @@ export default class CryptocurrencyCommand extends Command {
 				embed = null;
 				return null;
 			});
+	};
+
+	private validatePreference = (pref: string, cap: number) => {
+		const n = Number.parseInt(pref);
+		if (Number.isNaN(n) || n < 0) return 'all';
+		return n > cap ? cap : n;
 	};
 
 	private validateCurrency = (cc: string) => {
