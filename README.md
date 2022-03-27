@@ -62,7 +62,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
-## [1.7.1] - 2022-03-26
+## [1.7.1] - 2022-03-27
 
 [1.7.1]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.7.1
 
@@ -70,7 +70,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 -   fixed #65 in crypto module which was throwing an error on a preference debug echo that is muted in prod. sigh.
 
-## [1.7.0] - 2022-03-26
+## [1.7.0] - 2022-03-27
 
 [1.7.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.7.0
 
