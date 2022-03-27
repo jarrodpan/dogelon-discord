@@ -113,7 +113,7 @@ export default class CryptocurrencyCommand extends Command {
 				);
 			});
 
-			embed.addField(
+			/*embed.addField(
 				'`%!' +
 					coinArr[0].symbol +
 					'/' +
@@ -122,7 +122,7 @@ export default class CryptocurrencyCommand extends Command {
 				'Set preference to this coin. To see this list again type `%' +
 					coinArr[0].symbol +
 					':all`'
-			);
+			);*/
 
 			return { embeds: [embed] };
 		}
