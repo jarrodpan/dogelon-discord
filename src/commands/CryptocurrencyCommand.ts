@@ -127,7 +127,11 @@ export default class CryptocurrencyCommand extends Command {
 				// return notification
 			} else {
 				// pref is 'all' which is unset pref
-				if (dbPref[channel][ticker]) delete dbPref[channel][ticker];
+				if (
+					dbPref[channel] !== undefined &&
+					dbPref[channel][ticker] !== undefined
+				)
+					delete dbPref[channel][ticker];
 				else return null; // preference is already unset // delete preference
 			}
 			await this.db.set(prefCache, dbPref, Database.NEVER_EXPIRE);
@@ -152,12 +156,19 @@ export default class CryptocurrencyCommand extends Command {
 		console.debug('dbPref:', dbPref);
 		console.debug(
 			'channel pref:',
-			dbPref[channel][ticker] ? dbPref[channel][ticker] : 'unset'
+			dbPref[channel] !== undefined &&
+				dbPref[channel][ticker] !== undefined
+				? dbPref[channel][ticker]
+				: 'unset'
 		);
 		// load preference from db
-		if (dbPref[channel][ticker] !== undefined && !prefSpecified) {
+		if (
+			dbPref[channel] !== undefined &&
+			dbPref[channel][ticker] !== undefined &&
+			!prefSpecified
+		) {
 			pref = dbPref[channel][ticker];
-			console.debug('preference set:', channel, ticker, pref);
+			console.log('preference set:', channel, ticker, pref);
 		}
 
 		//let coin: Coin;
