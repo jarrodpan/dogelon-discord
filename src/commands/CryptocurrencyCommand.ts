@@ -150,7 +150,10 @@ export default class CryptocurrencyCommand extends Command {
 			return { embeds: [embed] };
 		}
 		console.debug('dbPref:', dbPref);
-		console.debug('channel pref:', dbPref[channel][ticker]);
+		console.debug(
+			'channel pref:',
+			dbPref[channel][ticker] ? dbPref[channel][ticker] : 'unset'
+		);
 		// load preference from db
 		if (dbPref[channel][ticker] !== undefined && !prefSpecified) {
 			pref = dbPref[channel][ticker];
