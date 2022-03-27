@@ -123,8 +123,8 @@ export default class CryptocurrencyCommand extends Command {
 				// return notification
 			} else {
 				// pref is 'all' which is unset pref
-				if (!dbPref[channel][ticker]) return null; // preference is already unset
-				delete dbPref[channel][ticker]; // delete preference
+				if (dbPref[channel][ticker]) delete dbPref[channel][ticker];
+				else return null; // preference is already unset // delete preference
 			}
 			await this.db.set(prefCache, dbPref, Database.NEVER_EXPIRE);
 
