@@ -82,7 +82,7 @@ export default class CryptocurrencyCommand extends Command {
 		const coinArr: Coin[] | undefined = CryptocurrencyCommand.coins.filter(
 			(item) => item.symbol == ticker
 		);
-		if (coinArr == undefined) return null;
+		if (coinArr === undefined) return null;
 
 		let prefSpecified = false;
 		let pref: string | number = 'all';
@@ -132,9 +132,9 @@ export default class CryptocurrencyCommand extends Command {
 				pref === 'all'
 					? '`all`'
 					: `\`${pref.toString()}\`` +
-					  ' (' +
-					  coinArr[pref].name +
-					  ')';
+					  ' (id: `' +
+					  coinArr[pref].id +
+					  '`)';
 
 			embed = new MessageEmbed()
 				.setColor('#0099ff')
@@ -178,16 +178,16 @@ export default class CryptocurrencyCommand extends Command {
 				);
 			});
 
-			/*embed.addField(
-				'`%!' +
-					coinArr[0].symbol +
-					'/' +
-					coinArr[0].symbol +
-					':{index}`',
-				'Set preference to this coin. To see this list again type `%' +
-					coinArr[0].symbol +
+			let sym = coinArr[0].symbol;
+
+			embed.addField(
+				'`%!' + sym + ':{index}`',
+				'Set preference to this coin e.g. `%!' +
+					sym +
+					':1`. To see this list again type `%' +
+					sym +
 					':all`'
-			);*/
+			);
 
 			return { embeds: [embed] };
 		}
