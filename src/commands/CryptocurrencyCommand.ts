@@ -24,20 +24,20 @@ type Coin = {
 };
 
 export default class CryptocurrencyCommand extends Command {
-	private db: Database | undefined;
+	private db: Database;
 	public constructor(db: Database) {
 		super();
-		if (db) this.db = db;
+		this.db = db;
 	}
 
-	private static coins;
+	private static coins: Coin[];
 
 	public init = () => {
 		const cacheName = 'crypto-coinlist';
 
 		return Promise.resolve()
 			.then(async () => {
-				return await this.db?.get(cacheName);
+				return await this.db.get(cacheName);
 			})
 			.then(async (coinList) => {
 				let coins = coinList;
@@ -47,7 +47,7 @@ export default class CryptocurrencyCommand extends Command {
 						'https://api.coingecko.com/api/v3/coins/list?include_platform=false'
 					);
 					coins = coinList.data;
-					await this.db?.set(cacheName, { coins }, Database.ONE_WEEK);
+					await this.db.set(cacheName, { coins }, Database.ONE_WEEK);
 					return { coins };
 				} else return coins;
 			})
@@ -72,12 +72,13 @@ export default class CryptocurrencyCommand extends Command {
 		let embed;
 
 		// find coin ticker
-		const coin: Coin = CryptocurrencyCommand.coins.find(
+		const coinArr: Coin[] | undefined = CryptocurrencyCommand.coins.filter(
 			(item) => item.symbol == ticker
 		);
-		if (coin == undefined) return null;
+		if (coinArr == undefined) return null;
 
-		console.log(coin);
+		console.log(coinArr);
+		const coin: Coin = coinArr[0];
 		//const cc = 'usd';
 		// coin exists
 		return Promise.resolve()
