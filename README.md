@@ -68,7 +68,12 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ### Added
 
--   crypto command allows for multiple ticker matches to be specified (issue #58)
+-   crypto command allows for multiple ticker matches to be specified (enhancement #58)
+
+### Changed
+
+-   added icon to footer of embeds globally.
+-   added market cap to crypto output (enhancement #59)
 
 # Previous Changes
 

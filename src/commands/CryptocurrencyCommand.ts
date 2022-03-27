@@ -189,19 +189,19 @@ export default class CryptocurrencyCommand extends Command {
 
 					console.debug(`price ${cc}`, coinPrice);
 
+					const ccUpper = cc.toUpperCase();
+
 					const price = coinPrice.toFixed(sigDigits).toString();
 					console.debug(`price_change_${timeframe}_in_currency`);
 					const priceChange = // read response if 24h otherwise derive from %
 						timeframe === '24h'
-							? '$' +
-							  //result.price_change_24h_in_currency.usd
+							? //result.price_change_24h_in_currency.usd
 							  result[`price_change_${timeframe}_in_currency`][
 									cc
 							  ]
 									?.toFixed(sigDigits)
 									.toString()
-							: '$' +
-							  (
+							: (
 									coinPrice -
 									coinPrice /
 										(result[
@@ -221,8 +221,16 @@ export default class CryptocurrencyCommand extends Command {
 							.toFixed(2)
 							.toString() + '%';
 
+					const marketCap = result.market_cap[cc].toString();
+					const marketCapChange =
+						result.market_cap_change_24h_in_currency[cc].toString();
+					const marketCapPcChange =
+						result.market_cap_change_percentage_24h_in_currency[cc]
+							.toFixed(2)
+							.toString() + '%';
+
 					console.debug(`change pc ${cc}`, pcChange);
-					const ccUpper = cc.toUpperCase();
+
 					const footer = 'CoinGecko  •  ' + ccUpper;
 
 					console.log(
@@ -239,13 +247,25 @@ export default class CryptocurrencyCommand extends Command {
 							data.image.large ||
 								'https://i.imgur.com/AfFp7pu.png'
 						)
-						.addField('💸  Price', price, true)
+						.addField(`💸  Price ${ccUpper}$`, price, true)
 						.addField(
-							`🪙  ${ccUpper}$ Change (${timeframe})`,
+							`🪙  Change ${ccUpper}$ (${timeframe})`,
 							priceChange,
 							true
 						)
-						.addField(`💹  % Change (${timeframe})`, pcChange, true)
+						.addField(`💹  Change % (${timeframe})`, pcChange, true)
+
+						.addField(`🏦  Market Cap ${ccUpper}$`, marketCap, true)
+						.addField(
+							`💵  MC Change ${ccUpper}$ (24h)`,
+							marketCapChange,
+							true
+						)
+						.addField(
+							`📈  MC Change % (24h)`,
+							marketCapPcChange,
+							true
+						)
 						//.setTimestamp()
 						.setFooter({ text: footer });
 					console.log('embed set');
