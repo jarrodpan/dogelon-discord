@@ -77,7 +77,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.6.2] - 2022-03-26
 
-[1.6.2]: ./releases/tags/v1.6.2
+[1.6.2]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.6.2
 
 ### Changed
 
@@ -87,7 +87,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.6.1] - 2022-03-26
 
-[1.6.1]: ./
+[1.6.1]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.6.1
 
 ### Changed
 
@@ -96,7 +96,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.6.0] - 2022-03-26
 
-[1.6.0]: ./
+[1.6.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.6.0
 
 ### Added
 
@@ -114,7 +114,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.5.2] - 2022-03-25
 
-[1.5.2]: ./
+[1.5.2]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.5.2
 
 ### Changed
 
@@ -125,7 +125,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.5.1] - 2022-03-25
 
-[1.5.1]: ./
+[1.5.1]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.5.1
 
 ### Changed
 
@@ -155,7 +155,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ## [1.4.2] - 2022-03-21
 
-[1.4.2]: ./
+[1.4.2]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.4.2
 
 ### Changed
 
