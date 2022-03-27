@@ -77,7 +77,7 @@ export default class CryptocurrencyCommand extends Command {
 		);
 		if (coinArr == undefined) return null;
 
-		const pref = tickerArgs[1]
+		let pref = tickerArgs[1]
 			? this.validatePreference(
 					tickerArgs[1].toLowerCase(),
 					coinArr.length
@@ -89,8 +89,7 @@ export default class CryptocurrencyCommand extends Command {
 
 		let coin: Coin;
 		if (coinArr.length == 0) return null;
-		if (Number.isInteger(pref)) coin = coinArr[pref];
-		if (coinArr.length == 1) coin = coinArr[0];
+		if (coinArr.length == 1) pref = 0;
 		if (pref === 'all') {
 			// return list of coins
 
@@ -104,7 +103,7 @@ export default class CryptocurrencyCommand extends Command {
 				//	.addField('💸  Price', price, true)
 
 				//.setTimestamp()
-				.setFooter({ text: 'Dogelon Cryptocurrency Service' });
+				.setFooter({ text: 'CoinGecko' });
 
 			coinArr.forEach((coin, index) => {
 				embed.addField(
@@ -126,6 +125,9 @@ export default class CryptocurrencyCommand extends Command {
 
 			return { embeds: [embed] };
 		}
+
+		// definitely have a number here within range
+		coin = coinArr[pref];
 
 		//const cc = 'usd';
 		// coin exists
