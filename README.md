@@ -311,3 +311,5 @@ Get a class name reflectively https://stackoverflow.com/questions/13613524/get-a
 heroku webhooks? https://stackoverflow.com/questions/50358737/connecting-heroku-webhooks-with-discord
 
 more: https://github.com/muan/discord-webhooks
+
+free apis: https://github.com/toddmotto/public-apis
