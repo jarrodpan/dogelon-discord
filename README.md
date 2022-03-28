@@ -62,6 +62,18 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
+## [1.7.1-next] - 2022-03-27
+
+[1.7.1-next]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.7.1
+
+### Added
+
+-   News headline command `!news` and `!n`. Caches for one hour.
+
+### Changed
+
+-   tidied up timeframe validation for crypto module
+
 ## [1.7.1] - 2022-03-27
 
 [1.7.1]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.7.1
