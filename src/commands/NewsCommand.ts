@@ -71,17 +71,22 @@ export default class NewsCommand extends Command {
 						//.setTimestamp()
 						.setFooter({ text: footer });
 
-					result.forEach((article) => {
-						const title = article.cardHeadingPrepared.children;
+					for (let i = 0; i < 8; i++) {
+						const article = result[i];
+						const live = article.contentLabelPrepared?.labelText
+							? 'Live: '
+							: '';
+						const title =
+							live + article.cardHeadingPrepared.children;
 						const text = article.synopsis;
 						const link =
 							'https://www.abc.com.au' +
 							article.cardLinkPrepared.to;
 						// build body string
-						const body = `[${text}](${link})`;
+						const body = `${text}\n — [Read More](${link})`;
 
 						embed.addField(title, body);
-					});
+					}
 
 					console.log('embed set');
 					console.debug(embed);
