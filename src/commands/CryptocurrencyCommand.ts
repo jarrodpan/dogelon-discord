@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import axios from 'axios';
 import {
 	Message,
@@ -445,21 +446,21 @@ export default class CryptocurrencyCommand extends Command {
 
 	private validateTimeframe = (tf: string) => {
 		tf = tf.trim().toLowerCase();
-		const tfList = ['1h', '24h', '7d', '14d', '30d', '60d', '200d', '1y'];
-		if (tfList.includes(tf)) return tf;
 		switch (
 			tf // switch of doom and despair
 		) {
 			case 'h':
 			case 'hour':
 			case 'hourly':
+			case '1h':
 				return '1h';
 			case 'd':
+			case '1d':
 			case 'daily':
 			case '24hour':
 			case '24hours':
-			case '24 hour':
-			case '24 hours':
+			case '24h':
+			case '24':
 				return '24h';
 			case 'w':
 			case '1w':
@@ -467,42 +468,44 @@ export default class CryptocurrencyCommand extends Command {
 			case '1week':
 			case 'weekly':
 			case 'oneweek':
-			case 'one week':
+			case '7d':
+			case '7':
 				return '7d';
 			case '2w':
 			case '2week':
 			case '2weeks':
-			case '2 week':
-			case '2 weeks':
 			case 'biweekly':
 			case 'fortnight':
 			case 'fortnightly':
 			case 'twoweek':
-			case 'two week':
 			case 'twoweeks':
-			case 'two weeks':
+			case '14d':
+			case '14day':
+			case '14days':
 				return '14d';
 			case 'm':
 			case '1m':
 			case 'month':
 			case 'monthly':
+			case '30d':
+			case '30day':
+			case '30days':
 				return '30d';
 			case '2m':
 			case 'bimonth':
 			case '2month':
 			case '2months':
-			case '2 month':
-			case '2 months':
-			case 'two month':
-			case 'two months':
 			case 'twomonth':
 			case 'twomonths':
 			case 'bimonthly':
+			case '60d':
 			case '60day':
 			case '60days':
-			case '60 day':
-			case '60 days':
 				return '60d';
+			case '200d':
+			case '200day':
+			case '200days':
+				return '200d';
 			case 'y':
 			case '1y':
 			case 'year':
