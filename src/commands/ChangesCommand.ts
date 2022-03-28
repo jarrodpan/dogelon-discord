@@ -77,7 +77,7 @@ export default class ChangesCommand extends Command {
 		const quote = quoteObj.quote;
 		const auth = quoteObj.author;
 		const qLink = quoteObj.permalink;
-		const motd = `${quote} \n\t— [${auth}](${qLink})`;
+		const motd = `${quote} \n— [${auth}](${qLink})`;
 
 		//const a =	'[phantomagic](https://discordapp.com/users/944798462053089300/)';
 		const embed = new MessageEmbed()
