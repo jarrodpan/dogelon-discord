@@ -507,6 +507,12 @@ export default class CryptocurrencyCommand extends Command {
 			case '200days':
 				return '200d';
 			case 'y':
+			case '365d':
+			case '365day':
+			case '365days':
+			case '366d':
+			case '366day':
+			case '366days':
 			case '1y':
 			case 'year':
 			case '1year':
