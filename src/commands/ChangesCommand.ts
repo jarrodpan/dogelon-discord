@@ -2,8 +2,7 @@ import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require('./../../package.json');
+
 /**
  * shows command list
  */

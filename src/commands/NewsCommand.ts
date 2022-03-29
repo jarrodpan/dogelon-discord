@@ -13,13 +13,13 @@ export default class NewsCommand extends Command {
 	public expression = `(!n(ews)?)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public execute = (_message: Message | TextChannel, _input: any) => {
+	public execute = (_message: Message | TextChannel, _input: unknown) => {
 		let embed;
 
 		// coin exists
 		return Promise.resolve()
 			.then(async () => {
-				let response: DatabaseResponse;
+				let response;
 				const cacheName = 'abc-news';
 
 				response = await this.db.get(cacheName);

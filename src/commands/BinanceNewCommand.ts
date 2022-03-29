@@ -12,89 +12,80 @@ export default class BinanceNewCommand extends Command {
 
 	public expression = `(!b(inance)?)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (message: Message | TextChannel, input: any) => {
+	public execute = async (
+		_message: Message | TextChannel,
+		_input: unknown
+	) => {
 		let embed;
 
 		// coin exists
-		return Promise.resolve()
-			.then(async () => {
-				let response;
-				//let data: APIResponses.BinanceNewCryptocurrency.Catalog;
+		try {
+			await Promise.resolve();
+			let response;
+			//let data: APIResponses.BinanceNewCryptocurrency.Catalog;
+			const cacheName = 'binance-new';
 
-				const cacheName = 'binance-new';
+			if (this.db) {
+				response = await this.db.get(cacheName);
+				console.log('cache hit:');
+				console.debug(response);
+			}
 
-				if (this.db) {
-					response = await this.db.get(cacheName);
-					console.log('cache hit:');
-					console.debug(response);
-				}
+			if (response == false) {
+				console.log('fetching new result...');
+				response = await axios.get(
+					'https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5'
+				);
+				console.debug('new data:', response);
+				response.request = undefined;
+				if (this.db) await this.db.set(cacheName, response, 600);
+				console.log('cache updated');
+			}
+			//console.log(response);
+			const data: APIResponse.BinanceNewCryptocurrency.Data.Catalog =
+				response.data.data.catalogs[0];
+			const { data: data_1 } = await { data };
+			//console.log(data.error);
+			console.log('setting up response');
+			const result = data_1.articles;
+			const title = 'Latest Binance Cryptocurrency Listing News';
+			const footer = 'Binance  •  New Cryptocurrency Listing';
 
-				if (response == false) {
-					console.log('fetching new result...');
-					response = await axios.get(
-						'https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5'
-					);
-					console.debug('new data:', response);
-					response.request = undefined;
-					if (this.db) await this.db.set(cacheName, response, 600);
-					console.log('cache updated');
-				}
-				//console.log(response);
+			embed = new MessageEmbed()
+				.setColor('#FCD535')
+				.setTitle('🚀  ' + title)
+				.setThumbnail(data_1.icon || 'https://i.imgur.com/AfFp7pu.png')
+				//.setTimestamp()
+				.setFooter({ text: footer });
 
-				const data: APIResponse.BinanceNewCryptocurrency.Data.Catalog =
-					response.data.data.catalogs[0];
+			result?.forEach((article) => {
+				const date = new Date(article.releaseDate);
+				const year = date.getFullYear();
+				const month = date.getMonth();
+				const dt = date.getDate();
+				// build title string
+				const timestamp = `${year}-${month}-${dt}`;
 
-				return { data };
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			})
-			.then(({ data }) => {
-				//console.log(data.error);
+				const text_1 = article.title;
+				const link = article.code;
+				// build body string
+				const body = `[${text_1}](https://www.binance.com/en/support/announcement/${link})`;
 
-				console.log('setting up response');
-				const result = data.articles;
-				const title = 'Latest Binance Cryptocurrency Listing News';
-				const footer = 'Binance  •  New Cryptocurrency Listing';
-
-				embed = new MessageEmbed()
-					.setColor('#FCD535')
-					.setTitle('🚀  ' + title)
-					.setThumbnail(
-						data.icon || 'https://i.imgur.com/AfFp7pu.png'
-					)
-					//.setTimestamp()
-					.setFooter({ text: footer });
-
-				result?.forEach((article) => {
-					const date = new Date(article.releaseDate);
-					const year = date.getFullYear();
-					const month = date.getMonth();
-					const dt = date.getDate();
-					// build title string
-					const timestamp = `${year}-${month}-${dt}`;
-
-					const text = article.title;
-					const link = article.code;
-					// build body string
-					const body = `[${text}](https://www.binance.com/en/support/announcement/${link})`;
-
-					embed.addField(timestamp, body);
-				});
-
-				console.log('embed set');
-				console.debug(embed);
-
-				//console.log("finance return", embed);
-				if (embed == null)
-					throw new Error(
-						'BinanceNewCommand: embed is undefined or null'
-					);
-				//if (typeof embed != null || typeof embed !== undefined) {
-				return { embeds: [embed] };
-				//}
-			})
-			.catch((e) => {
-				console.error(e);
-				return null;
+				embed.addField(timestamp, body);
 			});
+
+			console.log('embed set');
+			console.debug(embed);
+
+			//console.log("finance return", embed);
+			if (embed == null)
+				throw new Error(
+					'BinanceNewCommand: embed is undefined or null'
+				);
+			return { embeds: [embed] };
+		} catch (e) {
+			console.error(e);
+			return null;
+		}
 	};
 }
