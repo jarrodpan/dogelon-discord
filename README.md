@@ -73,6 +73,8 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 ### Changed
 
 -   tidied up timeframe validation for crypto module
+-   crypto help shows timeframe options and added a few more aliases in the module too.
+-   added type definitions for API responses to help with intellisense.
 
 ## [1.7.1] - 2022-03-27
 
