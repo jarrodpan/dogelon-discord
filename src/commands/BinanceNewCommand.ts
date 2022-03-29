@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
+import { APIResponses } from '../types/APIResponses/BinanceNewCryptocurrency';
 
 export default class BinanceNewCommand extends Command {
 	private db: Database | undefined;
@@ -19,90 +20,72 @@ export default class BinanceNewCommand extends Command {
 		return Promise.resolve()
 			.then(async () => {
 				let response;
-				let data;
-				let error = false;
+				//let data: APIResponses.BinanceNewCryptocurrency.Catalog;
+
 				const cacheName = 'binance-new';
 
-				try {
-					if (this.db) {
-						response = await this.db.get(cacheName);
-						console.log('cache hit:');
-						console.debug(response);
-					}
-
-					if (response == false) {
-						console.log('fetching new result...');
-						response = await axios.get(
-							'https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5'
-						);
-						console.debug('new data:', response);
-						response.request = undefined;
-						if (this.db)
-							await this.db.set(cacheName, response, 600);
-						console.log('cache updated');
-					}
-					//console.log(response);
-					//console.log(response);
-					data = response.data.data.catalogs[0];
-				} catch (e) {
-					//if (typeof response.data != undefined) data = {};
-					//if (typeof response.data.quoteSummary != undefined) data = response.data.quoteSummary;
-					//else if (typeof response.data.finance != undefined) data = response.data.finance;
-
-					//data = (response.data.quoteSummary ?? response.data.finance ?? {});
-					data = undefined;
-					error = true;
-					console.error('binance error');
+				if (this.db) {
+					response = await this.db.get(cacheName);
+					console.log('cache hit:');
+					console.debug(response);
 				}
-				return [response, data, error];
+
+				if (response == false) {
+					console.log('fetching new result...');
+					response = await axios.get(
+						'https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5'
+					);
+					console.debug('new data:', response);
+					response.request = undefined;
+					if (this.db) await this.db.set(cacheName, response, 600);
+					console.log('cache updated');
+				}
+				//console.log(response);
+				//console.log(response);
+				const typedData: APIResponses.BinanceNewCryptocurrency =
+					response.data;
+				const data: APIResponses.BinanceNewCryptocurrency.Data.Catalog =
+					typedData.data.catalogs[0];
+
+				return { response, data };
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			})
-			.then(([response, data, error]) => {
+			.then(({ response, data }) => {
 				//console.log(data.error);
-				if (!error) {
-					console.log('setting up response');
-					const result = data.articles;
-					const title = 'Latest Binance Cryptocurrency Listing News';
-					const footer = 'Binance  •  New Cryptocurrency Listing';
 
-					embed = new MessageEmbed()
-						.setColor('#FCD535')
-						.setTitle('🚀  ' + title)
-						.setThumbnail(
-							data.icon || 'https://i.imgur.com/AfFp7pu.png'
-						)
-						//.setTimestamp()
-						.setFooter({ text: footer });
+				console.log('setting up response');
+				const result = data.articles;
+				const title = 'Latest Binance Cryptocurrency Listing News';
+				const footer = 'Binance  •  New Cryptocurrency Listing';
 
-					result.forEach((article) => {
-						const date = new Date(article.releaseDate);
-						const year = date.getFullYear();
-						const month = date.getMonth();
-						const dt = date.getDate();
-						// build title string
-						const timestamp = `${year}-${month}-${dt}`;
+				embed = new MessageEmbed()
+					.setColor('#FCD535')
+					.setTitle('🚀  ' + title)
+					.setThumbnail(
+						data.icon || 'https://i.imgur.com/AfFp7pu.png'
+					)
+					//.setTimestamp()
+					.setFooter({ text: footer });
 
-						const text = article.title;
-						const link = article.code;
-						// build body string
-						const body = `[${text}](https://www.binance.com/en/support/announcement/${link})`;
+				result?.forEach((article) => {
+					const date = new Date(article.releaseDate);
+					const year = date.getFullYear();
+					const month = date.getMonth();
+					const dt = date.getDate();
+					// build title string
+					const timestamp = `${year}-${month}-${dt}`;
 
-						embed.addField(timestamp, body);
-					});
+					const text = article.title;
+					const link = article.code;
+					// build body string
+					const body = `[${text}](https://www.binance.com/en/support/announcement/${link})`;
 
-					console.log('embed set');
-					console.debug(embed);
-				} else {
-					//embed = null;
-					// error case
-					/*embed
-					.setColor("RED")
-					.setTitle(data.error.code)
-					.setDescription(data.error.description)
-					;*/
-					console.error('Binance: response error');
-					return null;
-				}
+					embed.addField(timestamp, body);
+				});
+
+				console.log('embed set');
+				console.debug(embed);
+
 				//console.log("finance return", embed);
 				if (embed == null)
 					throw new Error(
@@ -112,9 +95,8 @@ export default class BinanceNewCommand extends Command {
 				return { embeds: [embed] };
 				//}
 			})
-			.catch((_) => {
-				console.error(_);
-				embed = null;
+			.catch((e) => {
+				console.error(e);
 				return null;
 			});
 	};
