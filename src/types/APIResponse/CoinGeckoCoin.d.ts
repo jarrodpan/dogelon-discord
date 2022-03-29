@@ -1,4 +1,4 @@
-export namespace APIResponse {
+namespace APIResponse {
 	export interface CoinGeckoCoin {
 		id?: string;
 		symbol?: string;
@@ -31,7 +31,7 @@ export namespace APIResponse {
 		status_updates?: any[];
 		last_updated?: Date;
 	}
-	export namespace CoinGeckoCoin {
+	namespace CoinGeckoCoin {
 		export interface Tion {
 			en?: string;
 			de?: string;
@@ -75,7 +75,7 @@ export namespace APIResponse {
 			subreddit_url?: null;
 			repos_url?: ReposURL;
 		}
-		export namespace Links {
+		namespace Links {
 			export interface ReposURL {
 				github?: any[];
 				bitbucket?: any[];

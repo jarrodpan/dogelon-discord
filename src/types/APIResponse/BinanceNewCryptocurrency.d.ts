@@ -1,4 +1,4 @@
-export namespace APIResponses {
+namespace APIResponse {
 	export interface BinanceNewCryptocurrency {
 		code?: string;
 		message?: null;
@@ -7,12 +7,12 @@ export namespace APIResponses {
 		success?: boolean;
 	}
 
-	export namespace BinanceNewCryptocurrency {
+	namespace BinanceNewCryptocurrency {
 		export interface Data {
 			catalogs?: Catalog[];
 		}
 
-		export namespace Data {
+		namespace Data {
 			export interface Catalog {
 				catalogId?: number;
 				parentCatalogId?: null;
@@ -24,7 +24,7 @@ export namespace APIResponses {
 				articles?: Article[];
 				catalogs?: any[];
 			}
-			export namespace Catalog {
+			namespace Catalog {
 				export interface Article {
 					id?: number;
 					code?: string;

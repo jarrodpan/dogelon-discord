@@ -2,7 +2,6 @@ import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
-import { APIResponses } from '../types/APIResponses/BinanceNewCryptocurrency';
 
 export default class BinanceNewCommand extends Command {
 	private db: Database | undefined;
@@ -41,16 +40,14 @@ export default class BinanceNewCommand extends Command {
 					console.log('cache updated');
 				}
 				//console.log(response);
-				//console.log(response);
-				const typedData: APIResponses.BinanceNewCryptocurrency =
-					response.data;
-				const data: APIResponses.BinanceNewCryptocurrency.Data.Catalog =
-					typedData.data.catalogs[0];
 
-				return { response, data };
+				const data: APIResponse.BinanceNewCryptocurrency.Data.Catalog =
+					response.data.data.catalogs[0];
+
+				return { data };
 				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			})
-			.then(({ response, data }) => {
+			.then(({ data }) => {
 				//console.log(data.error);
 
 				console.log('setting up response');

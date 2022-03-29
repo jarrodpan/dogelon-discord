@@ -19,81 +19,70 @@ export default class NewsCommand extends Command {
 		// coin exists
 		return Promise.resolve()
 			.then(async () => {
-				let response;
-				let data;
-				let error = false;
+				let response: DatabaseResponse;
 				const cacheName = 'abc-news';
 
-				try {
-					response = await this.db.get(cacheName);
-					console.log('cache hit:', response ? true : false);
+				response = await this.db.get(cacheName);
+				console.log('cache hit:', response ? true : false);
 
-					if (response == false) {
-						console.log('fetching new result...');
-						response = await axios.get(
-							'https://www.abc.net.au/news-web/api/loader/newshometopstories?edition=vic'
+				if (response == false) {
+					console.log('fetching new result...');
+					response = await axios.get(
+						'https://www.abc.net.au/news-web/api/loader/newshometopstories?edition=vic'
+					);
+					console.debug('new data:', response);
+					response.request = undefined;
+					if (response.data !== undefined)
+						await this.db.set(
+							cacheName,
+							response,
+							Database.ONE_HOUR
 						);
-						console.debug('new data:', response);
-						response.request = undefined;
-						if (response.data !== undefined)
-							await this.db.set(
-								cacheName,
-								response,
-								Database.ONE_HOUR
-							);
-						console.log('cache updated');
-					}
-					//console.log(response);
-					//console.log(response);
-					data = response.data.editions[0].items;
-				} catch (e) {
-					data = undefined;
-					error = true;
-					console.error('news error');
+					console.log('cache updated');
 				}
-				return [response, data, error];
+				//console.log(response);
+				//console.log(response);
+				const data: APIResponse.ABCTopStories.Edition.EditionItem[] =
+					response.data.editions[0].items;
+
+				return { data };
 			})
-			.then(([_response, data, error]) => {
+			.then(({ data }) => {
 				//console.log(data.error);
-				if (!error) {
-					console.log('setting up response');
-					const result = data;
-					const title = 'Latest Top Stories (Victoria) - ABC News';
-					const footer = 'ABC News  •  Top Stories';
 
-					embed = new MessageEmbed()
-						.setColor('#FCD535')
-						.setTitle('🚀  ' + title)
-						.setThumbnail(
-							result[0].cardImagePrepared.imgSrc ||
-								'https://i.imgur.com/AfFp7pu.png'
-						)
-						//.setTimestamp()
-						.setFooter({ text: footer });
+				console.log('setting up response');
+				const result = data;
+				const title = 'Latest Top Stories (Victoria) - ABC News';
+				const footer = 'ABC News  •  Top Stories';
 
-					for (let i = 0; i < 8; i++) {
-						const article = result[i];
-						const live = article.contentLabelPrepared?.labelText
-							? 'Live: '
-							: '';
-						const title =
-							live + article.cardHeadingPrepared.children;
-						const text = article.synopsis;
-						const link =
-							'https://www.abc.com.au' +
-							article.cardLinkPrepared.to;
-						// build body string
-						const body = `${text}\n — [Read More](${link})`;
+				embed = new MessageEmbed()
+					.setColor('#FCD535')
+					.setTitle('🚀  ' + title)
+					.setThumbnail(
+						result[0].cardImagePrepared.imgSrc ||
+							'https://i.imgur.com/AfFp7pu.png'
+					)
+					//.setTimestamp()
+					.setFooter({ text: footer });
 
-						embed.addField(title, body);
-					}
+				for (let i = 0; i < 8; i++) {
+					const article = result[i];
+					const live = article.contentLabelPrepared?.labelText
+						? 'Live: '
+						: '';
+					const title = live + article.cardHeadingPrepared.children;
+					const text = article.synopsis;
+					const link =
+						'https://www.abc.com.au' + article.cardLinkPrepared.to;
+					// build body string
+					const body = `${text}\n — [Read More](${link})`;
 
-					console.log('embed set');
-					console.debug(embed);
-				} else {
-					console.error('news: response error');
-					return null;
+					embed.addField(title, body);
 				}
+
+				console.log('embed set');
+				console.debug(embed);
+
 				//console.log("finance return", embed);
 				if (embed == null)
 					throw new Error('NewsCommand: embed is undefined or null');
@@ -101,8 +90,8 @@ export default class NewsCommand extends Command {
 				return { embeds: [embed] };
 				//}
 			})
-			.catch((_) => {
-				console.error(_);
+			.catch((e) => {
+				console.error(e);
 				embed = null;
 				return null;
 			});

@@ -1,12 +1,6 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import axios from 'axios';
-import {
-	Message,
-	MessageEmbed,
-	TextChannel,
-	UserContextMenuInteraction,
-} from 'discord.js';
-import { ExitStatus } from 'typescript';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -31,7 +25,7 @@ export default class CryptocurrencyCommand extends Command {
 		this.db = db;
 	}
 
-	private static coins: Coin[];
+	private static coins: APIResponse.CoinGeckoCoins.CoinDetails[];
 
 	public init = () => {
 		const cacheName = 'crypto-coinlist';
@@ -41,7 +35,7 @@ export default class CryptocurrencyCommand extends Command {
 				return await this.db.get(cacheName);
 			})
 			.then(async (coinList) => {
-				let coins = coinList;
+				let coins: APIResponse.CoinGeckoCoins = coinList;
 				if (!coinList) {
 					console.debug('fetching new result...');
 					coinList = await axios.get(
@@ -53,7 +47,8 @@ export default class CryptocurrencyCommand extends Command {
 				} else return coins;
 			})
 			.then((coins) => {
-				CryptocurrencyCommand.coins = coins.coins;
+				CryptocurrencyCommand.coins =
+					coins.coins as APIResponse.CoinGeckoCoins.CoinDetails[];
 			})
 			.catch((e) => {
 				console.error(e);
@@ -80,9 +75,8 @@ export default class CryptocurrencyCommand extends Command {
 		let embed;
 
 		// find coin ticker
-		const coinArr: Coin[] | undefined = CryptocurrencyCommand.coins.filter(
-			(item) => item.symbol == ticker
-		);
+		const coinArr: APIResponse.CoinGeckoCoin[] | undefined =
+			CryptocurrencyCommand.coins.filter((item) => item.symbol == ticker);
 		if (coinArr === undefined) return null;
 
 		let prefSpecified = false;
@@ -220,138 +214,120 @@ export default class CryptocurrencyCommand extends Command {
 		return Promise.resolve()
 			.then(async () => {
 				let response;
-				let data;
-				let error = false;
 				const cacheName = 'crypto-' + coin.id.toUpperCase();
 
-				try {
-					if (this.db) {
-						response = await this.db.get(cacheName);
-						console.log('cache hit:');
-						//console.debug(response);
-					}
-
-					if (response == false) {
-						console.debug('fetching new result...');
-						response = await axios.get(
-							'https://api.coingecko.com/api/v3/coins/' +
-								coin.id +
-								'?tickers=false&market_data=true&community_data=false&developer_data=false'
-						);
-						//console.debug('new data:', response);
-						response.request = undefined;
-						if (this.db) await this.db.set(cacheName, response);
-						console.log('cache updated');
-					}
-					//console.log(response);
-					data = response.data;
-				} catch (e) {
-					data = undefined;
-					error = true;
-					console.error('cyrpto error');
+				if (this.db) {
+					response = await this.db.get(cacheName);
+					console.log('cache hit:');
+					//console.debug(response);
 				}
-				return [response, data, error];
-			})
-			.then(([_response, data, error]) => {
-				//console.log(data.error);
-				if (!error) {
-					console.log('setting up response');
-					const result = data.market_data;
-					const title =
-						data.name + ' (' + data.symbol.toUpperCase() + ')';
-					console.log(title);
-					console.debug('title set');
 
-					const coinPrice: number = result.current_price[cc];
-					const sigDigits: number = coinPrice < 10 ? 5 : 2;
-
-					console.debug(`price ${cc}`, coinPrice);
-
-					const ccUpper = cc.toUpperCase();
-
-					const price = coinPrice.toFixed(sigDigits).toString();
-					console.debug(`price_change_${timeframe}_in_currency`);
-					const priceChange = // read response if 24h otherwise derive from %
-						timeframe === '24h'
-							? //result.price_change_24h_in_currency.usd
-							  result[`price_change_${timeframe}_in_currency`][
-									cc
-							  ]
-									?.toFixed(sigDigits)
-									.toString()
-							: (
-									coinPrice -
-									coinPrice /
-										(result[
-											`price_change_percentage_${timeframe}_in_currency`
-										][cc] /
-											100 +
-											1)
-							  )
-									?.toFixed(sigDigits)
-									.toString();
-					console.debug(`change ${cc}`, priceChange);
-					const pcChange =
-						//result.price_change_percentage_24h_in_currency.usd
-						result[
-							`price_change_percentage_${timeframe}_in_currency`
-						][cc]
-							.toFixed(2)
-							.toString() + '%';
-
-					const marketCap = result.market_cap[cc].toString();
-					const marketCapChange =
-						result.market_cap_change_24h_in_currency[cc].toString();
-					const marketCapPcChange =
-						result.market_cap_change_percentage_24h_in_currency[cc]
-							.toFixed(2)
-							.toString() + '%';
-
-					console.debug(`change pc ${cc}`, pcChange);
-
-					const footer = 'CoinGecko  •  ' + ccUpper;
-
-					console.log(
-						'variables set',
-						price,
-						priceChange,
-						pcChange,
-						footer
+				if (response == false) {
+					console.debug('fetching new result...');
+					response = await axios.get(
+						'https://api.coingecko.com/api/v3/coins/' +
+							coin.id +
+							'?tickers=false&market_data=true&community_data=false&developer_data=false'
 					);
-					embed = new MessageEmbed()
-						.setColor('#0099ff')
-						.setTitle('🚀  ' + title)
-						.setThumbnail(
-							data.image.large ||
-								'https://i.imgur.com/AfFp7pu.png'
-						)
-						.addField(`💸  Price ${ccUpper}$`, price, true)
-						.addField(
-							`🪙  Change ${ccUpper}$ (${timeframe})`,
-							priceChange,
-							true
-						)
-						.addField(`💹  Change % (${timeframe})`, pcChange, true)
-
-						.addField(`🏦  Market Cap ${ccUpper}$`, marketCap, true)
-						.addField(
-							`💵  MC Change ${ccUpper}$ (24h)`,
-							marketCapChange,
-							true
-						)
-						.addField(
-							`📈  MC Change % (24h)`,
-							marketCapPcChange,
-							true
-						)
-						//.setTimestamp()
-						.setFooter({ text: footer });
-					console.log('embed set');
-					console.debug(embed);
-				} else {
-					console.error('Crypto: response error');
-					return null;
+					//console.debug('new data:', response);
+					response.request = undefined;
+					if (this.db) await this.db.set(cacheName, response);
+					console.log('cache updated');
 				}
+				//console.log(response);
+				const data = response.data as APIResponse.CoinGeckoCoin;
+
+				return { data };
+			})
+			.then(({ data }) => {
+				//console.log(data.error);
+
+				console.log('setting up response');
+				const result = data.market_data;
+				const title =
+					data.name + ' (' + data.symbol?.toUpperCase() + ')';
+				console.log(title);
+				console.debug('title set');
+
+				const coinPrice: number = result.current_price[cc];
+				const sigDigits: number = coinPrice < 10 ? 5 : 2;
+
+				console.debug(`price ${cc}`, coinPrice);
+
+				const ccUpper = cc.toUpperCase();
+
+				const price = coinPrice.toFixed(sigDigits).toString();
+				console.debug(`price_change_${timeframe}_in_currency`);
+				const priceChange = // read response if 24h otherwise derive from %
+					timeframe === '24h'
+						? //result.price_change_24h_in_currency.usd
+						  result[`price_change_${timeframe}_in_currency`][cc]
+								?.toFixed(sigDigits)
+								.toString()
+						: (
+								coinPrice -
+								coinPrice /
+									(result[
+										`price_change_percentage_${timeframe}_in_currency`
+									][cc] /
+										100 +
+										1)
+						  )
+								?.toFixed(sigDigits)
+								.toString();
+				console.debug(`change ${cc}`, priceChange);
+				const pcChange =
+					//result.price_change_percentage_24h_in_currency.usd
+					result[`price_change_percentage_${timeframe}_in_currency`][
+						cc
+					]
+						.toFixed(2)
+						.toString() + '%';
+
+				const marketCap = result.market_cap[cc].toString();
+				const marketCapChange =
+					result.market_cap_change_24h_in_currency[cc].toString();
+				const marketCapPcChange =
+					result.market_cap_change_percentage_24h_in_currency[cc]
+						.toFixed(2)
+						.toString() + '%';
+
+				console.debug(`change pc ${cc}`, pcChange);
+
+				const footer = 'CoinGecko  •  ' + ccUpper;
+
+				console.log(
+					'variables set',
+					price,
+					priceChange,
+					pcChange,
+					footer
+				);
+				embed = new MessageEmbed()
+					.setColor('#0099ff')
+					.setTitle('🚀  ' + title)
+					.setThumbnail(
+						data.image.large || 'https://i.imgur.com/AfFp7pu.png'
+					)
+					.addField(`💸  Price ${ccUpper}$`, price, true)
+					.addField(
+						`🪙  Change ${ccUpper}$ (${timeframe})`,
+						priceChange,
+						true
+					)
+					.addField(`💹  Change % (${timeframe})`, pcChange, true)
+
+					.addField(`🏦  Market Cap ${ccUpper}$`, marketCap, true)
+					.addField(
+						`💵  MC Change ${ccUpper}$ (24h)`,
+						marketCapChange,
+						true
+					)
+					.addField(`📈  MC Change % (24h)`, marketCapPcChange, true)
+					//.setTimestamp()
+					.setFooter({ text: footer });
+				console.log('embed set');
+				console.debug(embed);
 
 				if (embed == null)
 					throw new Error(
@@ -360,8 +336,8 @@ export default class CryptocurrencyCommand extends Command {
 
 				return { embeds: [embed] };
 			})
-			.catch((_) => {
-				console.error(_);
+			.catch((e) => {
+				console.error(e);
 				embed = null;
 				return null;
 			});
