@@ -1,3 +1,5 @@
 export interface Feed {
-	constuctor(db: Database): void;
+	feedName: string;
+
+	//constuctor(db: Database): void;
 }
