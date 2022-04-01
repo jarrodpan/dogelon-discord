@@ -4,6 +4,7 @@ import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 import { client, queue } from '../app';
 import Action from '../types/Action';
+import * as fs from 'fs';
 
 export interface Subscribers {
 	lastUpdate: number;
@@ -16,10 +17,10 @@ export default class SubscribeCommand extends Command {
 		this.db = db;
 	}
 
-	private intervalList = new Map<string, NodeJS.Timer>();
+	private intervalMap = new Map<string, NodeJS.Timer>();
+	private feedMap = new Map<string, Feed>();
 
 	public expression = `(!(un)?s(ubscribe)? \\S*)`;
-
 	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
 	public execute = (messageInput: Message | TextChannel, input: any) => {
 		const message = messageInput as Message;
@@ -141,11 +142,11 @@ export default class SubscribeCommand extends Command {
 									Database.EXPIRE
 								);
 								clearInterval(
-									this.intervalList.get(
+									this.intervalMap.get(
 										cacheName
 									) as NodeJS.Timer
 								);
-								this.intervalList.delete(cacheName);
+								this.intervalMap.delete(cacheName);
 								//return;
 							}
 						}
@@ -184,7 +185,7 @@ export default class SubscribeCommand extends Command {
 						);
 
 					// set polling interval if not already scheduled
-					if (!this.intervalList.has(cacheName)) {
+					if (!this.intervalMap.has(cacheName)) {
 						//
 						const poller = setIntervalImmediately(async () => {
 							// binance-new
@@ -218,11 +219,11 @@ export default class SubscribeCommand extends Command {
 									Database.EXPIRE
 								);
 								clearInterval(
-									this.intervalList.get(
+									this.intervalMap.get(
 										cacheName
 									) as NodeJS.Timer
 								);
-								this.intervalList.delete(cacheName);
+								this.intervalMap.delete(cacheName);
 								return;
 							}
 
@@ -315,7 +316,7 @@ export default class SubscribeCommand extends Command {
 							// TODO: proper test configuration logic
 						}, 600000); // poll once per 10 mins
 
-						this.intervalList.set(cacheName, poller);
+						this.intervalMap.set(cacheName, poller);
 					}
 
 					return { embeds: [embed] };
@@ -338,6 +339,35 @@ export default class SubscribeCommand extends Command {
 			});
 
 		return null;
+	};
+
+	public init = () => {
+		this.loadAllFeeds();
+	};
+
+	private loadAllFeeds = async () => {
+		//const feeds = new Map<string, Feed>();
+
+		await fs
+			.readdirSync('./src/commands/feeds')
+			.forEach(async (command: string) => {
+				const [feedName, ts] = command.split('.');
+				if (
+					// knockout junk files
+					ts !== 'ts' // not typescript
+				)
+					return;
+
+				// import code
+				const feedFunction: Feed = new (await import(
+					`./${feedName}`
+				))(); //.default(this.db);
+				console.debug('new feed:', feedName);
+
+				// add command to command map
+				this.feedMap.set(feedName, feedFunction);
+			});
+		//return feeds;
 	};
 }
 
