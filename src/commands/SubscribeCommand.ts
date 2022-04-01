@@ -372,10 +372,10 @@ export default class SubscribeCommand extends Command {
 				const feedClass: Feed = new (
 					await import(`./${feedName}`)
 				).default(this.db);
-				console.debug('new feed:', feedName);
+				console.debug('new feed:', feedClass.feedName);
 
 				// add command to command map
-				this.feedMap.set(feedName, feedClass);
+				this.feedMap.set(feedClass.feedName, feedClass);
 			});
 		//return feeds;
 	};
