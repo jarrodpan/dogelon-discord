@@ -1,1 +1,3 @@
-interface Feed {}
+export interface Feed {
+	constuctor(db: Database): void;
+}

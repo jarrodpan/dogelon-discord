@@ -5,6 +5,7 @@ import Database from '../types/Database';
 import { client, queue } from '../app';
 import Action from '../types/Action';
 import * as fs from 'fs';
+import { Feed } from '../types/Feed';
 
 export interface Subscribers {
 	lastUpdate: number;
@@ -55,7 +56,16 @@ export default class SubscribeCommand extends Command {
 				subscribe
 			);
 
-			if (!validFeatures.includes(feature))
+			// stupid iterator logic
+			//if (!this.feedMap.keys().includes(feature))
+			let keyFound = false;
+			for (const key of this.feedMap) {
+				if (key == feature) {
+					keyFound = true;
+					break;
+				}
+			}
+			if (!keyFound)
 				throw new Error('Subscribe: argument is not valid: ' + feature);
 		} catch (e) {
 			console.error(e);
@@ -359,13 +369,13 @@ export default class SubscribeCommand extends Command {
 					return;
 
 				// import code
-				const feedFunction: Feed = new (await import(
-					`./${feedName}`
-				))(); //.default(this.db);
+				const feedClass: Feed = new (
+					await import(`./${feedName}`)
+				).default(this.db);
 				console.debug('new feed:', feedName);
 
 				// add command to command map
-				this.feedMap.set(feedName, feedFunction);
+				this.feedMap.set(feedName, feedClass);
 			});
 		//return feeds;
 	};
