@@ -1,3 +1,5 @@
+import { MessageEmbed } from 'discord.js';
+
 export interface Feed {
 	/**
 	 * The command to call the feed from discord.
@@ -10,5 +12,5 @@ export interface Feed {
 	/**
 	 * Callback which defines the update checking logic for the feed.
 	 */
-	public readonly updateFeed(): void;
+	public readonly updateFeed(): Promise<any>;
 }
