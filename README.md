@@ -62,9 +62,9 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
-## [1.8.0] - 2022-03-27
+## [1.8.0] - 2022-04-03
 
-[1.8.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.7.1
+[1.8.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.8.0
 
 ### Added
 
@@ -329,7 +329,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 -   Converted the whole thing into a Typescript project for practice/sanity
 
-## [1.0.0] - TODO date etc
+## [1.0.0] - 2022-02-26
 
 [1.0.0]: ./
 
