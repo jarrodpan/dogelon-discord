@@ -72,7 +72,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 ### Changed
 
--   reworked logging override to not stuff up
+-   reworked logging override to not stuff up and be more useful
 -   alpha etc versions do not spam chat every time they launch
 
 # Previous Changes
