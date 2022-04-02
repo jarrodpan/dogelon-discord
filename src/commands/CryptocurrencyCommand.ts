@@ -69,6 +69,8 @@ export default class CryptocurrencyCommand extends Command {
 			setPref = true;
 		}
 
+		if (ticker.length == 0) return null;
+
 		const cc = args[1] ? this.validateCurrency(args[1]) : 'usd';
 		const timeframe = args[2] ? this.validateTimeframe(args[2]) : '24h';
 
@@ -182,8 +184,8 @@ export default class CryptocurrencyCommand extends Command {
 			// enumerate options
 			coinArr.forEach((coin, index) => {
 				embed.addField(
-					'`%' + coin.symbol + ':' + index + '`',
-					coin.name + ' (id: `' + coin.id + '`)'
+					coin.name + ' (id: `' + coin.id + '`)',
+					'`%' + coin.symbol + ':' + index + '`'
 				);
 			});
 
@@ -192,16 +194,16 @@ export default class CryptocurrencyCommand extends Command {
 			embed
 				.addField('\u200b', '**Special options**')
 				.addField(
-					'`%' + sym + ':all`',
-					'Show this list when a preference is set.'
+					'Show this list when a preference is set',
+					'`%' + sym + ':all`'
 				)
 				.addField(
-					'`%!' + sym + ':{index}`',
-					'Set preference for this ticker e.g. `%!' + sym + ':1`.'
+					'Set preference for this ticker e.g. `%!' + sym + ':1`',
+					'`%!' + sym + ':{index}`'
 				)
 				.addField(
-					'`%!' + sym + ':all`',
-					'Remove preference for this ticker.'
+					'Remove preference for this ticker',
+					'`%!' + sym + ':all`'
 				);
 
 			return { embeds: [embed] };
@@ -250,7 +252,7 @@ export default class CryptocurrencyCommand extends Command {
 				console.debug('title set');
 
 				const coinPrice: number = result.current_price[cc];
-				const sigDigits: number = coinPrice < 10 ? 5 : 2;
+				const sigDigits: number = this.calculateSigFigures(coinPrice);
 
 				console.debug(`price ${cc}`, coinPrice);
 
@@ -341,6 +343,12 @@ export default class CryptocurrencyCommand extends Command {
 				embed = null;
 				return null;
 			});
+	};
+
+	private calculateSigFigures = (price: number) => {
+		let digits = 2;
+		for (let i = 1; i < 10; i++) if (price < 10 ** (-i + 2)) digits++;
+		return digits;
 	};
 
 	private validatePreference = (pref: string, cap: number) => {
