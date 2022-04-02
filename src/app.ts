@@ -244,15 +244,19 @@ const newDeploy = async (channels) => {
 
 	if (runDetails) {
 		const oldVer = runDetails.prevVersion.split('.').map(Number);
-		const newVer = runDetails.version.split('.').map(Number);
+		const newVer: string[] = runDetails.version.split('.').map(Number);
 
 		for (let i = 0; i < 3; i++) {
 			if (oldVer[i] >= newVer[i]) {
 				// whatever, this works, deal with it 😎
-				console.debug(oldVer[i], newVer[i], oldVer[i] >= newVer[i]);
+				//console.debug(oldVer[i], newVer[i], oldVer[i] >= newVer[i]);
 				firstRun = false;
 			} else {
 				firstRun = true;
+				if (newVer[-1].includes('-')) {
+					console.log('dev version detected');
+					break;
+				} else console.log('new version detected');
 				channels.forEach((_subscriberId, v) => {
 					const ch = channels.get(v);
 					//console.log(ch);
