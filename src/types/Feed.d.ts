@@ -10,5 +10,5 @@ export interface Feed {
 	/**
 	 * Callback which defines the update checking logic for the feed.
 	 */
-	public readonly intervalFunction(): void;
+	public readonly updateFeed(): void;
 }

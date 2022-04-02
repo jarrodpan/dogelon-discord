@@ -10,7 +10,7 @@ export default class binanceNew implements Feed {
 		this.db = db;
 	}
 
-	public intervalFunction(): void {
+	public updateFeed(): void {
 		throw new Error('Method not implemented.');
 	}
 }
