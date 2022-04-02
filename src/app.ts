@@ -137,6 +137,7 @@ client.on('messageCreate', (message): void => {
 
 	// ignore self messages
 	if (message.author.bot) return;
+	if (message.webhookId) return;
 
 	// get match groups
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
