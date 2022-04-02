@@ -370,7 +370,7 @@ export default class SubscribeCommand extends Command {
 
 				// import code
 				const feedClass: Feed = new (
-					await import(`./${feedName}`)
+					await import(`./feeds/${feedName}`)
 				).default(this.db);
 				console.debug('new feed:', feedClass.feedName);
 
