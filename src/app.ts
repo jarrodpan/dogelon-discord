@@ -39,13 +39,16 @@ const newLog = (...msg: unknown[]) => {
 			.trim()
 			.replace('(', '')
 			.replace(')', '')
-			.split(' ') as string[];
-		const caller =
-			stackline.length == 2
-				? stackline[1].slice(stackline[1].indexOf('bin') + 4)
-				: stackline[2].slice(stackline[2].indexOf('bin') + 4) +
-				  ' ' +
-				  stackline[1];
+			.slice(3);
+
+		const filepath = stackline.slice(stackline.lastIndexOf(' ') + 1);
+		const file = filepath.slice(filepath.indexOf('bin') + 4);
+		const func =
+			stackline.lastIndexOf(' ') != -1
+				? ' ' + stackline.slice(0, stackline.lastIndexOf(' '))
+				: '';
+
+		const caller = file + func;
 		// eslint-disable-next-line @typescript-eslint/no-array-constructor
 		oLog.apply(this, new Array().concat('[' + caller + ']', msg));
 	}
