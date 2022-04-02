@@ -62,17 +62,22 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
-## [1.7.1-next] - 2022-03-27
+## [1.8.0] - 2022-03-27
 
-[1.7.1-next]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.7.1
+[1.8.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.7.1
 
 ### Added
 
--   News headline command `!news` and `!n`. Caches for one hour.
+-   News headline command `!news` and `!n`. Caches for one hour. (enhancement #69)
 
 ### Changed
 
--   tidied up timeframe validation for crypto module
+-   fixed issue where subscriptions would not poll on bot restart (issue #70)
+-   refactored subscription module to be modular with feeds. (issue #62)
+-   crypto bug fixed where it was breaking with `%` and it was returning crap (issue #72))
+-   crypto `%_:all` has command and currency reversed to improve readabillity (issue #73)
+-   added dynamic demical place decided on crypto prices to help for low value crypto (issue #71)
+-   tidied up timeframe validation for crypto module.
 -   crypto help shows timeframe options and added a few more aliases in the module too.
 -   added type definitions for API responses to help with intellisense.
 
