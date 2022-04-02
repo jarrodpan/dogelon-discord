@@ -1,3 +1,4 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 'use strict';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
@@ -5,9 +6,8 @@ require('dotenv').config();
 import Action from './types/Action';
 import { Command, MatchOn } from './commands';
 //import { MatchOn } from './types/Command';
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import axios from 'axios';
-import Database from './types/Database';
 
 // following need to be 'require' to work
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -28,7 +28,7 @@ export const queue: Action[] = [];
 
 const oLog = console.log;
 
-const newLog = (...msg: any[]) => {
+const newLog = (...msg: unknown[]) => {
 	//let e = new Error();
 	try {
 		throw new Error();
@@ -45,6 +45,7 @@ const newLog = (...msg: any[]) => {
 				: stackline[2].slice(stackline[2].indexOf('bin') + 4) +
 				  ' ' +
 				  stackline[1];
+		// eslint-disable-next-line @typescript-eslint/no-array-constructor
 		oLog.apply(this, new Array().concat('[' + caller + ']', msg));
 	}
 };
@@ -55,7 +56,7 @@ console.debug = newLog;
 // override console.debug for production
 if (process.env.NODE_ENV === 'production') {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	console.debug = (..._msg: any[]) => {
+	console.debug = (..._msg: unknown[]) => {
 		return;
 	};
 }
@@ -124,10 +125,11 @@ client.once('ready', () => {
 // login to discord
 client.login(process.env.DISCORD_TOKEN);
 
-client.on('messageCreate', (message: any): void => {
+client.on('messageCreate', (message): void => {
 	const server = client.channels.cache.get(message.channelId).guild.name;
 	const channel = client.channels.cache.get(message.channelId).name;
 
+	console.debug(message);
 	console.log(
 		'<' + server + '#' + channel + '@' + message.author.username + '>',
 		message.content
@@ -144,6 +146,7 @@ client.on('messageCreate', (message: any): void => {
 
 	try {
 		// TODO: refactor this into Commands module
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		const matchOnMessage: any = Command.matchOn
 			.get(MatchOn.MESSAGE)
 			.exec(message.content).groups;

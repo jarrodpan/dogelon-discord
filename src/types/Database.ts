@@ -41,5 +41,6 @@ export default abstract class Database {
 	}
 	public static readonly NEVER_EXPIRE = 10000000000000;
 	public static readonly EXPIRE = -10000;
+	public static readonly ONE_HOUR = 1000 * 60 * 60;
 	public static readonly ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
 }

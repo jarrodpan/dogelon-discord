@@ -11,6 +11,7 @@
 		"allowJs": true,
 		"resolveJsonModule": true,
 		"moduleResolution": "node",
+		"sourceMap": true,
 		"types": ["node", "jest"],
 		"lib": ["es5", "es6", "dom", "dom.iterable"],
 		"esModuleInterop": true,

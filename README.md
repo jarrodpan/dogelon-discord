@@ -27,12 +27,9 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   presence updates
 -   private messages dont work
 -   weather info might be cool to add
--   encapsulate async stuff in promises or whatever just do it properly
 -   containerize with docker
 -   find a proper API(s) and use that for financial stuff
--   refactor `Command` type with `Commands` class as `Command` is abstract and all of `Commands` is static so combining the two should be fine.
 -   direct api from binance
--   dynamic coin tickers from coingecko/binance
 
 ## Implemented Changes
 
@@ -55,6 +52,9 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
             -   also, its regex
 -   help command - done in [1.0.3](#1.0.3)
 -   db is sqlite in-memory, need to migrate to postgres - done in [1.5.0](#1.5.0)
+-   refactor `Command` type with `Commands` class as `Command` is abstract and all of `Commands` is static so combining the two should be fine. - done in [1.6.0](#1.6.0)
+-   dynamic coin tickers from coingecko/binance - done in [1.6.0](#1.6.0)
+-   encapsulate async stuff in promises or whatever just do it properly - done in general as required.
 -   ~write API classes and interfaces and stuff to encapsulate things - is this really needed?~ - dont bother with this
 -   ~make the whole thing event driven (where appropriate)~ - it already is durr
 
@@ -62,7 +62,26 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
-## [1.7.1] - 2022-03-26
+## [1.8.0] - 2022-04-03
+
+[1.8.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.8.0
+
+### Added
+
+-   News headline command `!news` and `!n`. Caches for one hour. (enhancement #69)
+
+### Changed
+
+-   fixed issue where subscriptions would not poll on bot restart (issue #70)
+-   refactored subscription module to be modular with feeds. (issue #62)
+-   crypto bug fixed where it was breaking with `%` and it was returning crap (issue #72))
+-   crypto `%_:all` has command and currency reversed to improve readabillity (issue #73)
+-   added dynamic demical place decided on crypto prices to help for low value crypto (issue #71)
+-   tidied up timeframe validation for crypto module.
+-   crypto help shows timeframe options and added a few more aliases in the module too.
+-   added type definitions for API responses to help with intellisense.
+
+## [1.7.1] - 2022-03-27
 
 [1.7.1]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.7.1
 
@@ -70,7 +89,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 -   fixed #65 in crypto module which was throwing an error on a preference debug echo that is muted in prod. sigh.
 
-## [1.7.0] - 2022-03-26
+## [1.7.0] - 2022-03-27
 
 [1.7.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.7.0
 
@@ -310,7 +329,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 -   Converted the whole thing into a Typescript project for practice/sanity
 
-## [1.0.0] - TODO date etc
+## [1.0.0] - 2022-02-26
 
 [1.0.0]: ./
 

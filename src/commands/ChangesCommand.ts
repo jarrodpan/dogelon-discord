@@ -2,8 +2,7 @@ import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const pkg = require('./../../package.json');
+
 /**
  * shows command list
  */
@@ -77,7 +76,7 @@ export default class ChangesCommand extends Command {
 		const quote = quoteObj.quote;
 		const auth = quoteObj.author;
 		const qLink = quoteObj.permalink;
-		const motd = `${quote} \n\t— [${auth}](${qLink})`;
+		const motd = `${quote} \n— [${auth}](${qLink})`;
 
 		//const a =	'[phantomagic](https://discordapp.com/users/944798462053089300/)';
 		const embed = new MessageEmbed()

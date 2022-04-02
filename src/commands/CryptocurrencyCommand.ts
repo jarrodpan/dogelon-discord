@@ -1,11 +1,6 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import axios from 'axios';
-import {
-	Message,
-	MessageEmbed,
-	TextChannel,
-	UserContextMenuInteraction,
-} from 'discord.js';
-import { ExitStatus } from 'typescript';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -30,7 +25,7 @@ export default class CryptocurrencyCommand extends Command {
 		this.db = db;
 	}
 
-	private static coins: Coin[];
+	private static coins: APIResponse.CoinGeckoCoins.CoinDetails[];
 
 	public init = () => {
 		const cacheName = 'crypto-coinlist';
@@ -40,7 +35,7 @@ export default class CryptocurrencyCommand extends Command {
 				return await this.db.get(cacheName);
 			})
 			.then(async (coinList) => {
-				let coins = coinList;
+				let coins: APIResponse.CoinGeckoCoins = coinList;
 				if (!coinList) {
 					console.debug('fetching new result...');
 					coinList = await axios.get(
@@ -52,7 +47,8 @@ export default class CryptocurrencyCommand extends Command {
 				} else return coins;
 			})
 			.then((coins) => {
-				CryptocurrencyCommand.coins = coins.coins;
+				CryptocurrencyCommand.coins =
+					coins.coins as APIResponse.CoinGeckoCoins.CoinDetails[];
 			})
 			.catch((e) => {
 				console.error(e);
@@ -73,15 +69,16 @@ export default class CryptocurrencyCommand extends Command {
 			setPref = true;
 		}
 
+		if (ticker.length == 0) return null;
+
 		const cc = args[1] ? this.validateCurrency(args[1]) : 'usd';
 		const timeframe = args[2] ? this.validateTimeframe(args[2]) : '24h';
 
 		let embed;
 
 		// find coin ticker
-		const coinArr: Coin[] | undefined = CryptocurrencyCommand.coins.filter(
-			(item) => item.symbol == ticker
-		);
+		const coinArr: APIResponse.CoinGeckoCoin[] | undefined =
+			CryptocurrencyCommand.coins.filter((item) => item.symbol == ticker);
 		if (coinArr === undefined) return null;
 
 		let prefSpecified = false;
@@ -187,8 +184,8 @@ export default class CryptocurrencyCommand extends Command {
 			// enumerate options
 			coinArr.forEach((coin, index) => {
 				embed.addField(
-					'`%' + coin.symbol + ':' + index + '`',
-					coin.name + ' (id: `' + coin.id + '`)'
+					coin.name + ' (id: `' + coin.id + '`)',
+					'`%' + coin.symbol + ':' + index + '`'
 				);
 			});
 
@@ -197,16 +194,16 @@ export default class CryptocurrencyCommand extends Command {
 			embed
 				.addField('\u200b', '**Special options**')
 				.addField(
-					'`%' + sym + ':all`',
-					'Show this list when a preference is set.'
+					'Show this list when a preference is set',
+					'`%' + sym + ':all`'
 				)
 				.addField(
-					'`%!' + sym + ':{index}`',
-					'Set preference for this ticker e.g. `%!' + sym + ':1`.'
+					'Set preference for this ticker e.g. `%!' + sym + ':1`',
+					'`%!' + sym + ':{index}`'
 				)
 				.addField(
-					'`%!' + sym + ':all`',
-					'Remove preference for this ticker.'
+					'Remove preference for this ticker',
+					'`%!' + sym + ':all`'
 				);
 
 			return { embeds: [embed] };
@@ -219,138 +216,120 @@ export default class CryptocurrencyCommand extends Command {
 		return Promise.resolve()
 			.then(async () => {
 				let response;
-				let data;
-				let error = false;
 				const cacheName = 'crypto-' + coin.id.toUpperCase();
 
-				try {
-					if (this.db) {
-						response = await this.db.get(cacheName);
-						console.log('cache hit:');
-						//console.debug(response);
-					}
-
-					if (response == false) {
-						console.debug('fetching new result...');
-						response = await axios.get(
-							'https://api.coingecko.com/api/v3/coins/' +
-								coin.id +
-								'?tickers=false&market_data=true&community_data=false&developer_data=false'
-						);
-						//console.debug('new data:', response);
-						response.request = undefined;
-						if (this.db) await this.db.set(cacheName, response);
-						console.log('cache updated');
-					}
-					//console.log(response);
-					data = response.data;
-				} catch (e) {
-					data = undefined;
-					error = true;
-					console.error('cyrpto error');
+				if (this.db) {
+					response = await this.db.get(cacheName);
+					console.log('cache hit:');
+					//console.debug(response);
 				}
-				return [response, data, error];
-			})
-			.then(([_response, data, error]) => {
-				//console.log(data.error);
-				if (!error) {
-					console.log('setting up response');
-					const result = data.market_data;
-					const title =
-						data.name + ' (' + data.symbol.toUpperCase() + ')';
-					console.log(title);
-					console.debug('title set');
 
-					const coinPrice: number = result.current_price[cc];
-					const sigDigits: number = coinPrice < 10 ? 5 : 2;
-
-					console.debug(`price ${cc}`, coinPrice);
-
-					const ccUpper = cc.toUpperCase();
-
-					const price = coinPrice.toFixed(sigDigits).toString();
-					console.debug(`price_change_${timeframe}_in_currency`);
-					const priceChange = // read response if 24h otherwise derive from %
-						timeframe === '24h'
-							? //result.price_change_24h_in_currency.usd
-							  result[`price_change_${timeframe}_in_currency`][
-									cc
-							  ]
-									?.toFixed(sigDigits)
-									.toString()
-							: (
-									coinPrice -
-									coinPrice /
-										(result[
-											`price_change_percentage_${timeframe}_in_currency`
-										][cc] /
-											100 +
-											1)
-							  )
-									?.toFixed(sigDigits)
-									.toString();
-					console.debug(`change ${cc}`, priceChange);
-					const pcChange =
-						//result.price_change_percentage_24h_in_currency.usd
-						result[
-							`price_change_percentage_${timeframe}_in_currency`
-						][cc]
-							.toFixed(2)
-							.toString() + '%';
-
-					const marketCap = result.market_cap[cc].toString();
-					const marketCapChange =
-						result.market_cap_change_24h_in_currency[cc].toString();
-					const marketCapPcChange =
-						result.market_cap_change_percentage_24h_in_currency[cc]
-							.toFixed(2)
-							.toString() + '%';
-
-					console.debug(`change pc ${cc}`, pcChange);
-
-					const footer = 'CoinGecko  •  ' + ccUpper;
-
-					console.log(
-						'variables set',
-						price,
-						priceChange,
-						pcChange,
-						footer
+				if (response == false) {
+					console.debug('fetching new result...');
+					response = await axios.get(
+						'https://api.coingecko.com/api/v3/coins/' +
+							coin.id +
+							'?tickers=false&market_data=true&community_data=false&developer_data=false'
 					);
-					embed = new MessageEmbed()
-						.setColor('#0099ff')
-						.setTitle('🚀  ' + title)
-						.setThumbnail(
-							data.image.large ||
-								'https://i.imgur.com/AfFp7pu.png'
-						)
-						.addField(`💸  Price ${ccUpper}$`, price, true)
-						.addField(
-							`🪙  Change ${ccUpper}$ (${timeframe})`,
-							priceChange,
-							true
-						)
-						.addField(`💹  Change % (${timeframe})`, pcChange, true)
-
-						.addField(`🏦  Market Cap ${ccUpper}$`, marketCap, true)
-						.addField(
-							`💵  MC Change ${ccUpper}$ (24h)`,
-							marketCapChange,
-							true
-						)
-						.addField(
-							`📈  MC Change % (24h)`,
-							marketCapPcChange,
-							true
-						)
-						//.setTimestamp()
-						.setFooter({ text: footer });
-					console.log('embed set');
-					console.debug(embed);
-				} else {
-					console.error('Crypto: response error');
-					return null;
+					//console.debug('new data:', response);
+					response.request = undefined;
+					if (this.db) await this.db.set(cacheName, response);
+					console.log('cache updated');
 				}
+				//console.log(response);
+				const data = response.data as APIResponse.CoinGeckoCoin;
+
+				return { data };
+			})
+			.then(({ data }) => {
+				//console.log(data.error);
+
+				console.log('setting up response');
+				const result = data.market_data;
+				const title =
+					data.name + ' (' + data.symbol?.toUpperCase() + ')';
+				console.log(title);
+				console.debug('title set');
+
+				const coinPrice: number = result.current_price[cc];
+				const sigDigits: number = this.calculateSigFigures(coinPrice);
+
+				console.debug(`price ${cc}`, coinPrice);
+
+				const ccUpper = cc.toUpperCase();
+
+				const price = coinPrice.toFixed(sigDigits).toString();
+				console.debug(`price_change_${timeframe}_in_currency`);
+				const priceChange = // read response if 24h otherwise derive from %
+					timeframe === '24h'
+						? //result.price_change_24h_in_currency.usd
+						  result[`price_change_${timeframe}_in_currency`][cc]
+								?.toFixed(sigDigits)
+								.toString()
+						: (
+								coinPrice -
+								coinPrice /
+									(result[
+										`price_change_percentage_${timeframe}_in_currency`
+									][cc] /
+										100 +
+										1)
+						  )
+								?.toFixed(sigDigits)
+								.toString();
+				console.debug(`change ${cc}`, priceChange);
+				const pcChange =
+					//result.price_change_percentage_24h_in_currency.usd
+					result[`price_change_percentage_${timeframe}_in_currency`][
+						cc
+					]
+						.toFixed(2)
+						.toString() + '%';
+
+				const marketCap = result.market_cap[cc].toString();
+				const marketCapChange =
+					result.market_cap_change_24h_in_currency[cc].toString();
+				const marketCapPcChange =
+					result.market_cap_change_percentage_24h_in_currency[cc]
+						.toFixed(2)
+						.toString() + '%';
+
+				console.debug(`change pc ${cc}`, pcChange);
+
+				const footer = 'CoinGecko  •  ' + ccUpper;
+
+				console.log(
+					'variables set',
+					price,
+					priceChange,
+					pcChange,
+					footer
+				);
+				embed = new MessageEmbed()
+					.setColor('#0099ff')
+					.setTitle('🚀  ' + title)
+					.setThumbnail(
+						data.image.large || 'https://i.imgur.com/AfFp7pu.png'
+					)
+					.addField(`💸  Price ${ccUpper}$`, price, true)
+					.addField(
+						`🪙  Change ${ccUpper}$ (${timeframe})`,
+						priceChange,
+						true
+					)
+					.addField(`💹  Change % (${timeframe})`, pcChange, true)
+
+					.addField(`🏦  Market Cap ${ccUpper}$`, marketCap, true)
+					.addField(
+						`💵  MC Change ${ccUpper}$ (24h)`,
+						marketCapChange,
+						true
+					)
+					.addField(`📈  MC Change % (24h)`, marketCapPcChange, true)
+					//.setTimestamp()
+					.setFooter({ text: footer });
+				console.log('embed set');
+				console.debug(embed);
 
 				if (embed == null)
 					throw new Error(
@@ -359,11 +338,17 @@ export default class CryptocurrencyCommand extends Command {
 
 				return { embeds: [embed] };
 			})
-			.catch((_) => {
-				console.error(_);
+			.catch((e) => {
+				console.error(e);
 				embed = null;
 				return null;
 			});
+	};
+
+	private calculateSigFigures = (price: number) => {
+		let digits = 2;
+		for (let i = 1; i < 10; i++) if (price < 10 ** (-i + 2)) digits++;
+		return digits;
 	};
 
 	private validatePreference = (pref: string, cap: number) => {
@@ -445,21 +430,21 @@ export default class CryptocurrencyCommand extends Command {
 
 	private validateTimeframe = (tf: string) => {
 		tf = tf.trim().toLowerCase();
-		const tfList = ['1h', '24h', '7d', '14d', '30d', '60d', '200d', '1y'];
-		if (tfList.includes(tf)) return tf;
 		switch (
 			tf // switch of doom and despair
 		) {
 			case 'h':
 			case 'hour':
 			case 'hourly':
+			case '1h':
 				return '1h';
 			case 'd':
+			case '1d':
 			case 'daily':
 			case '24hour':
 			case '24hours':
-			case '24 hour':
-			case '24 hours':
+			case '24h':
+			case '24':
 				return '24h';
 			case 'w':
 			case '1w':
@@ -467,43 +452,51 @@ export default class CryptocurrencyCommand extends Command {
 			case '1week':
 			case 'weekly':
 			case 'oneweek':
-			case 'one week':
+			case '7d':
+			case '7':
 				return '7d';
 			case '2w':
 			case '2week':
 			case '2weeks':
-			case '2 week':
-			case '2 weeks':
 			case 'biweekly':
 			case 'fortnight':
 			case 'fortnightly':
 			case 'twoweek':
-			case 'two week':
 			case 'twoweeks':
-			case 'two weeks':
+			case '14d':
+			case '14day':
+			case '14days':
 				return '14d';
 			case 'm':
 			case '1m':
 			case 'month':
 			case 'monthly':
+			case '30d':
+			case '30day':
+			case '30days':
 				return '30d';
 			case '2m':
 			case 'bimonth':
 			case '2month':
 			case '2months':
-			case '2 month':
-			case '2 months':
-			case 'two month':
-			case 'two months':
 			case 'twomonth':
 			case 'twomonths':
 			case 'bimonthly':
+			case '60d':
 			case '60day':
 			case '60days':
-			case '60 day':
-			case '60 days':
 				return '60d';
+			case '200d':
+			case '200day':
+			case '200days':
+				return '200d';
 			case 'y':
+			case '365d':
+			case '365day':
+			case '365days':
+			case '366d':
+			case '366day':
+			case '366days':
 			case '1y':
 			case 'year':
 			case '1year':

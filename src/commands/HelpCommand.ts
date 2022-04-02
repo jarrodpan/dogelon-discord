@@ -33,7 +33,10 @@ export default class HelpCommand extends Command {
 			)
 			.addField(
 				'`%{ticker}(:selection)(/currency/time)` (inline)\n`%!{ticker}:{preference}` (inline)',
-				'Gets current price for a cryptocurrency. Cached and/or delayed. Examples: `%eth`, `%gala/aud`, `%btc/jpy/1y`, `%doge:1//2w`.\nExample to set preferences for multiple choice: `%!eth:1`.\nSourced from [CoinGecko](https://www.coingecko.com).'
+				'Gets current price for a cryptocurrency. Cached and/or delayed. Examples: `%eth`, `%gala/aud`, `%btc/jpy/1y`, `%doge:1//2w`.\n\
+				Example to set preferences for multiple choice: `%!eth:1`.\n\
+				Timescale options: `1h`, `24h`, `7d`, `14d`, `30d`, `60d`, `200d`, `1y` (with various aliases).\n\
+				Sourced from [CoinGecko](https://www.coingecko.com).'
 			)
 			.addField(
 				'`/r/{subreddit}`, `r/{subreddit}` (inline)',

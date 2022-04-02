@@ -1,6 +1,6 @@
 {
 	"name": "dogelon-discord",
-	"version": "1.7.1",
+	"version": "1.8.0",
 	"description": "stock and helper bot for personal discord",
 	"type": "commonjs",
 	"bin": {
@@ -14,7 +14,7 @@
 		"build": "tsc -b",
 		"build-w": "tsc -b -v -w",
 		"start": "node ./bin/app.js",
-		"devstart": "nodemon ./bin/app.js",
+		"devstart": "nodemon --inspect ./bin/app.js",
 		"test": "jest --verbose --detectOpenHandles",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx"
 	},
