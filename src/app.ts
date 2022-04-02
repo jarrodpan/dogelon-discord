@@ -251,7 +251,10 @@ const newDeploy = async (channels) => {
 		const newVer: string[] = runDetails.version.split('.');
 
 		for (let i = 0; i < 3; i++) {
-			if (Number.parseInt(oldVer[i]) >= Number.parseInt(newVer[i])) {
+			if (
+				Number.parseInt(oldVer[i].split('-')[0]) >=
+				Number.parseInt(newVer[i].split('-')[0])
+			) {
 				// whatever, this works, deal with it 😎
 				console.debug(oldVer[i], newVer[i], oldVer[i] >= newVer[i]);
 				firstRun = false;
