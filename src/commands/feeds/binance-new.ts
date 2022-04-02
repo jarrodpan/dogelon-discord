@@ -8,16 +8,19 @@ import { Subscribers } from '../SubscribeCommand';
 
 export default class binanceNew implements Feed {
 	private db: Database;
-	public readonly feedName = 'binance-new';
+	public readonly feedName: string = 'binance-new';
 	public readonly updateTime: number = 600000;
 
 	constructor(db: Database) {
 		this.db = db;
+		this.feedName = 'binance-new';
+		console.log(this.feedName, 'constructed');
 	}
 
-	public async updateFeed(): Promise<any> {
+	public updateFeed = (): Promise<any> => {
 		// binance-new
 		// TODO: generalise
+		console.log('calling', this.feedName);
 		const cacheName = 'subscribe-' + this.feedName;
 		let data;
 
@@ -123,7 +126,5 @@ export default class binanceNew implements Feed {
 			this.intervalMap.delete(cacheName);
 			return;
 		}*/
-
-		// TODO: proper test configuration logic
-	}
+	};
 }

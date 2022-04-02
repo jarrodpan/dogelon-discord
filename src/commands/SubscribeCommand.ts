@@ -18,16 +18,13 @@ export default class SubscribeCommand extends Command {
 		this.db = db;
 	}
 
-	private intervalMap = new Map<string, NodeJS.Timer>();
+	private intervalMap = new Map<string, any>();
 	private feedMap = new Map<string, Feed>();
 
 	public expression = `(!(un)?s(ubscribe)? \\S*)`;
 	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
 	public execute = (messageInput: Message | TextChannel, input: any) => {
 		const message = messageInput as Message;
-
-		// TODO: might want to refactor into modules if more subs required
-		const validFeatures = ['binance-new'];
 
 		const args = input.split(' ');
 
@@ -59,7 +56,7 @@ export default class SubscribeCommand extends Command {
 			// stupid iterator logic
 			//if (!this.feedMap.keys().includes(feature))
 			let keyFound = false;
-			for (const key of this.feedMap) {
+			for (const key of this.feedMap.keys()) {
 				if (key == feature) {
 					keyFound = true;
 					break;
@@ -151,11 +148,7 @@ export default class SubscribeCommand extends Command {
 									{},
 									Database.EXPIRE
 								);
-								clearInterval(
-									this.intervalMap.get(
-										cacheName
-									) as NodeJS.Timer
-								);
+								clearInterval(this.intervalMap.get(cacheName));
 								this.intervalMap.delete(cacheName);
 								//return;
 							}
@@ -195,138 +188,15 @@ export default class SubscribeCommand extends Command {
 						);
 
 					// set polling interval if not already scheduled
-					if (!this.intervalMap.has(cacheName)) {
+					if (!this.intervalMap.has(feature)) {
 						//
-						const poller = setIntervalImmediately(async () => {
-							// binance-new
-							// TODO: generalise
-							let data;
-							try {
-								const response = await axios.get(
-									'https://www.binance.com/bapi/composite/v1/public/cms/article/list/query?type=1&pageNo=1&pageSize=5'
-								);
-								//const response = await axios.get("http://localhost:3000");
-								data = response.data.data.catalogs[0];
-							} catch (e) {
-								console.error(e);
-								return null;
-							}
+						const feed = this.feedMap.get(feature) as Feed;
+						const poller = setIntervalImmediately(
+							feed.updateFeed,
+							feed.updateTime
+						); // poll once per 10 mins
 
-							console.log(
-								'Subscriber: polling for changes on ' +
-									cacheName
-							);
-
-							const subscribers = (await this.db.get(
-								cacheName
-							)) as Subscribers;
-
-							if (subscribers.channels.length == 0) {
-								// remove empty list from DB and stop polling
-								await this.db.set(
-									cacheName,
-									{},
-									Database.EXPIRE
-								);
-								clearInterval(
-									this.intervalMap.get(
-										cacheName
-									) as NodeJS.Timer
-								);
-								this.intervalMap.delete(cacheName);
-								return;
-							}
-
-							data.articles.forEach((article) => {
-								if (
-									article.releaseDate > subscribers.lastUpdate
-								)
-									console.log(
-										article.releaseDate,
-										subscribers.lastUpdate,
-										article.releaseDate >
-											subscribers.lastUpdate
-									);
-								if (
-									article.releaseDate < subscribers.lastUpdate
-								)
-									return;
-
-								const date = new Date(article.releaseDate);
-								const year = date.getUTCFullYear();
-								const month = date
-									.getUTCMonth()
-									.toString()
-									.padStart(2, '0');
-								const dt = date
-									.getUTCDate()
-									.toString()
-									.padStart(2, '0');
-
-								const hr = date
-									.getUTCHours()
-									.toString()
-									.padStart(2, '0');
-								const mi = date
-									.getUTCMinutes()
-									.toString()
-									.padStart(2, '0');
-								const se = date
-									.getUTCSeconds()
-									.toString()
-									.padStart(2, '0');
-								const tz = 'UTC';
-								// build title string
-								const timestamp = `${year}-${month}-${dt} ${hr}:${mi}:${se} ${tz}`;
-
-								const text = article.title;
-								const link = article.code;
-
-								subscribers.channels.forEach((subscriberId) => {
-									queue.push(
-										new Action(
-											client.channels.cache.get(
-												subscriberId
-											) as TextChannel,
-											'',
-											(msg, input) => {
-												const embed = new MessageEmbed()
-													.setColor('#9B59B6')
-
-													.setTitle(
-														'📰  New Binance Cryptocurrency Listing News'
-													)
-
-													.setThumbnail(
-														data.icon ||
-															'https://i.imgur.com/2vHF2jl.jpg'
-													)
-													.addField(
-														timestamp,
-														`[${text}](https://www.binance.com/en/support/announcement/${link})`
-													)
-													//.setTimestamp()
-													.setFooter({
-														text: 'Dogelon  •  Subscription Service',
-													});
-												return { embeds: [embed] };
-											}
-										)
-									);
-								});
-							});
-
-							// change last updated time
-							subscribers.lastUpdate = new Date().getTime();
-							await this.db.set(
-								cacheName,
-								subscribers,
-								Database.NEVER_EXPIRE
-							);
-							// TODO: proper test configuration logic
-						}, 600000); // poll once per 10 mins
-
-						this.intervalMap.set(cacheName, poller);
+						this.intervalMap.set(feature, poller);
 					}
 
 					return { embeds: [embed] };
@@ -339,7 +209,7 @@ export default class SubscribeCommand extends Command {
 				} catch (e) {
 					data = undefined;
 					error = true;
-					console.error('subscribe error');
+					console.error(e);
 				}
 				return null;
 			})
@@ -351,8 +221,22 @@ export default class SubscribeCommand extends Command {
 		return null;
 	};
 
-	public init = () => {
-		this.loadAllFeeds();
+	public init = async () => {
+		await this.loadAllFeeds();
+
+		for (const [feature, feed] of this.feedMap.entries()) {
+			// set polling interval if not already scheduled
+			if (!this.intervalMap.has(feature)) {
+				//
+				//const feed = this.feedMap.get(feature) as Feed;
+				const poller = setIntervalImmediately(
+					feed.updateFeed,
+					feed.updateTime
+				); // poll once per 10 mins
+
+				this.intervalMap.set(feature, poller);
+			}
+		}
 	};
 
 	private loadAllFeeds = async () => {
