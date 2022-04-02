@@ -58,16 +58,22 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   ~write API classes and interfaces and stuff to encapsulate things - is this really needed?~ - dont bother with this
 -   ~make the whole thing event driven (where appropriate)~ - it already is durr
 
-</details>
+</details><br />
 
-# Branch Guidelines
+# Development Guidelines
+
+## Branching
 
 -   `master` - godmode branch, autodeployed.
--   `update/{x}` - next version for deployment with new features.
--   `feature/{x}` - new features to be merged into `update/` branches.
+-   `next/{x}` - next version for deployment with new features.
+-   `feature/{x}` - new features to be merged into `next/` branches.
 -   `hotfix/{x}` - bug fixing
 
 Remember to update the version number in the changelog in `README.md`, `package.json` and `package-lock.json`!
+
+## Versioning and Changelog
+
+Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except the links are contained with each entry). Dev versions are suffixed with `-next`.
 
 # Changelog
 
@@ -359,12 +365,13 @@ Remember to update the version number in the changelog in `README.md`, `package.
 
 -   minimum viable product
 
-</details><br>
+</details><br />
 
 <!--
 ```
 # Changelog template
 ## [1.0.0] - date
+[1.0.0]: ./
 ### Added
 ### Changed
 ### Removed
