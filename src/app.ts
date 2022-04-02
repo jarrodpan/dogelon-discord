@@ -8,6 +8,7 @@ import { Command, MatchOn } from './commands';
 //import { MatchOn } from './types/Command';
 import { DMChannel, Message, TextChannel } from 'discord.js';
 import axios from 'axios';
+import { getNodeMajorVersion } from 'typescript';
 
 // following need to be 'require' to work
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -42,7 +43,10 @@ const newLog = (...msg: unknown[]) => {
 			.slice(3);
 
 		const filepath = stackline.slice(stackline.lastIndexOf(' ') + 1);
-		const file = filepath.slice(filepath.indexOf('bin') + 4);
+		const file = filepath.slice(
+			filepath.indexOf('bin') + 4,
+			filepath.indexOf('.js')
+		);
 		const func =
 			stackline.lastIndexOf(' ') != -1
 				? ' ' + stackline.slice(0, stackline.lastIndexOf(' '))
@@ -243,17 +247,17 @@ const newDeploy = async (channels) => {
 	const v = runDetails.version;
 
 	if (runDetails) {
-		const oldVer = runDetails.prevVersion.split('.').map(Number);
-		const newVer: string[] = runDetails.version.split('.').map(Number);
+		const oldVer = runDetails.prevVersion.split('.');
+		const newVer: string[] = runDetails.version.split('.');
 
 		for (let i = 0; i < 3; i++) {
-			if (oldVer[i] >= newVer[i]) {
+			if (Number.parseInt(oldVer[i]) >= Number.parseInt(newVer[i])) {
 				// whatever, this works, deal with it 😎
-				//console.debug(oldVer[i], newVer[i], oldVer[i] >= newVer[i]);
+				console.debug(oldVer[i], newVer[i], oldVer[i] >= newVer[i]);
 				firstRun = false;
 			} else {
 				firstRun = true;
-				if (newVer[-1].includes('-')) {
+				if (newVer[newVer.length - 1].includes('-')) {
 					console.log('dev version detected');
 					break;
 				} else console.log('new version detected');
