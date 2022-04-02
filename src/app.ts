@@ -128,13 +128,13 @@ client.login(process.env.DISCORD_TOKEN);
 
 client.on('messageCreate', (message: Message): void => {
 	console.debug(message);
-	if (message.channel.type == 'DM') {
-		console.log('DM received');
-		return;
-	}
 
-	const server = client.channels.cache.get(message.channelId).guild.name;
-	const channel = client.channels.cache.get(message.channelId).name;
+	const server =
+		client.channels.cache.get(message.channelId)?.guild?.name ||
+		'$Direct Messages';
+	const channel =
+		client.channels.cache.get(message.channelId)?.name ||
+		client.channels.resolve(message.channelId).recipient.username;
 
 	console.log(
 		'<' + server + '#' + channel + '@' + message.author.username + '>',
