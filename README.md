@@ -27,7 +27,6 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   presence updates
 -   private messages dont work
 -   weather info might be cool to add
--   encapsulate async stuff in promises or whatever just do it properly
 -   containerize with docker
 -   find a proper API(s) and use that for financial stuff
 -   direct api from binance
@@ -55,6 +54,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   db is sqlite in-memory, need to migrate to postgres - done in [1.5.0](#1.5.0)
 -   refactor `Command` type with `Commands` class as `Command` is abstract and all of `Commands` is static so combining the two should be fine. - done in [1.6.0](#1.6.0)
 -   dynamic coin tickers from coingecko/binance - done in [1.6.0](#1.6.0)
+-   encapsulate async stuff in promises or whatever just do it properly - done in general as required.
 -   ~write API classes and interfaces and stuff to encapsulate things - is this really needed?~ - dont bother with this
 -   ~make the whole thing event driven (where appropriate)~ - it already is durr
 
