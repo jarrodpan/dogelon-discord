@@ -1,0 +1,46 @@
+export default abstract class Database {
+	/**
+	 * Connect to a database.
+	 * @param uname Username if required
+	 * @param pword Password if required
+	 * @param host Hostname if required
+	 * @param port Port number if required
+	 */
+	public abstract connect(
+		uname?: string,
+		pword?: string,
+		host?: string | 'localhost',
+		port?: string | 1433
+	);
+	/**
+	 * Gets a cached object
+	 * @returns The cached object if found and not expired, false otherwise
+	 * @param key Cache key to query for
+	 */
+	public abstract get(key: string): Promise<any> | object | false;
+	/**
+	 * Sets or updates the cached object at the specified key.
+	 * @returns 1 if the row is updated, false if an error occurs.
+	 * @param key Key to set or update
+	 * @param val JSON object to set
+	 * @param cache Optional. Set expiry time of the cache value.
+	 */
+	public abstract set(
+		key: string,
+		val: any,
+		cache?: number
+	): Promise<any> | number | false; //number | false;
+	/**
+	 * Removes all expired cache entries from the database.
+	 * @returns number of rows deleted
+	 */
+	public abstract clean(): Promise<any> | number | false;
+
+	public static unixTime() {
+		return Math.ceil(Date.now() / 1000);
+	}
+	public static readonly NEVER_EXPIRE = 10000000000000;
+	public static readonly EXPIRE = -10000;
+	public static readonly ONE_HOUR = 1000 * 60 * 60;
+	public static readonly ONE_WEEK = 1000 * 60 * 60 * 24 * 7;
+}

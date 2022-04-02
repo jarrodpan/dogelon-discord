@@ -1,6 +1,6 @@
 {
-	"compilerOptions": { /* Docs: https://www.typescriptlang.org/tsconfig */
-		"target": "ES2020",
+	"compilerOptions": {
+		/* Docs: https://www.typescriptlang.org/tsconfig */ "target": "esnext",
 		"module": "commonjs",
 		"outDir": "bin",
 		"rootDir": "src",
@@ -9,28 +9,22 @@
 		"strictNullChecks": true,
 		"checkJs": true,
 		"allowJs": true,
+		"resolveJsonModule": true,
 		"moduleResolution": "node",
-		"types": [
-			"node"
-		],
-		"lib": [
-			"es5",
-			"es6",
-			"dom",
-			"dom.iterable"
-		],
+		"sourceMap": true,
+		"types": ["node", "jest"],
+		"lib": ["es5", "es6", "dom", "dom.iterable"],
 		"esModuleInterop": true,
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true,
 		"allowUnreachableCode": true,
-		"useUnknownInCatchVariables": false, // TypeScript 4.4+ only!
+		"useUnknownInCatchVariables": false // TypeScript 4.4+ only!
 	},
-	"include": [
-		"./src/**/*.ts",
-		"./src/**/*.js"
-	],
+	"include": ["./src/**/*.ts", "./src/**/*.js", "./src/**/*.json"],
 	"exclude": [
 		"node_modules",
 		"<node_internals>/**",
+		"src/api-dummy/**",
+		"*/**/*.test.ts"
 	]
 }

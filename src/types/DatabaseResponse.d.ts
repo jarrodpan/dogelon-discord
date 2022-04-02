@@ -1,0 +1,1 @@
+type DatabaseResponse = any | false;
