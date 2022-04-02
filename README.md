@@ -62,6 +62,24 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 # Changelog
 
+## [1.8.0-next] - 2022-04-03
+
+[1.8.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.8.0
+
+### Added
+
+-   direct messages are now supported (issue #23)
+
+### Changed
+
+-   reworked logging override to not stuff up
+-   alpha etc versions do not spam chat every time they launch
+
+# Previous Changes
+
+<details>
+<summary>Click to expand</summary>
+
 ## [1.8.0] - 2022-04-03
 
 [1.8.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.8.0
@@ -76,7 +94,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   refactored subscription module to be modular with feeds. (issue #62)
 -   crypto bug fixed where it was breaking with `%` and it was returning crap (issue #72))
 -   crypto `%_:all` has command and currency reversed to improve readabillity (issue #73)
--   added dynamic demical place decided on crypto prices to help for low value crypto (issue #71)
+-   added dynamic decimal place decided on crypto prices to help for low value crypto (issue #71)
 -   tidied up timeframe validation for crypto module.
 -   crypto help shows timeframe options and added a few more aliases in the module too.
 -   added type definitions for API responses to help with intellisense.
@@ -102,11 +120,6 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 ### Changed
 
 -   icon on footer of embeds is now applied globally.
-
-# Previous Changes
-
-<details>
-<summary>Click to expand</summary>
 
 ## [1.6.2] - 2022-03-26
 
