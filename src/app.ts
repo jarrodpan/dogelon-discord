@@ -6,7 +6,7 @@ require('dotenv').config();
 import Action from './types/Action';
 import { Command, MatchOn } from './commands';
 //import { MatchOn } from './types/Command';
-import { Message, TextChannel } from 'discord.js';
+import { DMChannel, Message, TextChannel } from 'discord.js';
 import axios from 'axios';
 
 // following need to be 'require' to work
@@ -21,6 +21,7 @@ export const client = new Client({
 		Intents.FLAGS.GUILD_MESSAGES,
 		Intents.FLAGS.DIRECT_MESSAGES,
 	],
+	partials: ['MESSAGE', 'CHANNEL'],
 });
 
 // TODO: make this better
@@ -125,11 +126,16 @@ client.once('ready', () => {
 // login to discord
 client.login(process.env.DISCORD_TOKEN);
 
-client.on('messageCreate', (message): void => {
+client.on('messageCreate', (message: Message): void => {
+	console.debug(message);
+	if (message.channel.type == 'DM') {
+		console.log('DM received');
+		return;
+	}
+
 	const server = client.channels.cache.get(message.channelId).guild.name;
 	const channel = client.channels.cache.get(message.channelId).name;
 
-	console.debug(message);
 	console.log(
 		'<' + server + '#' + channel + '@' + message.author.username + '>',
 		message.content
