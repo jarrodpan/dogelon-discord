@@ -69,7 +69,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   `feature/{x}` - new features to be merged into `next/` branches.
 -   `hotfix/{x}` - bug fixing
 
-Remember to update the version number in the changelog in `README.md`, `package.json` and `package-lock.json`!
+Remember to update the version number in the changelog in `README.md`, `package.json` and `package-lock.json`, and tag the git commit after merging.
 
 ## Versioning and Changelog
 
