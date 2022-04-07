@@ -52,8 +52,7 @@ export default class binanceNew implements Feed {
 
 					const date = new Date(article.releaseDate);
 					const year = date.getUTCFullYear();
-					const month = date
-						.getUTCMonth()
+					const month = (date.getUTCMonth() + 1)
 						.toString()
 						.padStart(2, '0');
 					const dt = date.getUTCDate().toString().padStart(2, '0');
