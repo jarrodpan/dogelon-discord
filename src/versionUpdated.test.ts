@@ -87,7 +87,7 @@ describe('previous version formatting', () => {
 
 	const changelogStart = readme.indexOf('# Changelog');
 
-	ifit(alpha?.length > 0)('alpha version is listed first', () => {
+	ifit(alpha?.length > 0)('development version is listed first', () => {
 		const a = readme.indexOf(changelogVer, changelogStart);
 		const b =
 			patch > 0
