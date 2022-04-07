@@ -8,3 +8,4 @@
 /samples/**
 src/api-dummy/node_modules
 src/api-dummy/server.js
+coverage
