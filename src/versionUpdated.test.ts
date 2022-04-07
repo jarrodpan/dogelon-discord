@@ -14,6 +14,8 @@ const latestChange = readme
 	.replace(/\r/gm, '')
 	.split(/\n/gm); // chaotic regex to extract the latest change in the changelog
 
+const ifit = (cond) => (cond ? it : it.skip);
+
 let changelogVer, changelogDate, tagLinkVer, tagVer;
 
 // extract all the junk
@@ -58,7 +60,7 @@ describe.each([
 	[tagLinkVer, 'tag link version is not development version'],
 	[tagVer, 'tag version is not development version'],
 ])('check for development version', (ver: string, desc) => {
-	it(desc, () => {
+	ifit(!/-.*$/g.test(changelogVer))(desc, () => {
 		expect(/-.*$/g.test(ver)).toBe(false);
 	});
 });
@@ -76,8 +78,6 @@ describe('changelog date', () => {
 		expect(changelogDate).toEqual(today);
 	});
 });
-
-const ifit = (cond) => (cond ? it : it.skip);
 
 describe('previous version formatting', () => {
 	const [nonalpha, alpha] = changelogVer.split('-');
