@@ -83,10 +83,7 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 ### Changed
 
--   binance month fixed (issue #82)
--   binance month and date padded
--   news links fixed (issue #81)
--   added unit test to check that version numbers and dates are correct on all files
+-   x
 
 # Previous Changes
 
