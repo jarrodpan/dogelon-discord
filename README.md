@@ -77,6 +77,22 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 # Changelog
 
+## [1.10.0-next] - 2022-04-08
+
+[1.10.0-next]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.10.0-next
+
+### Changed
+
+-   binance month fixed (issue #82)
+-   binance month and date padded
+-   news links fixed (issue #81)
+-   added unit test to check that version numbers and dates are correct on all files
+
+# Previous Changes
+
+<details>
+<summary>Click to expand</summary>
+
 ## [1.9.1] - 2022-04-08
 
 [1.9.1]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.9.1
@@ -101,11 +117,6 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 -   reworked logging override to not stuff up and be more useful
 -   alpha etc versions do not spam chat every time they launch
 -   fixed issue with database caching using js time instead of unit time (issue #75)
-
-# Previous Changes
-
-<details>
-<summary>Click to expand</summary>
 
 ## [1.8.0] - 2022-04-03
 
