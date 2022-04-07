@@ -77,9 +77,9 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 # Changelog
 
-## [1.8.0-next] - 2022-04-03
+## [1.9.0] - 2022-04-03
 
-[1.8.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.8.0
+[1.9.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.9.0
 
 ### Added
 
@@ -89,6 +89,7 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 -   reworked logging override to not stuff up and be more useful
 -   alpha etc versions do not spam chat every time they launch
+-   fixed issue with database caching using js time instead of unit time (issue #75)
 
 # Previous Changes
 
