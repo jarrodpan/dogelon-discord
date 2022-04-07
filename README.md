@@ -69,7 +69,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   `feature/{x}` - new features to be merged into `next/` branches.
 -   `hotfix/{x}` - bug fixing
 
-Remember to update the version number in the changelog in `README.md`, `package.json` and `package-lock.json`, and tag the git commit after merging.
+Remember to update the version number in the changelog in `README.md`, `package.json` and `package-lock.json`, change the changelog date and tag the git commit after merging.
 
 ## Versioning and Changelog
 
@@ -77,7 +77,19 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 # Changelog
 
-## [1.9.0] - 2022-04-03
+## [1.10.0-next] - // TODO: 2022-04-07
+
+[1.10.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.9.0
+
+### Added
+
+-   x
+
+### Changed
+
+-   x
+
+## [1.9.0] - 2022-04-07
 
 [1.9.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.9.0
 
