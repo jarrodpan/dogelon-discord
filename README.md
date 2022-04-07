@@ -77,17 +77,16 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 # Changelog
 
-## [1.10.0-next] - // TODO: 2022-04-07
+## [1.9.1] - 2022-04-08
 
-[1.10.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.9.0
-
-### Added
-
--   x
+[1.9.1]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.9.1
 
 ### Changed
 
--   x
+-   binance month fixed (issue #82)
+-   binance month and date padded
+-   news links fixed (issue #81)
+-   added unit test to check that version numbers and dates are correct on all files
 
 ## [1.9.0] - 2022-04-07
 
