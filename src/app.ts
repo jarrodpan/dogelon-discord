@@ -6,8 +6,9 @@ require('dotenv').config();
 import Action from './types/Action';
 import { Command, MatchOn } from './commands';
 //import { MatchOn } from './types/Command';
-import { Message, TextChannel } from 'discord.js';
+import { DMChannel, Message, TextChannel } from 'discord.js';
 import axios from 'axios';
+import { getNodeMajorVersion } from 'typescript';
 
 // following need to be 'require' to work
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -21,6 +22,7 @@ export const client = new Client({
 		Intents.FLAGS.GUILD_MESSAGES,
 		Intents.FLAGS.DIRECT_MESSAGES,
 	],
+	partials: ['MESSAGE', 'CHANNEL'],
 });
 
 // TODO: make this better
@@ -38,13 +40,19 @@ const newLog = (...msg: unknown[]) => {
 			.trim()
 			.replace('(', '')
 			.replace(')', '')
-			.split(' ') as string[];
-		const caller =
-			stackline.length == 2
-				? stackline[1].slice(stackline[1].indexOf('bin') + 4)
-				: stackline[2].slice(stackline[2].indexOf('bin') + 4) +
-				  ' ' +
-				  stackline[1];
+			.slice(3);
+
+		const filepath = stackline.slice(stackline.lastIndexOf(' ') + 1);
+		const file = filepath.slice(
+			filepath.indexOf('bin') + 4,
+			filepath.indexOf('.js')
+		);
+		const func =
+			stackline.lastIndexOf(' ') != -1
+				? ' ' + stackline.slice(0, stackline.lastIndexOf(' '))
+				: '';
+
+		const caller = file + func;
 		// eslint-disable-next-line @typescript-eslint/no-array-constructor
 		oLog.apply(this, new Array().concat('[' + caller + ']', msg));
 	}
@@ -125,11 +133,16 @@ client.once('ready', () => {
 // login to discord
 client.login(process.env.DISCORD_TOKEN);
 
-client.on('messageCreate', (message): void => {
-	const server = client.channels.cache.get(message.channelId).guild.name;
-	const channel = client.channels.cache.get(message.channelId).name;
-
+client.on('messageCreate', (message: Message): void => {
 	console.debug(message);
+
+	const server =
+		client.channels.cache.get(message.channelId)?.guild?.name ||
+		'$Direct Messages';
+	const channel =
+		client.channels.cache.get(message.channelId)?.name ||
+		client.channels.resolve(message.channelId).recipient.username;
+
 	console.log(
 		'<' + server + '#' + channel + '@' + message.author.username + '>',
 		message.content
@@ -137,6 +150,7 @@ client.on('messageCreate', (message): void => {
 
 	// ignore self messages
 	if (message.author.bot) return;
+	if (message.webhookId) return;
 
 	// get match groups
 	// eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -233,16 +247,23 @@ const newDeploy = async (channels) => {
 	const v = runDetails.version;
 
 	if (runDetails) {
-		const oldVer = runDetails.prevVersion.split('.').map(Number);
-		const newVer = runDetails.version.split('.').map(Number);
+		const oldVer = runDetails.prevVersion.split('.');
+		const newVer: string[] = runDetails.version.split('.');
 
 		for (let i = 0; i < 3; i++) {
-			if (oldVer[i] >= newVer[i]) {
+			if (
+				Number.parseInt(oldVer[i].split('-')[0]) >=
+				Number.parseInt(newVer[i].split('-')[0])
+			) {
 				// whatever, this works, deal with it 😎
 				console.debug(oldVer[i], newVer[i], oldVer[i] >= newVer[i]);
 				firstRun = false;
 			} else {
 				firstRun = true;
+				if (newVer[newVer.length - 1].includes('-')) {
+					console.log('dev version detected');
+					break;
+				} else console.log('new version detected');
 				channels.forEach((_subscriberId, v) => {
 					const ch = channels.get(v);
 					//console.log(ch);

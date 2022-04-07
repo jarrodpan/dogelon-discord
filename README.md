@@ -58,9 +58,43 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   ~write API classes and interfaces and stuff to encapsulate things - is this really needed?~ - dont bother with this
 -   ~make the whole thing event driven (where appropriate)~ - it already is durr
 
-</details>
+</details><br />
+
+# Development Guidelines
+
+## Branching
+
+-   `master` - godmode branch, autodeployed.
+-   `next/{x}` - next version for deployment with new features.
+-   `feature/{x}` - new features to be merged into `next/` branches.
+-   `hotfix/{x}` - bug fixing
+
+Remember to update the version number in the changelog in `README.md`, `package.json` and `package-lock.json`, and tag the git commit after merging.
+
+## Versioning and Changelog
+
+Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except the links are contained with each entry). Dev versions are suffixed with `-next`.
 
 # Changelog
+
+## [1.9.0] - 2022-04-03
+
+[1.9.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.9.0
+
+### Added
+
+-   direct messages are now supported (issue #23)
+
+### Changed
+
+-   reworked logging override to not stuff up and be more useful
+-   alpha etc versions do not spam chat every time they launch
+-   fixed issue with database caching using js time instead of unit time (issue #75)
+
+# Previous Changes
+
+<details>
+<summary>Click to expand</summary>
 
 ## [1.8.0] - 2022-04-03
 
@@ -76,7 +110,7 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 -   refactored subscription module to be modular with feeds. (issue #62)
 -   crypto bug fixed where it was breaking with `%` and it was returning crap (issue #72))
 -   crypto `%_:all` has command and currency reversed to improve readabillity (issue #73)
--   added dynamic demical place decided on crypto prices to help for low value crypto (issue #71)
+-   added dynamic decimal place decided on crypto prices to help for low value crypto (issue #71)
 -   tidied up timeframe validation for crypto module.
 -   crypto help shows timeframe options and added a few more aliases in the module too.
 -   added type definitions for API responses to help with intellisense.
@@ -102,11 +136,6 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 ### Changed
 
 -   icon on footer of embeds is now applied globally.
-
-# Previous Changes
-
-<details>
-<summary>Click to expand</summary>
 
 ## [1.6.2] - 2022-03-26
 
@@ -337,12 +366,13 @@ Clone repo then `npm install` to install dependencies, then `npm start` to compi
 
 -   minimum viable product
 
-</details><br>
+</details><br />
 
 <!--
 ```
 # Changelog template
 ## [1.0.0] - date
+[1.0.0]: ./
 ### Added
 ### Changed
 ### Removed

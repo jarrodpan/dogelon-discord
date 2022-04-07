@@ -3,7 +3,7 @@ import SQLiteDatabase from './SQLiteDatabase';
 
 const db = new SQLiteDatabase();
 
-describe('sqlite wrapper class', () => {
+describe('sqlite wrapper class - integration test', () => {
 	const key = 'sampleKey';
 	const val = { object: 1 };
 

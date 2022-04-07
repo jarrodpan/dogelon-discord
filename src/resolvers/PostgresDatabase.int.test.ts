@@ -3,7 +3,7 @@ import PostgresDatabase from './PostgresDatabase';
 
 const db = new PostgresDatabase();
 
-describe('postgres wrapper class', () => {
+describe('postgres wrapper class - integration test', () => {
 	const key = 'sampleKey';
 	const val = { object: 1 };
 

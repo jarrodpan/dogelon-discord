@@ -19,7 +19,7 @@ export default class NewsCommand extends Command {
 		// coin exists
 		return Promise.resolve()
 			.then(async () => {
-				let response;
+				let response: DatabaseResponse;
 				const cacheName = 'abc-news';
 
 				response = await this.db.get(cacheName);
