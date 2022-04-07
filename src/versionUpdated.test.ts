@@ -77,11 +77,25 @@ describe('changelog date', () => {
 	});
 });
 
-describe('previous minor version hidden', () => {
-	const [major, minor, patch] = changelogVer
-		.replace(/-.*$/g, '')
+const ifit = (cond) => (cond ? it : it.skip);
+
+describe('previous version formatting', () => {
+	const [nonalpha, alpha] = changelogVer.split('-');
+	const [major, minor, patch] = nonalpha
 		.split('.')
 		.map((x) => Number.parseInt(x));
+
+	const changelogStart = readme.indexOf('# Changelog');
+
+	ifit(alpha?.length > 0)('alpha version is listed first', () => {
+		const a = readme.indexOf(changelogVer, changelogStart);
+		const b =
+			patch > 0
+				? readme.indexOf(`${major}.${minor}.${patch - 1}`, a)
+				: readme.indexOf('# Previous Changes', a);
+		const orderedCorrectly = a < b;
+		expect(orderedCorrectly).toBe(true);
+	});
 
 	let latestPatch = patch;
 	while (latestPatch > 0) {
@@ -91,7 +105,8 @@ describe('previous minor version hidden', () => {
 		const desc = `${current} is listed before ${last}`;
 		it(desc, () => {
 			const orderedCorrectly =
-				readme.search(current) < readme.search(last);
+				readme.indexOf(current, changelogStart) <
+				readme.indexOf(last, changelogStart);
 			expect(orderedCorrectly).toBe(true);
 		});
 		latestPatch--;
@@ -105,7 +120,7 @@ describe('previous minor version hidden', () => {
 		const details = '<details>';
 		const summary = '<summary>Click to expand</summary>';
 
-		const a = readme.indexOf(current);
+		const a = readme.indexOf(current, changelogStart);
 		const b = readme.indexOf(header, a);
 		const c = readme.indexOf(details, b);
 		const d = readme.indexOf(summary, c);
