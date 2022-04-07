@@ -14,25 +14,13 @@ const latestChange = readme
 	.replace(/\r/gm, '')
 	.split(/\n/gm); // chaotic regex to extract the latest change in the changelog
 
-let title;
-const changed = {
-	Added: new Array<string>(),
-	Changed: new Array<string>(),
-	Removed: new Array<string>(),
-} as object;
-let state: 'Added' | 'Changed' | 'Removed';
-
 let changelogVer, changelogDate, tagLinkVer, tagVer;
 
 // extract all the junk
 latestChange?.forEach((line) => {
 	if (line == '# Changelog' || line.length == 0) return;
 	if (line.startsWith('## ') && line.length > 3)
-		(title = line.slice(3).replace('[', 'v').replace(']', '')) &&
-			(changelogVer = line.slice(
-				line.indexOf('[') + 1,
-				line.indexOf(']')
-			)) &&
+		(changelogVer = line.slice(line.indexOf('[') + 1, line.indexOf(']'))) &&
 			(changelogDate = line.slice(line.lastIndexOf(' ') + 1));
 	if (line.startsWith('['))
 		(tagLinkVer = line.slice(1, line.indexOf(']'))) &&
@@ -77,7 +65,7 @@ describe.each([
 
 describe('changelog date', () => {
 	it('changelog date is today', () => {
-		console.log(changelogDate);
+		//console.log(changelogDate);
 		const dateObj = new Date();
 
 		const day = dateObj.getDate().toString().padStart(2, '0');
@@ -86,5 +74,44 @@ describe('changelog date', () => {
 
 		const today = `${year}-${month}-${day}`;
 		expect(changelogDate).toEqual(today);
+	});
+});
+
+describe('previous minor version hidden', () => {
+	const [major, minor, patch] = changelogVer
+		.replace(/-.*$/g, '')
+		.split('.')
+		.map((x) => Number.parseInt(x));
+
+	let latestPatch = patch;
+	while (latestPatch > 0) {
+		const prevPatch = latestPatch - 1;
+		const current = `${major}.${minor}.${patch}`;
+		const last = `${major}.${minor}.${prevPatch}`;
+		const desc = `${current} is listed before ${last}`;
+		it(desc, () => {
+			const orderedCorrectly =
+				readme.search(current) < readme.search(last);
+			expect(orderedCorrectly).toBe(true);
+		});
+		latestPatch--;
+	}
+
+	const prevMinor = minor - 1;
+	const lastMinor = `${major}.${prevMinor}.`;
+	it(`${lastMinor}x is hidden behind accordian`, () => {
+		const current = `${major}.${minor}.0`;
+		const header = '# Previous Changes';
+		const details = '<details>';
+		const summary = '<summary>Click to expand</summary>';
+
+		const a = readme.indexOf(current);
+		const b = readme.indexOf(header, a);
+		const c = readme.indexOf(details, b);
+		const d = readme.indexOf(summary, c);
+		const e = readme.indexOf(lastMinor, d);
+
+		const orderedCorrectly = a < b && b < c && c < d && d < e;
+		expect(orderedCorrectly).toBe(true);
 	});
 });
