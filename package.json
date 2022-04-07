@@ -15,7 +15,7 @@
 		"build-w": "tsc -b -v -w",
 		"start": "node ./bin/app.js",
 		"devstart": "nodemon --inspect ./bin/app.js",
-		"test": "jest --coverage --detectOpenHandles",
+		"test": "jest --coverage --noStackTrace --detectOpenHandles",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx"
 	},
 	"author": "Jarrod Pan",
