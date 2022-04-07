@@ -73,7 +73,7 @@ export default class NewsCommand extends Command {
 					const title = live + article.cardHeadingPrepared.children;
 					const text = article.synopsis;
 					const link =
-						'https://www.abc.com.au' + article.cardLinkPrepared.to;
+						'https://www.abc.net.au' + article.cardLinkPrepared.to;
 					// build body string
 					const body = `${text}\n — [Read More](${link})`;
 

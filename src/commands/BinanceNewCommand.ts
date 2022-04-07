@@ -61,8 +61,8 @@ export default class BinanceNewCommand extends Command {
 			result?.forEach((article) => {
 				const date = new Date(article.releaseDate);
 				const year = date.getFullYear();
-				const month = date.getMonth();
-				const dt = date.getDate();
+				const month = (date.getMonth() + 1).toString().padStart(2, '0');
+				const dt = date.getDate().toString().padStart(2, '0');
 				// build title string
 				const timestamp = `${year}-${month}-${dt}`;
 

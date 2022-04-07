@@ -1,6 +1,6 @@
 {
 	"name": "dogelon-discord",
-	"version": "1.9.0",
+	"version": "1.9.1",
 	"description": "stock and helper bot for personal discord",
 	"type": "commonjs",
 	"bin": {
@@ -15,7 +15,7 @@
 		"build-w": "tsc -b -v -w",
 		"start": "node ./bin/app.js",
 		"devstart": "nodemon --inspect ./bin/app.js",
-		"test": "jest --verbose --detectOpenHandles",
+		"test": "jest --coverage --detectOpenHandles",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx"
 	},
 	"author": "Jarrod Pan",
