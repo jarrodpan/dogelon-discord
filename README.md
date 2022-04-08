@@ -83,7 +83,7 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 ### Changed
 
--   x
+-   refactored message queue to singleton global for encapsulation and decoupling etc (closes #21)
 
 # Previous Changes
 

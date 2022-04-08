@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { MessageEmbed, TextChannel } from 'discord.js';
-import { client, queue } from '../../app';
-import Action from '../../types/Action';
+import { client } from '../../app';
+import { Dogelon } from '../../dogelon';
 import Database from '../../types/Database';
 import { Feed } from '../../types/Feed';
 import { Subscribers } from '../SubscribeCommand';
@@ -68,35 +68,33 @@ export default class binanceNew implements Feed {
 					const link = article.code;
 
 					subscribers.channels.forEach((subscriberId) => {
-						queue.push(
-							new Action(
-								client.channels.cache.get(
-									subscriberId
-								) as TextChannel,
-								'',
-								(msg, input) => {
-									const embed = new MessageEmbed()
-										.setColor('#9B59B6')
+						Dogelon.Queue.push(
+							client.channels.cache.get(
+								subscriberId
+							) as TextChannel,
+							'',
+							(msg, input) => {
+								const embed = new MessageEmbed()
+									.setColor('#9B59B6')
 
-										.setTitle(
-											'📰  New Binance Cryptocurrency Listing News'
-										)
+									.setTitle(
+										'📰  New Binance Cryptocurrency Listing News'
+									)
 
-										.setThumbnail(
-											data.icon ||
-												'https://i.imgur.com/2vHF2jl.jpg'
-										)
-										.addField(
-											timestamp,
-											`[${text}](https://www.binance.com/en/support/announcement/${link})`
-										)
-										//.setTimestamp()
-										.setFooter({
-											text: 'Dogelon  •  Subscription Service',
-										});
-									return { embeds: [embed] };
-								}
-							)
+									.setThumbnail(
+										data.icon ||
+											'https://i.imgur.com/2vHF2jl.jpg'
+									)
+									.addField(
+										timestamp,
+										`[${text}](https://www.binance.com/en/support/announcement/${link})`
+									)
+									//.setTimestamp()
+									.setFooter({
+										text: 'Dogelon  •  Subscription Service',
+									});
+								return { embeds: [embed] };
+							}
 						);
 					});
 				});
