@@ -2,6 +2,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 //https://simplernerd.com/js-console-colors/
 
+const prerelease = process.env.PRERELEASE || false;
+//console.log(prerelease);
 const pkgVer: string = require('../package.json').version;
 const pkgLockVer: string = require('../package-lock.json').version;
 
@@ -58,7 +60,7 @@ describe.each([
 	[tagLinkVer, 'tag link version is not development version'],
 	[tagVer, 'tag version is not development version'],
 ])('check for development version', (ver: string, desc) => {
-	ifit(!/-.*$/g.test(changelogVer))(desc, () => {
+	ifit(prerelease)(desc, () => {
 		expect(/-.*$/g.test(ver)).toBe(false);
 	});
 });
@@ -85,14 +87,16 @@ describe('previous version formatting', () => {
 
 	const changelogStart = readme.indexOf('# Changelog');
 
-	ifit(alpha?.length > 0)('development version is listed first', () => {
+	//ifit(alpha?.length > 0 || !prerelease)(
+	const not = prerelease ? 'not ' : '';
+	it(`development version is ${not}listed first`, () => {
 		const a = readme.indexOf(changelogVer, changelogStart);
 		const b =
 			patch > 0
 				? readme.indexOf(`${major}.${minor}.${patch - 1}`, a)
 				: readme.indexOf('# Previous Changes', a);
 		const orderedCorrectly = a < b;
-		expect(orderedCorrectly).toBe(true);
+		expect(orderedCorrectly).toBe(!prerelease);
 	});
 
 	let latestPatch = patch;
