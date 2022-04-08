@@ -1,4 +1,4 @@
-import { Channel, Message, TextChannel } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 
 type Action = {
 	message: Message | TextChannel;

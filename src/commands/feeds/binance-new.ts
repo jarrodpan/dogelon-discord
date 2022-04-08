@@ -73,7 +73,8 @@ export default class binanceNew implements Feed {
 								subscriberId
 							) as TextChannel,
 							'',
-							(msg, input) => {
+							// eslint-disable-next-line @typescript-eslint/no-unused-vars
+							(_msg, _input) => {
 								const embed = new MessageEmbed()
 									.setColor('#9B59B6')
 

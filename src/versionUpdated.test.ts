@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-array-constructor */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import jest from 'jest';
-
 //https://simplernerd.com/js-console-colors/
 
 const pkgVer: string = require('../package.json').version;
