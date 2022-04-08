@@ -1,7 +1,7 @@
 import { Channel, Message, TextChannel } from 'discord.js';
 
 type Action = {
-	message: Channel;
+	message: Message | TextChannel;
 	token: string;
 	callback: (
 		message: Message | TextChannel,
@@ -13,7 +13,7 @@ export class Queue {
 	private static queue: Action[] = [];
 
 	public static push(
-		message: Channel,
+		message: Message | TextChannel,
 		token: string,
 		callback: (...params: any) => any
 	) {
