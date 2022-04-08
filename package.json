@@ -12,9 +12,10 @@
 	},
 	"scripts": {
 		"build": "tsc -b",
-		"build-w": "tsc -b -v -w",
+		"build:dev": "tsc -b -v -w",
 		"start": "node ./bin/app.js",
-		"devstart": "nodemon --inspect ./bin/app.js",
+		"start:dev": "nodemon --inspect ./bin/app.js",
+		"prerelease": "cross-env PRERELEASE=true npm run test version",
 		"test": "jest --coverage --noStackTrace --detectOpenHandles",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
 		"prepare": "husky install"
@@ -37,6 +38,7 @@
 		"@types/pg": "^8.6.5",
 		"@typescript-eslint/eslint-plugin": "^5.13.0",
 		"@typescript-eslint/parser": "^5.13.0",
+		"cross-env": "^7.0.3",
 		"eslint": "^8.10.0",
 		"husky": "^7.0.4",
 		"jest": "^27.5.1",
