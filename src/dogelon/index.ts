@@ -1,7 +1,5 @@
 import { Queue } from './Queue';
 
-const Dogelon = {
-	Queue: Queue,
-};
-
-export default Dogelon;
+export class Dogelon {
+	public static Queue = Queue;
+}
