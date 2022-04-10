@@ -5,9 +5,8 @@ require('dotenv').config();
 
 import { Command, MatchOn } from './commands';
 //import { MatchOn } from './types/Command';
-import { DMChannel, Message, TextChannel } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import axios from 'axios';
-import { getNodeMajorVersion } from 'typescript';
 import { Dogelon } from './dogelon/';
 
 // following need to be 'require' to work
@@ -61,23 +60,16 @@ console.debug = newLog;
 // override console.debug for production
 if (process.env.NODE_ENV === 'production') {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	console.debug = (..._msg: unknown[]) => {
+	console.debug = (..._x: unknown[]) => {
 		return;
 	};
 }
 
 // initialise
-// TODO: refactor this
 client.once('ready', () => {
-	//console.log();
 	setInterval(Dogelon.Queue.processNext, 550); // 500ms is the rate limit of discord's bot API
-
 	console.debug(Command.matchOn);
-	//console.debug(Commands.db);
 	console.log('Ready!');
-	//console.debug(Commands);
-	//console.debug(Commands.matchOn);
-
 	newDeploy(client.channels.cache);
 });
 
