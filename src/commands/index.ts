@@ -3,20 +3,13 @@ import * as fs from 'fs';
 import Database from '../types/Database';
 import PostgresDatabase from '../resolvers/PostgresDatabase';
 import { Message, TextChannel } from 'discord.js';
+import { HelpPage } from '../types/Help';
 
 export enum MatchOn {
 	TOKEN,
 	MESSAGE,
 }
 
-export type HelpPage = {
-	command: string;
-	message: HelpField[];
-};
-export type HelpField = {
-	title: string;
-	body: string;
-};
 export abstract class Command {
 	/**
 	 * Required. Regular expression to check against when matching in discord chat
