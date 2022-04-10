@@ -4,6 +4,7 @@ import Database from '../types/Database';
 import PostgresDatabase from '../resolvers/PostgresDatabase';
 import { Message, TextChannel } from 'discord.js';
 import { HelpPage } from '../types/Help';
+import HelpCommand from './HelpCommand';
 
 export enum MatchOn {
 	TOKEN,
@@ -61,6 +62,7 @@ export abstract class Command {
 			Command.db = new PostgresDatabase();
 			await Command.db.connect();
 
+			const helpPages: HelpPage[] = [];
 			// load commands from file
 			const commandList: Map<any, any> = new Map();
 			await fs
@@ -86,6 +88,10 @@ export abstract class Command {
 						commandClass.init();
 					}
 
+					if (commandClass.helpPage) {
+						helpPages.push(commandClass.helpPage);
+					}
+
 					// push regex match on to correct queue
 					Command.matchOn
 						.get(commandClass.matchOn)
@@ -102,9 +108,9 @@ export abstract class Command {
 			// assign static variables at runtime
 			Command.commandMap = commandList;
 
-			return;
+			return helpPages;
 		})
-		.then(() => {
+		.then((helpPages) => {
 			// for each command
 			// take the regex string and append to either messageRegex or tokenRegex with named groups
 			const newMatch: Map<MatchOn, RegExp> = new Map();
@@ -114,6 +120,12 @@ export abstract class Command {
 			});
 			// save compiled regexes
 			Command.matchOn = newMatch;
+
+			// load help commands
+			if (Command.commandMap.has('HelpCommand'))
+				(
+					Command.commandMap.get('HelpCommand') as HelpCommand
+				).loadOptions(helpPages);
 
 			// clear db expired data every 5 mins
 			setInterval(() => {
