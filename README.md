@@ -85,7 +85,7 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 -   refactored message queue to singleton global for encapsulation and decoupling etc (closes #21)
 -   added husky for git hooks and test to get changelog right (closes #80)
--   converted help command into pages for each command for further extensibility (closes #60)
+-   converted help command into dynamic help pages for each command for further extensibility (closes #60 and closes #43)
 -   made console output prettier with colours for ease of reading.
 
 # Previous Changes
