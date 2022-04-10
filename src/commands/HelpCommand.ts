@@ -14,7 +14,7 @@ export default class HelpCommand extends Command {
 		if (db) this.db = db;
 	}
 
-	public expression = '(!h(elp)?)';
+	public expression = '!h(elp)?.*';
 	public matchOn = MatchOn.MESSAGE;
 
 	private helpPages = new Map<string, HelpField[]>();
@@ -30,9 +30,11 @@ export default class HelpCommand extends Command {
 	};
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public execute = (message: Message | TextChannel, _: unknown) => {
+	public execute = (message: Message | TextChannel, input: string) => {
 		const v = `v${pkg.version}`;
 		//const a = '<@944798462053089300>';
+		const [_, option, ...__] = input.split(' ');
+		console.log(option);
 
 		const embed = new MessageEmbed()
 			.setColor('#9B59B6')
