@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
+import { HelpPage } from '../types/Help';
 
 /**
  * shows command list
@@ -12,6 +13,16 @@ export default class ChangesCommand extends Command {
 		super();
 		this.db = db;
 	}
+
+	public helpPage: HelpPage = {
+		command: 'changes',
+		message: [
+			{
+				title: '`!changes`, `!c`',
+				body: 'Displays latest changelog entry',
+			},
+		],
+	};
 
 	public version;
 
