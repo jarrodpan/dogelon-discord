@@ -49,8 +49,12 @@ const newLog = (...msg: unknown[]) => {
 				: '';
 
 		const caller = file + func;
-		// eslint-disable-next-line @typescript-eslint/no-array-constructor
-		oLog.apply(this, new Array().concat('[' + caller + ']', msg));
+
+		oLog.apply(
+			this,
+			// eslint-disable-next-line @typescript-eslint/no-array-constructor
+			new Array().concat('\x1b[48;5;19m[' + caller + ']\x1b[0m', msg)
+		);
 	}
 };
 

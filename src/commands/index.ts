@@ -3,19 +3,44 @@ import * as fs from 'fs';
 import Database from '../types/Database';
 import PostgresDatabase from '../resolvers/PostgresDatabase';
 import { Message, TextChannel } from 'discord.js';
+import { HelpPage } from '../types/Help';
+import HelpCommand from './HelpCommand';
 
 export enum MatchOn {
 	TOKEN,
 	MESSAGE,
 }
+
 export abstract class Command {
+	/**
+	 * Required. Regular expression to check against when matching in discord chat
+	 */
 	public readonly expression!: string;
+	/**
+	 * Required. Enum to determine whether to match on messages as a whole or just tokens in messages (separated by spaces)
+	 * Values: MatchOn.TOKEN, MatchOn.MESSAGE
+	 */
 	public readonly matchOn!: MatchOn;
+	/**
+	 * Required. The callback to run when a match is detected and queued up to generate the output for discord.
+	 * @param message a Discord.js `Message` or `TextChannel` object to send the message/reply to
+	 * @param input the message or token string to parse.
+	 * @returns a Promise or response to send to discord.
+	 */
 	public readonly execute!: (
 		message: Message | TextChannel,
 		input: any
 	) => Promise<any> | any;
+
+	/**
+	 * A callback to run after the class has been loaded. Done like this to allow for asynchronous initialisation.
+	 */
 	public readonly init?: () => void;
+
+	/**
+	 * If defined, provides the command for the help page and a list of string arrays with field
+	 */
+	public readonly helpPage?: HelpPage;
 
 	/**
 	 * all the command classes
@@ -37,15 +62,16 @@ export abstract class Command {
 			Command.db = new PostgresDatabase();
 			await Command.db.connect();
 
+			const helpPages: HelpPage[] = [];
 			// load commands from file
 			const commandList: Map<any, any> = new Map();
 			await fs
 				.readdirSync('./src/commands/')
 				.forEach(async (command: string) => {
-					const [commandName, ts] = command.split('.');
+					const [commandName, ts, ..._] = command.split('.');
 					if (
 						// knockout junk files
-						ts !== 'ts' || // not typescript
+						ts !== 'ts' || // not typescript or a test or something
 						!commandName.endsWith('Command') // not a command
 					)
 						return;
@@ -60,6 +86,10 @@ export abstract class Command {
 					if (commandClass.init) {
 						console.debug('running init() on', commandName);
 						commandClass.init();
+					}
+
+					if (commandClass.helpPage) {
+						helpPages.push(commandClass.helpPage);
 					}
 
 					// push regex match on to correct queue
@@ -78,9 +108,9 @@ export abstract class Command {
 			// assign static variables at runtime
 			Command.commandMap = commandList;
 
-			return;
+			return helpPages;
 		})
-		.then(() => {
+		.then((helpPages) => {
 			// for each command
 			// take the regex string and append to either messageRegex or tokenRegex with named groups
 			const newMatch: Map<MatchOn, RegExp> = new Map();
@@ -90,6 +120,12 @@ export abstract class Command {
 			});
 			// save compiled regexes
 			Command.matchOn = newMatch;
+
+			// load help commands
+			if (Command.commandMap.has('HelpCommand'))
+				(
+					Command.commandMap.get('HelpCommand') as HelpCommand
+				).loadOptions(helpPages);
 
 			// clear db expired data every 5 mins
 			setInterval(() => {

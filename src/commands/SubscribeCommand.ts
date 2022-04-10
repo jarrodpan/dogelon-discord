@@ -3,6 +3,7 @@ import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 import * as fs from 'fs';
 import { Feed } from '../types/Feed';
+import { HelpPage } from '../types/Help';
 
 export interface Subscribers {
 	lastUpdate: number;
@@ -14,6 +15,16 @@ export default class SubscribeCommand extends Command {
 		super();
 		this.db = db;
 	}
+
+	public helpPage: HelpPage = {
+		command: 'subscribe',
+		message: [
+			{
+				title: '`!subscribe {feed}`, `!s {feed}`\n`!unsubscribe {feed}`, `!uns {feed}`',
+				body: 'Subscribe/unsubscribe a channel to a news feed. Polls once every half hour. Current options:\n - [`binance-new`](https://www.binance.com/en/support/announcement/c-48)',
+			},
+		],
+	};
 
 	private intervalMap = new Map<string, any>();
 	private feedMap = new Map<string, Feed>();
