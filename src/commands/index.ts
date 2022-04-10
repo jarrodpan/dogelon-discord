@@ -66,10 +66,10 @@ export abstract class Command {
 			await fs
 				.readdirSync('./src/commands/')
 				.forEach(async (command: string) => {
-					const [commandName, ts] = command.split('.');
+					const [commandName, ts, ..._] = command.split('.');
 					if (
 						// knockout junk files
-						ts !== 'ts' || // not typescript
+						ts !== 'ts' || // not typescript or a test or something
 						!commandName.endsWith('Command') // not a command
 					)
 						return;
