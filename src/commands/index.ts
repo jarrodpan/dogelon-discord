@@ -8,14 +8,45 @@ export enum MatchOn {
 	TOKEN,
 	MESSAGE,
 }
+
+export type HelpPage = {
+	command: string;
+	message: HelpField[];
+};
+export type HelpField = {
+	title: string;
+	body: string;
+};
 export abstract class Command {
+	/**
+	 * Required. Regular expression to check against when matching in discord chat
+	 */
 	public readonly expression!: string;
+	/**
+	 * Required. Enum to determine whether to match on messages as a whole or just tokens in messages (separated by spaces)
+	 * Values: MatchOn.TOKEN, MatchOn.MESSAGE
+	 */
 	public readonly matchOn!: MatchOn;
+	/**
+	 * Required. The callback to run when a match is detected and queued up to generate the output for discord.
+	 * @param message a Discord.js `Message` or `TextChannel` object to send the message/reply to
+	 * @param input the message or token string to parse.
+	 * @returns a Promise or response to send to discord.
+	 */
 	public readonly execute!: (
 		message: Message | TextChannel,
 		input: any
 	) => Promise<any> | any;
+
+	/**
+	 * A callback to run after the class has been loaded. Done like this to allow for asynchronous initialisation.
+	 */
 	public readonly init?: () => void;
+
+	/**
+	 * If defined, provides the command for the help page and a list of string arrays with field
+	 */
+	public readonly helpPage?: HelpPage;
 
 	/**
 	 * all the command classes
