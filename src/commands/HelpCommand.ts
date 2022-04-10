@@ -33,13 +33,27 @@ export default class HelpCommand extends Command {
 	public execute = (message: Message | TextChannel, input: string) => {
 		const v = `v${pkg.version}`;
 		//const a = '<@944798462053089300>';
-		const [_, option, ...__] = input.split(' ');
-		console.log(option);
-
 		const embed = new MessageEmbed()
 			.setColor('#9B59B6')
 			.setTitle(`🚀  Dogelon`)
 			.setThumbnail('https://i.imgur.com/2vHF2jl.jpg')
+			.setFooter({
+				text: `Dogelon ${v}`,
+				iconURL:
+					'https://cdn.discordapp.com/app-icons/945669693576994877/c11dde4d4f016ffcc820418864efd9f4.png?size=64',
+			});
+
+		const [_, option, ...__] = input.split(' ');
+		console.log(option);
+
+		if (option && this.helpPages.has(option)) {
+			const page = this.helpPages.get(option) as HelpField[];
+			page.forEach((field) => {
+				embed.addField(field.title, field.body);
+			});
+		}
+
+		embed
 			.setDescription(
 				'The not-so-stupid discord bot made for no reason. Written in Node.js and TypeScript.\n\nAvailable options for `!help`:\n\n' +
 					this.defaultPage
@@ -68,13 +82,8 @@ export default class HelpCommand extends Command {
 				'Shows the latest cryptocurrency listing news from [Binance](https://www.binance.com/en/support/announcement/c-48)'
 			)
 			.addField('`!changes`, `!c`', 'Displays latest changelog entry')
-			.addField('`!help`, `!h`', 'Displays this message')
-			//.setTimestamp()
-			.setFooter({
-				text: `Dogelon ${v}`,
-				iconURL:
-					'https://cdn.discordapp.com/app-icons/945669693576994877/c11dde4d4f016ffcc820418864efd9f4.png?size=64',
-			});
+			.addField('`!help`, `!h`', 'Displays this message');
+		//.setTimestamp()
 		return { embeds: [embed] };
 	};
 }
