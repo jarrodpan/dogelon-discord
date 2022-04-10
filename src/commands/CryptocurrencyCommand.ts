@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
+import { HelpPage } from '../types/Help';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
 /**
@@ -26,6 +27,19 @@ export default class CryptocurrencyCommand extends Command {
 	}
 
 	private static coins: APIResponse.CoinGeckoCoins.CoinDetails[];
+
+	public helpPage: HelpPage = {
+		command: 'crypto',
+		message: [
+			{
+				title: '`%{ticker}(:selection)(/currency/time)` (inline)\n`%!{ticker}:{preference}` (inline)',
+				body: 'Gets current price for a cryptocurrency. Cached and/or delayed. Examples: `%eth`, `%gala/aud`, `%btc/jpy/1y`, `%doge:1//2w`.\n\
+				Example to set preferences for multiple choice: `%!eth:1`.\n\
+				Timescale options: `1h`, `24h`, `7d`, `14d`, `30d`, `60d`, `200d`, `1y` (with various aliases).\n\
+				Sourced from [CoinGecko](https://www.coingecko.com).',
+			},
+		],
+	};
 
 	public init = () => {
 		const cacheName = 'crypto-coinlist';
