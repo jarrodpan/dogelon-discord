@@ -77,13 +77,14 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 # Changelog
 
-## [1.10.0-next] - 2022-04-08
+## [1.10.0-next] - 2022-04-10
 
 [1.10.0-next]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.10.0-next
 
 ### Changed
 
 -   refactored message queue to singleton global for encapsulation and decoupling etc (closes #21)
+-   added husky for git hoosk and test to get changelog right (closes #80)
 
 # Previous Changes
 
