@@ -25,7 +25,7 @@ export default class HelpCommand extends Command {
 
 		sorted.forEach((page) => {
 			this.helpPages.set(page.command, page.message);
-			this.defaultPage += '- ' + page.command + '\n';
+			this.defaultPage += '- `' + page.command + '`\n';
 		});
 	};
 
@@ -41,7 +41,8 @@ export default class HelpCommand extends Command {
 			.setTitle(`🚀  Dogelon`)
 			.setThumbnail('https://i.imgur.com/2vHF2jl.jpg')
 			.setDescription(
-				'The not-so-stupid discord bot made for no reason. Written in Node.js and TypeScript.'
+				'The not-so-stupid discord bot made for no reason. Written in Node.js and TypeScript.\n\nAvailable options for `!help`:\n\n' +
+					this.defaultPage
 			)
 			.addField(
 				'`${stock ticker}` (inline)',
