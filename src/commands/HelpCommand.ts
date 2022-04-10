@@ -1,6 +1,7 @@
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
+import { HelpPage, HelpField } from '../types/Help';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const pkg = require('./../../package.json');
 /**
@@ -15,6 +16,19 @@ export default class HelpCommand extends Command {
 
 	public expression = '(!h(elp)?)';
 	public matchOn = MatchOn.MESSAGE;
+
+	private helpPages = new Map<string, HelpField[]>();
+	private defaultPage = '';
+
+	public loadOptions = (pages: HelpPage[]) => {
+		const sorted = pages.sort((a, b) => a.command.localeCompare(b.command));
+
+		sorted.forEach((page) => {
+			this.helpPages.set(page.command, page.message);
+			this.defaultPage += '- ' + page.command + '\n';
+		});
+	};
+
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public execute = (message: Message | TextChannel, _: unknown) => {
 		const v = `v${pkg.version}`;
