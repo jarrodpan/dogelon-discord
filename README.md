@@ -84,7 +84,7 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 ### Changed
 
 -   refactored message queue to singleton global for encapsulation and decoupling etc (closes #21)
--   added husky for git hoosk and test to get changelog right (closes #80)
+-   added husky for git hooks and test to get changelog right (closes #80)
 
 # Previous Changes
 
