@@ -41,7 +41,9 @@ export default class MacroCommand extends Command {
 		// knockout if non command gets passed in for some reason
 		if (input.slice(0, 1) !== '&') return null;
 		// split any trailling spaced off stuff, split by equals sign
-		let [macro, ...definition] = input.split(' ')[0].slice(1).split('=>');
+		const splitInput = input.split(' ')[0].slice(1).split('=>');
+		const [macro, ..._] = splitInput;
+		let [, ...definition] = splitInput;
 
 		if (!definition || definition.length == 0) setDefinition = false;
 		else setDefinition = true;
