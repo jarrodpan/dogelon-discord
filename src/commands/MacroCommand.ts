@@ -53,6 +53,9 @@ export default class MacroCommand extends Command {
 			// TODO: do database calls
 		} else {
 			// check macro exists
+			if (!this.macroMap.has(macro)) return null;
+
+			const cmdList = this.macroMap.get(macro);
 		}
 
 		return null;
