@@ -6,6 +6,11 @@ import { HelpPage } from '../types/Help';
  * Command to register macros with the bot.
  */
 export default class MacroCommand extends Command {
+	private db: Database;
+	public constructor(db: Database) {
+		super();
+		this.db = db;
+	}
 	public expression = '^&(\\S*)(=)?(\\S*)';
 	public matchOn = MatchOn.MESSAGE;
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
