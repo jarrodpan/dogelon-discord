@@ -77,9 +77,9 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 # Changelog
 
-## [1.10.0-next] - 2022-04-11
+## [1.10.0] - 2022-04-11
 
-[1.10.0-next]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.10.0-next
+[1.10.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.10.0
 
 ### Changed
 
