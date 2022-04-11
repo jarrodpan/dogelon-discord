@@ -427,3 +427,7 @@ heroku webhooks? https://stackoverflow.com/questions/50358737/connecting-heroku-
 more: https://github.com/muan/discord-webhooks
 
 free apis: https://github.com/toddmotto/public-apis
+
+jest mocking: https://medium.com/@anmol5varma/mocking-functions-and-files-while-testing-javascript-app-using-jest-93542a6f6738
+
+more jest: https://medium.com/nerd-for-tech/testing-typescript-with-jest-290eaee9479d
