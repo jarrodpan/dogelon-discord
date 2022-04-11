@@ -13,9 +13,11 @@
 	"scripts": {
 		"build": "tsc -b",
 		"build:dev": "tsc -b -v -w",
+		"postbuild": "npm test",
 		"start": "node ./bin/app.js",
 		"start:dev": "nodemon --inspect ./bin/app.js",
-		"changelog": "jest --coverage --noStackTrace --detectOpenHandles version",
+		"changelog": "cross-env PRERELEASE=true jest --coverage --noStackTrace --detectOpenHandles version",
+		"changelog:dev": "jest --coverage --noStackTrace --detectOpenHandles version",
 		"test": "cross-env PRERELEASE=true jest --coverage --noStackTrace --detectOpenHandles",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
 		"prepare": "husky install"
