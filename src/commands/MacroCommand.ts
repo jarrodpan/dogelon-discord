@@ -1,5 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
+import { HelpPage } from '../types/Help';
 
 /**
  * Command to register macros with the bot.
