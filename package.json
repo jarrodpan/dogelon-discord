@@ -15,8 +15,8 @@
 		"build:dev": "tsc -b -v -w",
 		"start": "node ./bin/app.js",
 		"start:dev": "nodemon --inspect ./bin/app.js",
-		"prerelease": "cross-env PRERELEASE=true npm run test version",
-		"test": "jest --coverage --noStackTrace --detectOpenHandles",
+		"changelog": "jest --coverage --noStackTrace --detectOpenHandles version",
+		"test": "cross-env PRERELEASE=true jest --coverage --noStackTrace --detectOpenHandles",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
 		"prepare": "husky install"
 	},
