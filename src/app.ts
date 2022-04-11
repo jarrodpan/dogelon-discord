@@ -3,12 +3,11 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
-import Action from './types/Action';
 import { Command, MatchOn } from './commands';
 //import { MatchOn } from './types/Command';
-import { DMChannel, Message, TextChannel } from 'discord.js';
+import { Message, TextChannel } from 'discord.js';
 import axios from 'axios';
-import { getNodeMajorVersion } from 'typescript';
+import { Dogelon } from './dogelon/';
 
 // following need to be 'require' to work
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -24,9 +23,6 @@ export const client = new Client({
 	],
 	partials: ['MESSAGE', 'CHANNEL'],
 });
-
-// TODO: make this better
-export const queue: Action[] = [];
 
 const oLog = console.log;
 
@@ -53,8 +49,12 @@ const newLog = (...msg: unknown[]) => {
 				: '';
 
 		const caller = file + func;
-		// eslint-disable-next-line @typescript-eslint/no-array-constructor
-		oLog.apply(this, new Array().concat('[' + caller + ']', msg));
+
+		oLog.apply(
+			this,
+			// eslint-disable-next-line @typescript-eslint/no-array-constructor
+			new Array().concat('\x1b[48;5;19m[' + caller + ']\x1b[0m', msg)
+		);
 	}
 };
 
@@ -64,69 +64,16 @@ console.debug = newLog;
 // override console.debug for production
 if (process.env.NODE_ENV === 'production') {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	console.debug = (..._msg: unknown[]) => {
+	console.debug = (..._x: unknown[]) => {
 		return;
 	};
 }
 
 // initialise
-// TODO: refactor this
 client.once('ready', () => {
-	//console.log();
-	setInterval(async () => {
-		// skip if empty queue
-		if (queue.length == 0) return;
-		//console.log(client.channels.cache);
-		// get next item from queue - definitely defined as we check above
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const action: Action = queue.shift()!;
-		//console.log(message);
-		//let output;
-		Promise.resolve()
-			.then(async () => {
-				const output = await action.callback(
-					action.message,
-					action.token
-				);
-				// send message to channel
-				return output;
-			})
-			.then(async (output) => {
-				//console.log(action.message);
-				if (output == null) return; //throw new Error("output is undefined");
-
-				// global footer icon
-				if (output.embeds) {
-					output.embeds[0].footer.iconURL =
-						'https://cdn.discordapp.com/app-icons/945669693576994877/c11dde4d4f016ffcc820418864efd9f4.png?size=64';
-				}
-
-				//console.log((action.message as TextChannel).isText());
-				console.debug('sending to discord...', output);
-
-				//try {
-				if (action.message instanceof Message)
-					await action.message.reply(output);
-				if (action.message instanceof TextChannel)
-					await action.message.send(output);
-				//else await (action.message as TextChannel).send(output);
-				//} catch (e) { console.error(e); }
-
-				return;
-			})
-			.catch((e) => {
-				console.error(e);
-			});
-
-		return;
-	}, 550); // 500ms is the rate limit of discord's bot API
-
+	setInterval(Dogelon.Queue.processNext, 550); // 500ms is the rate limit of discord's bot API
 	console.debug(Command.matchOn);
-	//console.debug(Commands.db);
 	console.log('Ready!');
-	//console.debug(Commands);
-	//console.debug(Commands.matchOn);
-
 	newDeploy(client.channels.cache);
 });
 
@@ -213,24 +160,20 @@ client.on('messageCreate', (message: Message): void => {
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		tokenMatchCommands.forEach(([commandName, _]) => {
-			queue.push(
-				new Action(
-					message,
-					token,
-					Command.commandMap.get(commandName).execute
-				)
+			Dogelon.Queue.push(
+				message,
+				token,
+				Command.commandMap.get(commandName).execute
 			);
 		});
 	});
 
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	msgMatchCommands.forEach(([commandName, _]) => {
-		queue.push(
-			new Action(
-				message,
-				message.content,
-				Command.commandMap.get(commandName).execute
-			)
+		Dogelon.Queue.push(
+			message,
+			message.content,
+			Command.commandMap.get(commandName).execute
 		);
 	});
 });
@@ -268,13 +211,10 @@ const newDeploy = async (channels) => {
 					const ch = channels.get(v);
 					//console.log(ch);
 					if (ch.viewable && ch instanceof TextChannel)
-						queue.push(
-							// eslint-disable-next-line @typescript-eslint/no-unused-vars
-							new Action(
-								ch,
-								'',
-								Command.commandMap.get('ChangesCommand').execute
-							)
+						Dogelon.Queue.push(
+							ch,
+							'',
+							Command.commandMap.get('ChangesCommand').execute
 						);
 				});
 				break;

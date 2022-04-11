@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-array-constructor */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import jest from 'jest';
-
 //https://simplernerd.com/js-console-colors/
 
+const prerelease = process.env.PRERELEASE ? true : false;
+//console.log(prerelease);
 const pkgVer: string = require('../package.json').version;
 const pkgLockVer: string = require('../package-lock.json').version;
 
@@ -13,6 +13,8 @@ const latestChange = readme
 	?.toString()
 	.replace(/\r/gm, '')
 	.split(/\n/gm); // chaotic regex to extract the latest change in the changelog
+
+const ifit = (cond) => (cond ? it : it.skip);
 
 let changelogVer, changelogDate, tagLinkVer, tagVer;
 
@@ -58,7 +60,7 @@ describe.each([
 	[tagLinkVer, 'tag link version is not development version'],
 	[tagVer, 'tag version is not development version'],
 ])('check for development version', (ver: string, desc) => {
-	it(desc, () => {
+	ifit(prerelease)(desc, () => {
 		expect(/-.*$/g.test(ver)).toBe(false);
 	});
 });
@@ -77,8 +79,6 @@ describe('changelog date', () => {
 	});
 });
 
-const ifit = (cond) => (cond ? it : it.skip);
-
 describe('previous version formatting', () => {
 	const [nonalpha, alpha] = changelogVer.split('-');
 	const [major, minor, patch] = nonalpha
@@ -87,7 +87,9 @@ describe('previous version formatting', () => {
 
 	const changelogStart = readme.indexOf('# Changelog');
 
-	ifit(alpha?.length > 0)('alpha version is listed first', () => {
+	//ifit(alpha?.length > 0 || !prerelease)(
+	const not = prerelease ? 'not ' : '';
+	it(`development version is ${not}listed first`, () => {
 		const a = readme.indexOf(changelogVer, changelogStart);
 		const b =
 			patch > 0

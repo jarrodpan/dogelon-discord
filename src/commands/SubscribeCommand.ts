@@ -1,11 +1,9 @@
-import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
-import { client, queue } from '../app';
-import Action from '../types/Action';
 import * as fs from 'fs';
 import { Feed } from '../types/Feed';
+import { HelpPage } from '../types/Help';
 
 export interface Subscribers {
 	lastUpdate: number;
@@ -17,6 +15,24 @@ export default class SubscribeCommand extends Command {
 		super();
 		this.db = db;
 	}
+
+	public helpPage: HelpPage = {
+		command: 'subscribe',
+		message: [
+			{
+				title: '`!subscribe {feed}`\n`!s {feed}`',
+				body: 'Subscribe a channel to a news feed.',
+			},
+			{
+				title: '`!unsubscribe {feed}`\n`!uns {feed}`',
+				body: 'Unsubscribe a channel from a news feed.',
+			},
+			{
+				title: 'Available options',
+				body: '- [`binance-new`](https://www.binance.com/en/support/announcement/c-48) (ten minutes)',
+			},
+		],
+	};
 
 	private intervalMap = new Map<string, any>();
 	private feedMap = new Map<string, Feed>();

@@ -1,6 +1,6 @@
 {
 	"name": "dogelon-discord",
-	"version": "1.9.1",
+	"version": "1.10.0",
 	"description": "stock and helper bot for personal discord",
 	"type": "commonjs",
 	"bin": {
@@ -12,11 +12,15 @@
 	},
 	"scripts": {
 		"build": "tsc -b",
-		"build-w": "tsc -b -v -w",
+		"build:dev": "tsc -b -v -w",
+		"postbuild": "npm test",
 		"start": "node ./bin/app.js",
-		"devstart": "nodemon --inspect ./bin/app.js",
-		"test": "jest --coverage --detectOpenHandles",
-		"lint": "eslint . --ext .js,.jsx,.ts,.tsx"
+		"start:dev": "nodemon --inspect ./bin/app.js",
+		"changelog": "cross-env PRERELEASE=true jest --coverage --noStackTrace --detectOpenHandles version",
+		"changelog:dev": "jest --coverage --noStackTrace --detectOpenHandles version",
+		"test": "cross-env PRERELEASE=true jest --coverage --noStackTrace --detectOpenHandles",
+		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+		"prepare": "husky install"
 	},
 	"author": "Jarrod Pan",
 	"license": "ISC",
@@ -36,10 +40,17 @@
 		"@types/pg": "^8.6.5",
 		"@typescript-eslint/eslint-plugin": "^5.13.0",
 		"@typescript-eslint/parser": "^5.13.0",
+		"cross-env": "^7.0.3",
 		"eslint": "^8.10.0",
+		"husky": "^7.0.4",
 		"jest": "^27.5.1",
-		"ts-node": "^10.5.0",
 		"ts-jest": "^27.1.3",
+		"ts-node": "^10.5.0",
 		"typescript": "^4.6.2"
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "npm run test versionUpdated"
+		}
 	}
 }

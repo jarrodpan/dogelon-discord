@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
+import { HelpPage } from '../types/Help';
 
 /**
  * a command to turn r/ and /r/ references and reply with the link (as discord doesnt do it automatically for some reason)
@@ -14,6 +15,24 @@ export default class FinanceCommand extends Command {
 		super();
 		if (db) this.db = db;
 	}
+
+	public helpPage: HelpPage = {
+		command: 'finance',
+		message: [
+			{
+				title: '`${stock ticker}` (inline)',
+				body: 'Gets current price for a stock. May be delayed depending on API response and exchange opening times.',
+			},
+			{
+				title: 'Cache policy',
+				body: 'None (Planned: Five minutes, or until exchange is open.)',
+			},
+			{
+				title: 'Attribution',
+				body: '[Yahoo Finance](https://finance.yahoo.com/)',
+			},
+		],
+	};
 
 	public expression = `(?:\\$\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN

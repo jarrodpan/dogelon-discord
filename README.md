@@ -77,6 +77,23 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 # Changelog
 
+## [1.10.0] - 2022-04-11
+
+[1.10.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.10.0
+
+### Changed
+
+-   refactored message queue to singleton global for encapsulation and decoupling etc (closes #21)
+-   added husky for git hooks and test to get changelog right (closes #80)
+-   converted help command into dynamic help pages for each command for further extensibility (closes #60 and closes #43)
+-   made console output prettier with colours for ease of reading.
+-   added unit tests for the commands
+
+# Previous Changes
+
+<details>
+<summary>Click to expand</summary>
+
 ## [1.9.1] - 2022-04-08
 
 [1.9.1]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.9.1
@@ -101,11 +118,6 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 -   reworked logging override to not stuff up and be more useful
 -   alpha etc versions do not spam chat every time they launch
 -   fixed issue with database caching using js time instead of unit time (issue #75)
-
-# Previous Changes
-
-<details>
-<summary>Click to expand</summary>
 
 ## [1.8.0] - 2022-04-03
 

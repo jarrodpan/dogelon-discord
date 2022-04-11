@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
+import { HelpPage } from '../types/Help';
 
 export default class NewsCommand extends Command {
 	private db: Database;
@@ -9,6 +10,24 @@ export default class NewsCommand extends Command {
 		super();
 		this.db = db;
 	}
+
+	public helpPage: HelpPage = {
+		command: 'news',
+		message: [
+			{
+				title: '`!news` (inline)\n`!n` (inline)',
+				body: 'Displays the top 8 Victorian stories from ABC News.',
+			},
+			{
+				title: 'Cache policy',
+				body: 'One hour',
+			},
+			{
+				title: 'Attribution',
+				body: '[ABC News](https://www.abc.net.au)',
+			},
+		],
+	};
 
 	public expression = `(!n(ews)?)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN

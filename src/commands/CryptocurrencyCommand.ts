@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
+import { HelpPage } from '../types/Help';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
 /**
@@ -26,6 +27,35 @@ export default class CryptocurrencyCommand extends Command {
 	}
 
 	private static coins: APIResponse.CoinGeckoCoins.CoinDetails[];
+
+	public helpPage: HelpPage = {
+		command: 'crypto',
+		message: [
+			{
+				title: '`%{ticker}(:selection)(/currency/time)` (inline)',
+				body: 'Gets current price for a cryptocurrency. Examples: `%eth`, `%gala/aud`, `%btc/jpy/1y`, `%doge:1//2w`.\n\
+				The selection is required if there are multiple matches for a ticker and no preference set.',
+			},
+			{
+				title: '`%!{ticker}:{preference}` (inline)',
+				body: 'Sets a preference for when there are multiple matches for a crypto ticker.\n\
+				Example to set a preference: `%!eth:1`.\n\
+				To remove preferences use option `all` e.g. `%!eth:all`.',
+			},
+			{
+				title: 'Timescale options',
+				body: '`1h`, `24h`, `7d`, `14d`, `30d`, `60d`, `200d`, `1y` (with various aliases)',
+			},
+			{
+				title: 'Cache policy',
+				body: 'One minute',
+			},
+			{
+				title: 'Attribution',
+				body: '[CoinGecko](https://www.coingecko.com)',
+			},
+		],
+	};
 
 	public init = () => {
 		const cacheName = 'crypto-coinlist';

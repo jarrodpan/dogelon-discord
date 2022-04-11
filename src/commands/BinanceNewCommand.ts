@@ -2,6 +2,7 @@ import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
+import { HelpPage } from '../types/Help';
 
 export default class BinanceNewCommand extends Command {
 	private db: Database | undefined;
@@ -10,10 +11,26 @@ export default class BinanceNewCommand extends Command {
 		if (db) this.db = db;
 	}
 
+	public helpPage: HelpPage = {
+		command: 'binance',
+		message: [
+			{
+				title: '`!binance` (inline)\n`!b` (inline)',
+				body: 'Shows the latest cryptocurrency listing news from [Binance](https://www.binance.com/en/support/announcement/c-48)',
+			},
+			{
+				title: 'Cache policy',
+				body: 'One hour',
+			},
+		],
+	};
+
 	public expression = `(!b(inance)?)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
 	public execute = async (
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_message: Message | TextChannel,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_input: unknown
 	) => {
 		let embed;
