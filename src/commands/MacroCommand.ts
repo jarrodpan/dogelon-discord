@@ -1,5 +1,6 @@
 import { Message, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
+import Database from '../types/Database';
 import { HelpPage } from '../types/Help';
 
 /**
@@ -11,6 +12,24 @@ export default class MacroCommand extends Command {
 		super();
 		this.db = db;
 	}
+
+	// TODO: write help
+	public helpPage: HelpPage = {
+		command: 'macro',
+		message: [
+			{
+				title: '`!subscribe {feed}`\n`!s {feed}`',
+				body: 'Subscribe a channel to a news feed.',
+			},
+			{
+				title: '`!unsubscribe {feed}`\n`!uns {feed}`',
+				body: 'Unsubscribe a channel from a news feed.',
+			},
+		],
+	};
+
+	private macroMap = new Map<string, any>();
+
 	public expression = '^&(\\S*)(=)?(\\S*)';
 	public matchOn = MatchOn.MESSAGE;
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -26,6 +45,8 @@ export default class MacroCommand extends Command {
 
 		if (!definition || definition.length == 0) setDefinition = false;
 		else setDefinition = true;
+
+		// do database calls
 
 		return '';
 	};
