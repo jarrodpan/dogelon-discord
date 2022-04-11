@@ -45,6 +45,8 @@ export default class MacroCommand extends Command {
 		const [macro, ..._] = splitInput;
 		let [, ...definition] = splitInput;
 
+		if (!macro || macro.trim().length == 0) return null;
+
 		if (!definition || definition.length == 0) setDefinition = false;
 		else setDefinition = true;
 

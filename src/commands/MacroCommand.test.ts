@@ -20,7 +20,8 @@ describe('MacroCommand', () => {
 		it.each([
 			['empty string', ''],
 			['undefined macro', '&nope'],
-		])('should return null on %s', async (desc, input) => {
+			['empty macro', '&'],
+		])("should return null on %s '%s'", async (desc, input) => {
 			const res = await macro.execute(dummyMessage, input);
 			expect(res).toBeNull();
 		});
