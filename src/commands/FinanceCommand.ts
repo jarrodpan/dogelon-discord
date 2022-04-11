@@ -21,7 +21,15 @@ export default class FinanceCommand extends Command {
 		message: [
 			{
 				title: '`${stock ticker}` (inline)',
-				body: 'Gets current price for a stock. Cached and/or delayed depending on API response and exchange opening times. Sourced from [Yahoo Finance](https://finance.yahoo.com/).',
+				body: 'Gets current price for a stock. May be delayed depending on API response and exchange opening times.',
+			},
+			{
+				title: 'Cache policy',
+				body: 'None (Planned: Five minutes, or until exchange is open.)',
+			},
+			{
+				title: 'Attribution',
+				body: '[Yahoo Finance](https://finance.yahoo.com/)',
 			},
 		],
 	};

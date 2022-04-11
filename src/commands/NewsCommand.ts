@@ -22,6 +22,10 @@ export default class NewsCommand extends Command {
 				title: 'Cache policy',
 				body: 'One hour',
 			},
+			{
+				title: 'Attribution',
+				body: '[ABC News](https://www.abc.net.au)',
+			},
 		],
 	};
 

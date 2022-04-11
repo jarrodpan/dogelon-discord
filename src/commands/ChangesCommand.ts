@@ -18,8 +18,8 @@ export default class ChangesCommand extends Command {
 		command: 'changes',
 		message: [
 			{
-				title: '`!changes`, `!c`',
-				body: 'Displays latest changelog entry',
+				title: '`!changes`\n`!c`',
+				body: 'Displays latest changelog entry.',
 			},
 		],
 	};

@@ -12,7 +12,7 @@ export default class RedditCommand extends Command {
 		command: 'reddit',
 		message: [
 			{
-				title: '`/r/{subreddit}`, `r/{subreddit}` (inline)',
+				title: '`/r/{subreddit}` (inline)\n`r/{subreddit}` (inline)',
 				body: 'Converts a subreddit reference to a reddit link, regardless of if it exists or not.',
 			},
 		],

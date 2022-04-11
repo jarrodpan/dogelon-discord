@@ -32,11 +32,27 @@ export default class CryptocurrencyCommand extends Command {
 		command: 'crypto',
 		message: [
 			{
-				title: '`%{ticker}(:selection)(/currency/time)` (inline)\n`%!{ticker}:{preference}` (inline)',
-				body: 'Gets current price for a cryptocurrency. Cached and/or delayed. Examples: `%eth`, `%gala/aud`, `%btc/jpy/1y`, `%doge:1//2w`.\n\
-				Example to set preferences for multiple choice: `%!eth:1`.\n\
-				Timescale options: `1h`, `24h`, `7d`, `14d`, `30d`, `60d`, `200d`, `1y` (with various aliases).\n\
-				Sourced from [CoinGecko](https://www.coingecko.com).',
+				title: '`%{ticker}(:selection)(/currency/time)` (inline)',
+				body: 'Gets current price for a cryptocurrency. Examples: `%eth`, `%gala/aud`, `%btc/jpy/1y`, `%doge:1//2w`.\n\
+				The selection is required if there are multiple matches for a ticker and no preference set.',
+			},
+			{
+				title: '`%!{ticker}:{preference}` (inline)',
+				body: 'Sets a preference for when there are multiple matches for a crypto ticker.\n\
+				Example to set a preference: `%!eth:1`.\n\
+				To remove preferences use option `all` e.g. `%!eth:all`.',
+			},
+			{
+				title: 'Timescale options',
+				body: '`1h`, `24h`, `7d`, `14d`, `30d`, `60d`, `200d`, `1y` (with various aliases)',
+			},
+			{
+				title: 'Cache policy',
+				body: 'One minute',
+			},
+			{
+				title: 'Attribution',
+				body: '[CoinGecko](https://www.coingecko.com)',
 			},
 		],
 	};

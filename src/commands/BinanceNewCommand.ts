@@ -15,8 +15,12 @@ export default class BinanceNewCommand extends Command {
 		command: 'binance',
 		message: [
 			{
-				title: '`!binance`, `!b` (inline)',
+				title: '`!binance` (inline)\n`!b` (inline)',
 				body: 'Shows the latest cryptocurrency listing news from [Binance](https://www.binance.com/en/support/announcement/c-48)',
+			},
+			{
+				title: 'Cache policy',
+				body: 'One hour',
 			},
 		],
 	};
