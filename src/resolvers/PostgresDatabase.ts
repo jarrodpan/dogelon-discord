@@ -18,7 +18,7 @@ export default class PostgresDatabase extends Database {
 		let pgConfig;
 
 		if (process.env.DATABASE_URL) {
-			console.log('DATABASE_URL present');
+			console.debug('DATABASE_URL present');
 			//const url = process.env.DATABASE_URL + '?sslmode=require';
 			pgConfig = {
 				connectionString: process.env.DATABASE_URL,
