@@ -55,6 +55,35 @@ export default class MacroCommand extends Command {
 			// remove any whitespace or empty commands
 			definition = definition.filter((val) => val.trim() !== '');
 			if (definition.length == 0) return null;
+
+			let invalidCommand = false;
+			definition.forEach((cmd) => {
+				// TODO: match against Commands, return if invalid
+				let tokenMatchCommands;
+				try {
+					const matchOnMessage: any = Command.matchOn
+						.get(MatchOn.TOKEN)
+						.exec(cmd).groups;
+					tokenMatchCommands = Object.entries(matchOnMessage).filter(
+						// eslint-disable-next-line @typescript-eslint/no-unused-vars
+						([_s, matchString]) => {
+							return matchString != undefined;
+						}
+					);
+					console.log(
+						cmd,
+						'message matching commands:',
+						tokenMatchCommands
+					);
+					Command.matchOn.get(MatchOn.TOKEN).lastIndex = 0;
+				} catch (e) {
+					console.error(cmd, '=>\tno token matching groups found');
+					tokenMatchCommands = [];
+					invalidCommand = true;
+					return null;
+				}
+			});
+			if (invalidCommand) return null;
 			// TODO: do database calls
 		} else {
 			// check macro exists
