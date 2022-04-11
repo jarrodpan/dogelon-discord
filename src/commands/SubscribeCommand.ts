@@ -21,11 +21,15 @@ export default class SubscribeCommand extends Command {
 		message: [
 			{
 				title: '`!subscribe {feed}`\n`!s {feed}`',
-				body: 'Subscribe a channel to a news feed. Current options:\n - [`binance-new`](https://www.binance.com/en/support/announcement/c-48) (ten minutes)',
+				body: 'Subscribe a channel to a news feed.',
 			},
 			{
 				title: '`!unsubscribe {feed}`\n`!uns {feed}`',
 				body: 'Unsubscribe a channel from a news feed.',
+			},
+			{
+				title: 'Available options',
+				body: '- [`binance-new`](https://www.binance.com/en/support/announcement/c-48) (ten minutes)',
 			},
 		],
 	};
