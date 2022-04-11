@@ -28,7 +28,9 @@ export default class BinanceNewCommand extends Command {
 	public expression = `(!b(inance)?)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
 	public execute = async (
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_message: Message | TextChannel,
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_input: unknown
 	) => {
 		let embed;
