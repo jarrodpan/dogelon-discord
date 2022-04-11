@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 //https://simplernerd.com/js-console-colors/
 
-const prerelease = process.env.PRERELEASE || false;
+const prerelease = process.env.PRERELEASE ? true : false;
 //console.log(prerelease);
 const pkgVer: string = require('../package.json').version;
 const pkgLockVer: string = require('../package-lock.json').version;
@@ -96,7 +96,7 @@ describe('previous version formatting', () => {
 				? readme.indexOf(`${major}.${minor}.${patch - 1}`, a)
 				: readme.indexOf('# Previous Changes', a);
 		const orderedCorrectly = a < b;
-		expect(orderedCorrectly).toBe(!prerelease);
+		expect(orderedCorrectly).toBe(true);
 	});
 
 	let latestPatch = patch;
