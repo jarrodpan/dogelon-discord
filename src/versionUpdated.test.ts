@@ -53,6 +53,8 @@ describe.each([
 	});
 });
 
+it.todo('second package lock version matching');
+
 describe.each([
 	[pkgVer, 'package version is not development version'],
 	[pkgLockVer, 'package-lock version is not development version'],

@@ -77,6 +77,19 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 # Changelog
 
+## [1.11.0-next] - 2022-04-12
+
+[1.11.0-next]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.11.0-next
+
+### Changed
+
+-   x
+
+# Previous Changes
+
+<details>
+<summary>Click to expand</summary>
+
 ## [1.10.0] - 2022-04-11
 
 [1.10.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.10.0
@@ -88,11 +101,6 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 -   converted help command into dynamic help pages for each command for further extensibility (closes #60 and closes #43)
 -   made console output prettier with colours for ease of reading.
 -   added unit tests for the commands
-
-# Previous Changes
-
-<details>
-<summary>Click to expand</summary>
 
 ## [1.9.1] - 2022-04-08
 
