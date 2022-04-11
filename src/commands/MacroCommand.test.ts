@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-require('./index.mock').default;
+//require('./index.mock').default;
+// TODO: fix the mock with dummy matches
+
+console.debug = (...any) => null; // TODO: this is a hack for test development
 
 const dummyMessage = require('discord.js').Message;
 const dummyTextChannel = require('discord.js').TextChannel;
@@ -29,7 +32,7 @@ describe('MacroCommand', () => {
 			'&nope=>=>',
 			'&nope=> ',
 			'&nope=> =>    ',
-			'&nope=>ff=>fff',
+			'&nope=>whats ligma=>fff',
 		])("should return null on invalid definition '%s'", async (input) => {
 			const res = await macro.execute(dummyMessage, input);
 			expect(res).toBeNull();
