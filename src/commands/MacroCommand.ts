@@ -48,9 +48,12 @@ export default class MacroCommand extends Command {
 
 		console.debug(macro, definition);
 
-		// TODO: validate all commands are valid
-
-		// TODO: do database calls
+		if (setDefinition) {
+			// TODO: validate all commands are valid
+			// TODO: do database calls
+		} else {
+			// check macro exists
+		}
 
 		return null;
 	};
