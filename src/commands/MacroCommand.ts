@@ -41,15 +41,18 @@ export default class MacroCommand extends Command {
 		// knockout if non command gets passed in for some reason
 		if (input.slice(0, 1) !== '&') return null;
 		// split any trailling spaced off stuff, split by equals sign
-		const [macro, ...definition] = input.split(' ')[0].slice(1).split('=>');
+		let [macro, ...definition] = input.split(' ')[0].slice(1).split('=>');
 
 		if (!definition || definition.length == 0) setDefinition = false;
 		else setDefinition = true;
 
-		console.debug(macro, definition);
+		console.debug(macro, setDefinition, definition);
 
 		if (setDefinition) {
 			// TODO: validate all commands are valid
+			// remove any whitespace or empty commands
+			definition = definition.filter((val) => val.trim() !== '');
+			if (definition.length == 0) return null;
 			// TODO: do database calls
 		} else {
 			// check macro exists
@@ -58,6 +61,6 @@ export default class MacroCommand extends Command {
 			const cmdList = this.macroMap.get(macro);
 		}
 
-		return null;
+		return 1; // TODO: fix, done for prototyping
 	};
 }
