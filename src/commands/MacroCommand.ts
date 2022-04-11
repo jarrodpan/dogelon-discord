@@ -30,7 +30,7 @@ export default class MacroCommand extends Command {
 
 	private macroMap = new Map<string, any>();
 
-	public expression = '&(\\S*)(=)?(\\S*)';
+	public expression = '&(\\S*)';
 	public matchOn = MatchOn.MESSAGE;
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public execute = (message: Message | TextChannel, input: string) => {
