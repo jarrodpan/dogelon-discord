@@ -59,30 +59,68 @@ export default class MacroCommand extends Command {
 			if (definition.length == 0) return null;
 
 			let invalidCommand = false;
-			definition.forEach((cmd) => {
+			definition.some((cmd) => {
 				// TODO: match against Commands, return if invalid
-				let tokenMatchCommands;
+				let tokenMatchCommands, messageMatchCommands;
 				try {
-					const matchOnMessage: any = Command.matchOn
+					//for (const cat in [MatchOn.MESSAGE, MatchOn.TOKEN]) {
+					const matchOnToken: any = Command.matchOn
 						.get(MatchOn.TOKEN)
 						.exec(cmd).groups;
-					tokenMatchCommands = Object.entries(matchOnMessage).filter(
+					tokenMatchCommands = Object.entries(matchOnToken).filter(
 						// eslint-disable-next-line @typescript-eslint/no-unused-vars
 						([_s, matchString]) => {
 							return matchString != undefined;
 						}
 					);
-					console.log(
-						cmd,
-						'message matching commands:',
-						tokenMatchCommands
-					);
+					// console.log(
+					// 	cmd,
+					// 	'token matching commands:',
+					// 	tokenMatchCommands
+					// );
 					Command.matchOn.get(MatchOn.TOKEN).lastIndex = 0;
 				} catch (e) {
-					console.error(cmd, '=>\tno token matching groups found');
+					//console.error(cmd, '=>\tno token matching groups found');
 					tokenMatchCommands = [];
+					//invalidCommand = true;
+					//return null;
+				}
+				try {
+					//for (const cat in [MatchOn.MESSAGE, MatchOn.TOKEN]) {
+					const matchOnMessage: any = Command.matchOn
+						.get(MatchOn.MESSAGE)
+						.exec(cmd).groups;
+					messageMatchCommands = Object.entries(
+						matchOnMessage
+					).filter(
+						// eslint-disable-next-line @typescript-eslint/no-unused-vars
+						([_s, matchString]) => {
+							return matchString != undefined;
+						}
+					);
+					// console.log(
+					// 	cmd,
+					// 	'message matching commands:',
+					// 	messageMatchCommands
+					// );
+					Command.matchOn.get(MatchOn.MESSAGE).lastIndex = 0;
+				} catch (e) {
+					//console.error(cmd, '=>\tno message matching groups found');
+					messageMatchCommands = [];
+					//invalidCommand = true;
+					//return null;
+				}
+
+				const commandMatches = [
+					...tokenMatchCommands,
+					...messageMatchCommands,
+				];
+
+				console.log(cmd, 'matches', commandMatches);
+				if (commandMatches.length == 0) {
+					console.error(cmd, 'does not match any commands');
 					invalidCommand = true;
-					return null;
+					return true;
 				}
 			});
 			if (invalidCommand) return null;
