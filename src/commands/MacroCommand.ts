@@ -63,7 +63,6 @@ export default class MacroCommand extends Command {
 				// TODO: match against Commands, return if invalid
 				let tokenMatchCommands, messageMatchCommands;
 				try {
-					//for (const cat in [MatchOn.MESSAGE, MatchOn.TOKEN]) {
 					const matchOnToken: any = Command.matchOn
 						.get(MatchOn.TOKEN)
 						.exec(cmd).groups;
@@ -73,18 +72,11 @@ export default class MacroCommand extends Command {
 							return matchString != undefined;
 						}
 					);
-					// console.log(
-					// 	cmd,
-					// 	'token matching commands:',
-					// 	tokenMatchCommands
-					// );
 					Command.matchOn.get(MatchOn.TOKEN).lastIndex = 0;
 				} catch (e) {
-					//console.error(cmd, '=>\tno token matching groups found');
 					tokenMatchCommands = [];
-					//invalidCommand = true;
-					//return null;
 				}
+
 				try {
 					//for (const cat in [MatchOn.MESSAGE, MatchOn.TOKEN]) {
 					const matchOnMessage: any = Command.matchOn
@@ -98,17 +90,9 @@ export default class MacroCommand extends Command {
 							return matchString != undefined;
 						}
 					);
-					// console.log(
-					// 	cmd,
-					// 	'message matching commands:',
-					// 	messageMatchCommands
-					// );
 					Command.matchOn.get(MatchOn.MESSAGE).lastIndex = 0;
 				} catch (e) {
-					//console.error(cmd, '=>\tno message matching groups found');
 					messageMatchCommands = [];
-					//invalidCommand = true;
-					//return null;
 				}
 
 				const commandMatches = [
@@ -124,7 +108,10 @@ export default class MacroCommand extends Command {
 				}
 			});
 			if (invalidCommand) return null;
+
+			return -1;
 			// TODO: do database calls
+			// TODO: load macro into map
 		} else {
 			// check macro exists
 			if (!this.macroMap.has(macro)) return null;
