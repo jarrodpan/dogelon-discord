@@ -60,12 +60,4 @@ export default class MockDatabase extends Database {
 		});
 		return x;
 	};
-
-	public static unixTime() {
-		return Math.ceil(Date.now() / 1000);
-	}
-	public static readonly NEVER_EXPIRE = 10000000000000;
-	public static readonly EXPIRE = -10000;
-	public static readonly ONE_HOUR = 60 * 60;
-	public static readonly ONE_WEEK = 60 * 60 * 24 * 7;
 }
