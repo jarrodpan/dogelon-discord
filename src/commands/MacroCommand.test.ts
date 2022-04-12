@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 
-console.debug = (...any) => null; // TODO: this is a hack for test development
+//console.debug = (...any) => null; // TODO: this is a hack for test development
 
-const dummyMessage = require('discord.js').Message;
-const dummyTextChannel = require('discord.js').TextChannel;
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import MockDatabase from '../resolvers/__mocks__/MockDatabase';
 import MacroCommand from './MacroCommand';
 
-jest.mock('discord.js');
+//jest.mock('discord.js');
 jest.mock('./');
+
+const dummyMessage: Message = require('discord.js').Message as Message;
+dummyMessage.channelId = '123456789';
 
 describe('MacroCommand', () => {
 	afterEach(() => {
@@ -54,7 +56,12 @@ describe('MacroCommand', () => {
 				"should return confirmation embed on valid definition '%s'",
 				async (input) => {
 					const res = await macro.execute(dummyMessage, input);
-					expect(res).toEqual(1); // TODO: fix
+					const embed = res!.embeds[0];
+					expect(typeof embed).toEqual(typeof MessageEmbed);
+					expect(embed.description).toContain(dummyMessage.channelId);
+					const macroName = input.slice(1).split('=>')[0];
+					expect(embed.description).toContain(macroName);
+					//dummyMessage.reply())
 				}
 			);
 		});

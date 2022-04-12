@@ -1,4 +1,4 @@
-import { Message, TextChannel } from 'discord.js';
+import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 import { HelpPage } from '../types/Help';
@@ -109,9 +109,20 @@ export default class MacroCommand extends Command {
 			});
 			if (invalidCommand) return null;
 
-			return -1;
 			// TODO: do database calls
 			// TODO: load macro into map
+
+			const msg = message as Message;
+
+			const embed = new MessageEmbed()
+				.setTitle('Macro set')
+				.setDescription(
+					'Macro `&' + macro + '` set on <#' + msg.channelId + '>'
+				);
+
+			console.debug(embed);
+
+			return { embeds: [embed] };
 		} else {
 			// check macro exists
 			if (!this.macroMap.has(macro)) return null;
@@ -119,6 +130,6 @@ export default class MacroCommand extends Command {
 			const cmdList = this.macroMap.get(macro);
 		}
 
-		return 1; // TODO: fix, done for prototyping
+		return null;
 	};
 }
