@@ -53,13 +53,13 @@ describe('MacroCommand', () => {
 				"should return confirmation embed on valid definition '%s'",
 				async (input) => {
 					const res = await macro.execute(dummyMessage, input);
-					expect(res).toBe(1); // TODO: fix
+					expect(res).toEqual(1); // TODO: fix
 				}
 			);
 		});
+	});
 
-		describe('when macro has been defined', () => {
-			it.todo('should call parsing callback on defined macro');
-		});
+	describe('when macro is defined', () => {
+		it.todo('should call parsing callback on defined macro');
 	});
 });
