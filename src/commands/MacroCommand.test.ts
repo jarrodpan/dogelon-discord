@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-//require('./index.mock').default;
-// TODO: fix the mock with dummy matches
-jest.mock('./');
 
 console.debug = (...any) => null; // TODO: this is a hack for test development
 
 const dummyMessage = require('discord.js').Message;
 const dummyTextChannel = require('discord.js').TextChannel;
 import MacroCommand from './MacroCommand';
+
 jest.mock('discord.js');
+jest.mock('./');
 
 describe('MacroCommand', () => {
 	afterEach(() => {
@@ -35,7 +34,7 @@ describe('MacroCommand', () => {
 				'&nope=>=>',
 				'&nope=> ',
 				'&nope=> =>    ',
-				'&nope=>whats ligma=>fff',
+				'&nope=>whatsligma=>fff',
 			])(
 				"should return null on invalid definition '%s'",
 				async (input) => {
@@ -46,7 +45,17 @@ describe('MacroCommand', () => {
 		});
 
 		describe('when definition is valid', () => {
-			it.todo('should return confirmation embed on valid definition');
+			it.each([
+				'&yes=>!one',
+				'&valid=>!one=>$two',
+				'&chain=>!one=>$two=>%three=>!four=>$five',
+			])(
+				"should return confirmation embed on valid definition '%s'",
+				async (input) => {
+					const res = await macro.execute(dummyMessage, input);
+					expect(res).toBe(1); // TODO: fix
+				}
+			);
 		});
 
 		describe('when macro has been defined', () => {
