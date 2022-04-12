@@ -11,8 +11,8 @@ class Command {
 		return;
 	};
 	public static matchOn = new Map([
-		[MatchOn.TOKEN, /^(?<DummyTokenCommand>[!$%](\S*))$/gm],
-		[MatchOn.MESSAGE, /^(?<DummyMessageCommand>[!$%](\S*))$/gm],
+		[MatchOn.TOKEN, /^(?<DummyTokenCommand>[$%](\S*))$/gm],
+		[MatchOn.MESSAGE, /^(?<DummyMessageCommand>!(\S*))$/gm],
 	]);
 }
 // for static member
