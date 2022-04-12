@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 //require('./index.mock').default;
 // TODO: fix the mock with dummy matches
+jest.mock('./');
 
 console.debug = (...any) => null; // TODO: this is a hack for test development
 
@@ -8,7 +9,6 @@ const dummyMessage = require('discord.js').Message;
 const dummyTextChannel = require('discord.js').TextChannel;
 import MacroCommand from './MacroCommand';
 jest.mock('discord.js');
-jest.mock('./');
 
 describe('MacroCommand', () => {
 	afterEach(() => {
