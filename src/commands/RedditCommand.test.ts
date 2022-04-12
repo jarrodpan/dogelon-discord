@@ -14,7 +14,7 @@ describe('RedditCommand', () => {
 		['/r/wallstreetbets', 'https://www.reddit.com/r/wallstreetbets'],
 		['r/wallstreetbets', 'https://www.reddit.com/r/wallstreetbets'],
 	])("when input is '%s'", (input, output) => {
-		it(`output should be ${output}`, async () => {
+		it(`output should be '${output}'`, async () => {
 			const res = await command.execute(dummyMessage, input);
 			expect(res).toEqual(output);
 		});
