@@ -25,6 +25,7 @@
 		"node_modules",
 		"<node_internals>/**",
 		"src/api-dummy/**",
-		"*/**/*.test.ts"
+		"*/**/*.test.ts",
+		"**/__mocks__/*"
 	]
 }

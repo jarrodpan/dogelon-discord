@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-require('./index.mock').default;
+jest.mock('./');
 
 const dummyMessage = require('discord.js').Message;
 import LigmaCommand from './LigmaCommand';

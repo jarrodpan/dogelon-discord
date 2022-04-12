@@ -8,6 +8,7 @@ const dummyMessage = require('discord.js').Message;
 const dummyTextChannel = require('discord.js').TextChannel;
 import MacroCommand from './MacroCommand';
 jest.mock('discord.js');
+jest.mock('./');
 
 describe('MacroCommand', () => {
 	afterEach(() => {

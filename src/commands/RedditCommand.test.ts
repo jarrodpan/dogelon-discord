@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-require('./index.mock').default;
+//require('./index.mock').default;
+jest.mock('./');
 
+import { Command } from './';
 const dummyMessage = require('discord.js').Message;
 import RedditCommand from './RedditCommand';
 
