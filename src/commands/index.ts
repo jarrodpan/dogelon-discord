@@ -53,6 +53,10 @@ export abstract class Command {
 		[MatchOn.TOKEN, []],
 	]);
 
+	public static getExecuteFromCommandName = (command: string) => {
+		return Command.commandMap.get(command).execute;
+	};
+
 	/**
 	 * runs directly after declaration
 	 */
