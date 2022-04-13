@@ -8,16 +8,21 @@ import MacroCommand from './MacroCommand';
 
 //jest.mock('discord.js');
 jest.mock('./');
+jest.mock('../dogelon/Queue');
 const db = new MockDatabase();
 const dbGetSpy = jest.spyOn(db, 'get');
 const dbSetSpy = jest.spyOn(db, 'set');
 
-const dummyMessage: Message = require('discord.js').Message as Message;
-dummyMessage.channelId = '123456789';
+const mockMessage: Message = require('discord.js').Message as Message;
+mockMessage.channelId = '123456789';
+
+const mockChannel: TextChannel = require('discord.js')
+	.TextChannel as TextChannel;
+//mockChannel.id
 
 describe('MacroCommand', () => {
 	afterEach(() => {
-		jest.resetAllMocks();
+		//jest.resetAllMocks();
 	});
 
 	const macro = new MacroCommand(db);
@@ -28,7 +33,7 @@ describe('MacroCommand', () => {
 			['undefined macro', '&nope'],
 			['empty macro', '&'],
 		])("should return null on %s '%s'", async (desc, input) => {
-			const res = await macro.execute(dummyMessage, input);
+			const res = await macro.execute(mockMessage, input);
 			expect(res).toBeNull();
 		});
 	});
@@ -44,7 +49,7 @@ describe('MacroCommand', () => {
 			])(
 				"should return null on invalid definition '%s'",
 				async (input) => {
-					const res = await macro.execute(dummyMessage, input);
+					const res = await macro.execute(mockMessage, input);
 					expect(res).toBeNull();
 				}
 			);
@@ -58,21 +63,18 @@ describe('MacroCommand', () => {
 			])(
 				"should return confirmation embed on valid definition '%s'",
 				async (input) => {
-					const res = await macro.execute(dummyMessage, input);
-					const embed = res!.embeds[0];
+					const res = await macro.execute(mockMessage, input);
+					const embed = res?.embeds[0] as MessageEmbed;
 					expect(embed instanceof MessageEmbed).toBe(true);
-					expect(embed.description).toContain(dummyMessage.channelId);
+					expect(embed.description).toContain(mockMessage.channelId);
 					const macroName = input.slice(1).split('=>')[0];
 					expect(embed.description).toContain(macroName);
-
-					expect(dbSetSpy).toBeCalled();
-					//dummyMessage.reply())
 				}
 			);
 		});
 	});
 
 	describe('when macro is defined', () => {
-		it.todo('should call parsing callback on defined macro');
+		it.todo('should call queueing callback on defined macro');
 	});
 });
