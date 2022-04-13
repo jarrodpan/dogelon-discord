@@ -8,6 +8,9 @@ import MacroCommand from './MacroCommand';
 
 //jest.mock('discord.js');
 jest.mock('./');
+const db = new MockDatabase();
+const dbGetSpy = jest.spyOn(db, 'get');
+const dbSetSpy = jest.spyOn(db, 'set');
 
 const dummyMessage: Message = require('discord.js').Message as Message;
 dummyMessage.channelId = '123456789';
@@ -17,7 +20,7 @@ describe('MacroCommand', () => {
 		jest.resetAllMocks();
 	});
 
-	const macro = new MacroCommand(new MockDatabase());
+	const macro = new MacroCommand(db);
 
 	describe('when macro is not defined', () => {
 		it.each([
@@ -61,6 +64,8 @@ describe('MacroCommand', () => {
 					expect(embed.description).toContain(dummyMessage.channelId);
 					const macroName = input.slice(1).split('=>')[0];
 					expect(embed.description).toContain(macroName);
+
+					expect(dbSetSpy).toBeCalled();
 					//dummyMessage.reply())
 				}
 			);
