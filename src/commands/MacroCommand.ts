@@ -12,6 +12,13 @@ type ChannelMacros = {
 	[macro: string]: string[];
 };
 
+type MacroDefinition = {
+	valid: boolean;
+	definitions?: ValidMacroCommand[];
+};
+
+type ValidMacroCommand = [string, string];
+
 /**
  * Command to register macros with the bot.
  */
@@ -68,57 +75,10 @@ export default class MacroCommand extends Command {
 			definition = definition.filter((val) => val.trim() !== '');
 			if (definition.length == 0) return null;
 
-			let invalidCommand = false;
-			definition.some((cmd) => {
-				// TODO: match against Commands, return if invalid
-				let tokenMatchCommands, messageMatchCommands;
-				try {
-					const matchOnToken: any = Command.matchOn
-						.get(MatchOn.TOKEN)
-						.exec(cmd).groups;
-					tokenMatchCommands = Object.entries(matchOnToken).filter(
-						// eslint-disable-next-line @typescript-eslint/no-unused-vars
-						([_s, matchString]) => {
-							return matchString != undefined;
-						}
-					);
-					Command.matchOn.get(MatchOn.TOKEN).lastIndex = 0;
-				} catch (e) {
-					tokenMatchCommands = [];
-				}
+			const validDef = this.validateDefinition(definition);
+			if (!validDef.valid) return null;
 
-				try {
-					//for (const cat in [MatchOn.MESSAGE, MatchOn.TOKEN]) {
-					const matchOnMessage: any = Command.matchOn
-						.get(MatchOn.MESSAGE)
-						.exec(cmd).groups;
-					messageMatchCommands = Object.entries(
-						matchOnMessage
-					).filter(
-						// eslint-disable-next-line @typescript-eslint/no-unused-vars
-						([_s, matchString]) => {
-							return matchString != undefined;
-						}
-					);
-					Command.matchOn.get(MatchOn.MESSAGE).lastIndex = 0;
-				} catch (e) {
-					messageMatchCommands = [];
-				}
-
-				const commandMatches = [
-					...tokenMatchCommands,
-					...messageMatchCommands,
-				];
-
-				//console.log(cmd, 'matches', commandMatches);
-				if (commandMatches.length == 0) {
-					console.error(cmd, 'does not match any commands');
-					invalidCommand = true;
-					return true;
-				}
-			});
-			if (invalidCommand) return null;
-
+			console.log(validDef);
 			// all commands are valid
 
 			const macroSaved = await this.setChannelMacro(
@@ -127,7 +87,11 @@ export default class MacroCommand extends Command {
 				definition
 			);
 
-			console.log(macroSaved);
+			console.log(
+				macroSaved == 1
+					? `macro &${macro} saved`
+					: 'this is unreachable'
+			);
 
 			if (macroSaved) {
 				const macroList = (await this.getChannelMacros(
@@ -147,15 +111,92 @@ export default class MacroCommand extends Command {
 			return { embeds: [embed] };
 		} else {
 			// check macro exists
-			const cmdList = await this.getChannelMacro(channelId, macro);
-			if (!cmdList) return null;
+			const definition = await this.getChannelMacro(channelId, macro);
+			if (!definition) return null;
 
-			cmdList.forEach((cmd) => {
-				Dogelon.Queue.push;
-			});
+			console.log(definition);
+
+			const { valid, definitions } = this.validateDefinition(definition);
+			if (!valid || !definitions) return null; // this should never happen
+
+			console.log(definitions);
+
+			for (const [token, command] of definitions) {
+				Dogelon.Queue.push(
+					message,
+					token,
+					Command.getExecuteFromCommandName(command)
+				);
+			}
+			return null;
 		}
 
 		return null;
+	};
+
+	private validateDefinition = (definition: string[]): MacroDefinition => {
+		const validDef: ValidMacroCommand[] = [];
+		let invalid;
+		definition.some((cmd) => {
+			let tokenMatchCommands, messageMatchCommands;
+			try {
+				const matchOnToken: any = Command.matchOn
+					.get(MatchOn.TOKEN)
+					.exec(cmd).groups;
+				tokenMatchCommands = Object.entries(matchOnToken).filter(
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
+					([_s, matchString]) => {
+						return matchString != undefined;
+					}
+				);
+				Command.matchOn.get(MatchOn.TOKEN).lastIndex = 0;
+			} catch (e) {
+				tokenMatchCommands = null;
+			}
+
+			try {
+				//for (const cat in [MatchOn.MESSAGE, MatchOn.TOKEN]) {
+				const matchOnMessage: any = Command.matchOn
+					.get(MatchOn.MESSAGE)
+					.exec(cmd).groups;
+				messageMatchCommands = Object.entries(matchOnMessage).filter(
+					// eslint-disable-next-line @typescript-eslint/no-unused-vars
+					([_s, matchString]) => {
+						return matchString != undefined;
+					}
+				);
+				Command.matchOn.get(MatchOn.MESSAGE).lastIndex = 0;
+			} catch (e) {
+				messageMatchCommands = null;
+			}
+
+			//console.log(tokenMatchCommands);
+			//console.log(messageMatchCommands);
+			const commandMatches: string | null =
+				(tokenMatchCommands &&
+					tokenMatchCommands[0] &&
+					tokenMatchCommands[0][0]) ??
+				(messageMatchCommands &&
+					messageMatchCommands[0] &&
+					messageMatchCommands[0][0]) ??
+				null;
+
+			if (!commandMatches || commandMatches.length == 0) {
+				console.error(cmd, 'does not match any commands');
+				invalid = { valid: false };
+				return false;
+			}
+
+			console.log(cmd, 'matches', commandMatches);
+
+			validDef.push([cmd, commandMatches]);
+		});
+		return (
+			invalid ?? {
+				valid: true,
+				definitions: validDef,
+			}
+		);
 	};
 
 	private getMacros = async (): Promise<MacroPreferences | false> => {
