@@ -55,7 +55,8 @@ export default class MockDatabase extends Database {
 	public clean = () => {
 		let x = 0;
 		this.mockData.forEach((_, k) => {
-			if (this.mockData.get(k)!.expiry < Database.unixTime())
+			const data = this.mockData.get(k);
+			if (data && data.expiry < Database.unixTime())
 				this.mockData.delete(k) && x++;
 		});
 		return x;
