@@ -7,10 +7,10 @@ import { HelpPage } from '../types/Help';
  * Command to register macros with the bot.
  */
 export default class MacroCommand extends Command {
-	private db?: Database;
-	public constructor(db?: Database) {
+	private db: Database;
+	public constructor(db: Database) {
 		super();
-		if (db) this.db = db;
+		this.db = db;
 	}
 
 	// TODO: write help
