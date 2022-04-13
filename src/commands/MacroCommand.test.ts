@@ -3,12 +3,14 @@
 //console.debug = (...any) => null; // TODO: this is a hack for test development
 
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
+import { Dogelon } from '../dogelon';
 import MockDatabase from '../resolvers/__mocks__/MockDatabase';
 import MacroCommand from './MacroCommand';
 
 //jest.mock('discord.js');
 jest.mock('./');
-jest.mock('../dogelon/Queue');
+jest.mock('../dogelon');
+//jest.mock('../dogelon/Queue');
 const db = new MockDatabase();
 const dbGetSpy = jest.spyOn(db, 'get');
 const dbSetSpy = jest.spyOn(db, 'set');
@@ -46,6 +48,10 @@ describe('MacroCommand', () => {
 				'&nope=> ',
 				'&nope=> =>    ',
 				'&nope=>whatsligma=>fff',
+				'&nope=>$tsla=>fff',
+				'&nope=>dssdds=>!changes',
+				'&nope====>dssdds=>!changes',
+				'&nope=>>>$eth=>!changes',
 			])(
 				"should return null on invalid definition '%s'",
 				async (input) => {
@@ -60,6 +66,8 @@ describe('MacroCommand', () => {
 				'&yes=>!one',
 				'&valid=>!one=>$two',
 				'&chain=>!one=>$two=>%three=>!four=>$five',
+				'&ethereum=>%eth=>',
+				'&tesla=>=>$tsla',
 			])(
 				"should return confirmation embed on valid definition '%s'",
 				async (input) => {
@@ -75,6 +83,18 @@ describe('MacroCommand', () => {
 	});
 
 	describe('when macro is defined', () => {
-		it.todo('should call queueing callback on defined macro');
+		it.each([
+			['&yes', 1],
+			['&valid', 2],
+			['&chain', 5],
+			['&etherum', 1],
+			['&tesla', 1],
+		])(
+			"should call queueing callback on defined macro '%s' %i times",
+			async (cmd, count) => {
+				const res = await macro.execute(mockMessage, cmd);
+				expect(Dogelon.Queue.push).toBeCalledTimes(count);
+			}
+		);
 	});
 });
