@@ -57,7 +57,7 @@ describe('MacroCommand', () => {
 				async (input) => {
 					const res = await macro.execute(dummyMessage, input);
 					const embed = res!.embeds[0];
-					expect(typeof embed).toEqual(typeof MessageEmbed);
+					expect(embed instanceof MessageEmbed).toBe(true);
 					expect(embed.description).toContain(dummyMessage.channelId);
 					const macroName = input.slice(1).split('=>')[0];
 					expect(embed.description).toContain(macroName);
