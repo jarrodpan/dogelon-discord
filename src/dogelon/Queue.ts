@@ -1,4 +1,4 @@
-import { Message, TextChannel } from 'discord.js';
+import { Client, Message, TextChannel } from 'discord.js';
 
 type Action = {
 	message: Message | TextChannel;
@@ -11,14 +11,20 @@ type Action = {
 
 export class Queue {
 	private static queue: Action[] = [];
+	public static client: Client;
 
-	public static push(
-		message: Message | TextChannel,
+	public static push = (
+		message: Message | TextChannel | string,
 		token: string,
 		callback: (...params: any) => any
-	) {
+	) => {
+		if (typeof message === 'string') {
+			if (!Queue.client) throw new Error('client called before defined');
+			message = Queue.client.channels.cache.get(message) as TextChannel;
+		}
+
 		Queue.queue.push({ message, token, callback } as Action);
-	}
+	};
 
 	public static processNext = async () => {
 		if (Queue.queue.length == 0) return;
@@ -63,4 +69,6 @@ export class Queue {
 				console.error(e);
 			});
 	};
+
+	public static setClient = (client: Client) => (Queue.client = client);
 }
