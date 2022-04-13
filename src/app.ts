@@ -24,6 +24,8 @@ export const client = new Client({
 	partials: ['MESSAGE', 'CHANNEL'],
 });
 
+Dogelon.Queue.setClient(client);
+
 const oLog = console.log;
 
 const newLog = (...msg: unknown[]) => {
