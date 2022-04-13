@@ -18,7 +18,7 @@
 		"start:dev": "nodemon --inspect ./bin/app.js",
 		"changelog": "cross-env PRERELEASE=true jest --coverage --noStackTrace --detectOpenHandles version",
 		"changelog:dev": "jest --coverage --noStackTrace --detectOpenHandles version",
-		"test": "cross-env PRERELEASE=true jest --coverage --noStackTrace --detectOpenHandles",
+		"test": "cross-env PRERELEASE=true jest --coverage --detectOpenHandles",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
 		"prepare": "husky install"
 	},
