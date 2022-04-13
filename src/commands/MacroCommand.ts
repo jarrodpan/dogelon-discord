@@ -1,7 +1,16 @@
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
 import { Command, MatchOn } from '../commands/';
+import { Dogelon } from '../dogelon';
 import Database from '../types/Database';
 import { HelpPage } from '../types/Help';
+
+type MacroPreferences = {
+	[channelId: string]: ChannelMacros;
+};
+
+type ChannelMacros = {
+	[macro: string]: string[];
+};
 
 /**
  * Command to register macros with the bot.
@@ -13,29 +22,30 @@ export default class MacroCommand extends Command {
 		this.db = db;
 	}
 
+	private cacheName = 'macro-preferences';
+
 	// TODO: write help
 	public helpPage: HelpPage = {
 		command: 'macro',
 		message: [
 			{
-				title: '`!subscribe {feed}`\n`!s {feed}`', // TODO
-				body: 'Subscribe a channel to a news feed.', // TODO
+				title: '`&{macro name}`',
+				body: 'Run a macro defined in this channel.',
 			},
 			{
-				title: '`!unsubscribe {feed}`\n`!uns {feed}`', // TODO
-				body: 'Unsubscribe a channel from a news feed.', // TODO
+				title: '`&{macro name}=>{dogelon command}(=>...)`',
+				body: 'Define a macro to be run when called in this channel.\nValid commands are listed in `!help` pages, no whitespace allowed.\nExample definitions: `&hello=>!news`, `&dogelon=>$tsla=>%doge`',
 			},
 		],
 	};
 
-	private macroMap = new Map<string, any>();
-
 	public expression = '&(\\S*)';
 	public matchOn = MatchOn.MESSAGE;
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public execute = (message: Message | TextChannel, input: string) => {
+	public execute = async (message: Message | TextChannel, input: string) => {
 		// flags
 		let setDefinition;
+		const channelId = (message as Message).channelId;
 
 		// parse command
 		// knockout if non command gets passed in for some reason
@@ -100,7 +110,7 @@ export default class MacroCommand extends Command {
 					...messageMatchCommands,
 				];
 
-				console.log(cmd, 'matches', commandMatches);
+				//console.log(cmd, 'matches', commandMatches);
 				if (commandMatches.length == 0) {
 					console.error(cmd, 'does not match any commands');
 					invalidCommand = true;
@@ -109,15 +119,27 @@ export default class MacroCommand extends Command {
 			});
 			if (invalidCommand) return null;
 
-			// TODO: do database calls
-			// TODO: load macro into map
+			// all commands are valid
 
-			const msg = message as Message;
+			const macroSaved = await this.setChannelMacro(
+				channelId,
+				macro,
+				definition
+			);
+
+			console.log(macroSaved);
+
+			if (macroSaved) {
+				const macroList = (await this.getChannelMacros(
+					channelId
+				)) as ChannelMacros;
+				console.log(macroList);
+			}
 
 			const embed = new MessageEmbed()
 				.setTitle('Macro set')
 				.setDescription(
-					'Macro `&' + macro + '` set on <#' + msg.channelId + '>'
+					'Macro `&' + macro + '` set on <#' + channelId + '>'
 				);
 
 			console.debug(embed);
@@ -125,11 +147,61 @@ export default class MacroCommand extends Command {
 			return { embeds: [embed] };
 		} else {
 			// check macro exists
-			if (!this.macroMap.has(macro)) return null;
+			const cmdList = await this.getChannelMacro(channelId, macro);
+			if (!cmdList) return null;
 
-			const cmdList = this.macroMap.get(macro);
+			cmdList.forEach((cmd) => {
+				Dogelon.Queue.push;
+			});
 		}
 
 		return null;
+	};
+
+	private getMacros = async (): Promise<MacroPreferences | false> => {
+		return await this.db.get(this.cacheName);
+	};
+	private setMacros = async (data: any): Promise<1 | false> => {
+		return await this.db.set(this.cacheName, data, Database.NEVER_EXPIRE);
+	};
+
+	private getChannelMacros = async (
+		channelId: string
+	): Promise<ChannelMacros | false> => {
+		const macros = await this.getMacros();
+
+		if (macros != false && Object.keys(macros).includes(channelId))
+			return macros[channelId];
+		return false;
+	};
+
+	private getChannelMacro = async (
+		channelId: string,
+		macro: string
+	): Promise<string[] | false> => {
+		const macros = await this.getChannelMacros(channelId);
+
+		if (macros != false && Object.keys(macros)?.includes(macro))
+			return macros[macro];
+		return false;
+	};
+
+	private setChannelMacro = async (
+		channelId: string,
+		macro: string,
+		definition: string[]
+	): Promise<1 | false> => {
+		let macros = await this.getMacros();
+
+		if (macros == false) macros = {} as MacroPreferences;
+
+		const channel = Object.keys(macros)?.includes(channelId)
+			? macros[channelId]
+			: ({} as ChannelMacros);
+
+		channel[macro] = definition;
+		macros[channelId] = channel;
+
+		return await this.setMacros(macros);
 	};
 }
