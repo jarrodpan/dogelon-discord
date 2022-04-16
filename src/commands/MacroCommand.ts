@@ -41,7 +41,7 @@ export default class MacroCommand extends Command {
 			},
 			{
 				title: '`&{macro name}=>{dogelon command}(=>...)` (inline)',
-				body: 'Define a macro to be run when called in this channel.\nValid commands are listed in `!help` pages, no whitespace allowed.\nExample definitions: `&hello=>!news`, `&dogelon=>$tsla=>%doge`',
+				body: 'Defines a macro to be run when called in this channel.\nValid commands are listed in `!help` pages, no whitespace allowed.\nExample definitions: `&hello=>!news`, `&dogelon=>$tsla=>%doge`',
 			},
 		],
 	};
