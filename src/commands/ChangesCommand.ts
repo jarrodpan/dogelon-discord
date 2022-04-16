@@ -18,7 +18,7 @@ export default class ChangesCommand extends Command {
 		command: 'changes',
 		message: [
 			{
-				title: '`!changes`\n`!c`',
+				title: '`!changes` (inline)\n`!c` (inline)',
 				body: 'Displays latest changelog entry.',
 			},
 		],
@@ -26,8 +26,8 @@ export default class ChangesCommand extends Command {
 
 	public version;
 
-	public expression = '(!c(hange(s)?)?(:S*)?)';
-	public matchOn = MatchOn.MESSAGE;
+	public expression = '(!c(hange(s)?)?)';
+	public matchOn = MatchOn.TOKEN;
 
 	private changesEmbed?: MessageEmbed;
 
