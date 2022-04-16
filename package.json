@@ -15,6 +15,7 @@
 		"build:dev": "tsc -b -v -w",
 		"postbuild": "npm test",
 		"start": "node ./bin/app.js",
+		"prestart:dev": "tsc -b",
 		"start:dev": "nodemon --inspect ./bin/app.js",
 		"changelog": "cross-env PRERELEASE=true jest --coverage --noStackTrace --detectOpenHandles version",
 		"changelog:dev": "jest --coverage --noStackTrace --detectOpenHandles version",
