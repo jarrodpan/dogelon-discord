@@ -1,5 +1,8 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { Client, Message, TextChannel } from 'discord.js';
+import { Client, Message, MessageOptions, TextChannel } from 'discord.js';
+import { DiscordMessageOptions } from '../commands';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const v = 'v' + require('./../../package.json').version;
 
 type Action = {
@@ -18,7 +21,7 @@ export class Queue {
 	public static push = (
 		message: Message | TextChannel | string,
 		token: string,
-		callback: (...params: any) => any
+		callback: (...params: any) => DiscordMessageOptions
 	) => {
 		if (typeof message === 'string') {
 			if (!Queue.client) throw new Error('client called before defined');

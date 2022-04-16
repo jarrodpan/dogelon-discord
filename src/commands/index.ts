@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 import Database from '../types/Database';
 import PostgresDatabase from '../resolvers/PostgresDatabase';
-import { Message, TextChannel } from 'discord.js';
+import { Message, MessageOptions, TextChannel } from 'discord.js';
 import { HelpPage } from '../types/Help';
 import HelpCommand from './HelpCommand';
 
@@ -10,6 +10,14 @@ export enum MatchOn {
 	TOKEN,
 	MESSAGE,
 }
+
+export type DiscordMessageOptions =
+	| string
+	| MessageOptions
+	| null
+	| undefined
+	| void
+	| unknown; // TODO: fix undefined
 
 export abstract class Command {
 	/**
@@ -30,7 +38,7 @@ export abstract class Command {
 	public readonly execute!: (
 		message: Message | TextChannel,
 		input: any
-	) => Promise<any> | any;
+	) => Promise<DiscordMessageOptions> | DiscordMessageOptions;
 
 	/**
 	 * A callback to run after the class has been loaded. Done like this to allow for asynchronous initialisation.

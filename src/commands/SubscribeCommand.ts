@@ -1,5 +1,5 @@
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../commands/';
+import { Command, DiscordMessageOptions, MatchOn } from '../commands/';
 import Database from '../types/Database';
 import * as fs from 'fs';
 import { Feed } from '../types/Feed';
@@ -39,7 +39,10 @@ export default class SubscribeCommand extends Command {
 
 	public expression = `(!(un)?s(ubscribe)? \\S*)`;
 	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
-	public execute = (messageInput: Message | TextChannel, input: any) => {
+	public execute = (
+		messageInput: Message | TextChannel,
+		input: any
+	): Promise<DiscordMessageOptions> | DiscordMessageOptions => {
 		const message = messageInput as Message;
 
 		const args = input.split(' ');

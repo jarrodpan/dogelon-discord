@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../commands/';
+import { Command, DiscordMessageOptions, MatchOn } from '../commands/';
 import Database from '../types/Database';
 import { HelpPage } from '../types/Help';
 
@@ -32,7 +32,7 @@ export default class BinanceNewCommand extends Command {
 		_message: Message | TextChannel,
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		_input: unknown
-	) => {
+	): Promise<DiscordMessageOptions> => {
 		let embed;
 
 		// coin exists
