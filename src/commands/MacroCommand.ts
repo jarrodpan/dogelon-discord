@@ -36,18 +36,18 @@ export default class MacroCommand extends Command {
 		command: 'macro',
 		message: [
 			{
-				title: '`&{macro name}`',
+				title: '`&{macro name}` (inline)',
 				body: 'Run a macro defined in this channel.',
 			},
 			{
-				title: '`&{macro name}=>{dogelon command}(=>...)`',
+				title: '`&{macro name}=>{dogelon command}(=>...)` (inline)',
 				body: 'Define a macro to be run when called in this channel.\nValid commands are listed in `!help` pages, no whitespace allowed.\nExample definitions: `&hello=>!news`, `&dogelon=>$tsla=>%doge`',
 			},
 		],
 	};
 
 	public expression = '&(\\S*)';
-	public matchOn = MatchOn.MESSAGE;
+	public matchOn = MatchOn.TOKEN;
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public execute = async (message: Message | TextChannel, input: string) => {
 		// flags
@@ -87,11 +87,7 @@ export default class MacroCommand extends Command {
 				definition
 			);
 
-			console.log(
-				macroSaved == 1
-					? `macro &${macro} saved`
-					: 'this is unreachable'
-			);
+			console.log(macroSaved == 1 && `macro &${macro} saved`);
 
 			if (macroSaved) {
 				const macroList = (await this.getChannelMacros(
@@ -114,12 +110,12 @@ export default class MacroCommand extends Command {
 			const definition = await this.getChannelMacro(channelId, macro);
 			if (!definition) return null;
 
-			console.log(definition);
+			//console.log(definition);
 
 			const { valid, definitions } = this.validateDefinition(definition);
 			if (!valid || !definitions) return null; // this should never happen
 
-			console.log(definitions);
+			console.debug(definitions);
 
 			for (const [token, command] of definitions) {
 				Dogelon.Queue.push(
