@@ -24,7 +24,7 @@ const mockChannel: TextChannel = require('discord.js')
 
 describe('MacroCommand', () => {
 	afterEach(() => {
-		//jest.resetAllMocks();
+		jest.clearAllMocks();
 	});
 
 	const macro = new MacroCommand(db);
@@ -87,7 +87,7 @@ describe('MacroCommand', () => {
 			['&yes', 1],
 			['&valid', 2],
 			['&chain', 5],
-			['&etherum', 1],
+			['&ethereum', 1],
 			['&tesla', 1],
 		])(
 			"should call queueing callback on defined macro '%s' %i times",
