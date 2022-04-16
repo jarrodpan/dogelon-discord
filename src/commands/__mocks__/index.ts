@@ -1,21 +1,16 @@
 import { Message, TextChannel } from 'discord.js';
+import LigmaCommand from './LigmaCommand';
+import RedditCommand from './RedditCommand';
+
+jest.mock('../RedditCommand');
+jest.mock('../LigmaCommand');
 
 enum MatchOn {
 	TOKEN,
 	MESSAGE,
 }
 
-class DummyTokenCommand extends Command {
-	constructor() {
-		super();
-	}
-}
-class DummyMessageCommand extends Command {
-	constructor() {
-		super();
-	}
-}
-class Command {
+abstract class Command {
 	constructor() {
 		return;
 	}
@@ -27,18 +22,27 @@ class Command {
 		input: any
 	) => Promise<any> | any;
 
-	public static matchOn = new Map([
-		[MatchOn.TOKEN, /^(?<DummyTokenCommand>[$%](\S*))$/gm],
-		[MatchOn.MESSAGE, /^(?<DummyMessageCommand>!(\S*))$/gm],
-	]);
+	public static matchOn = new Map();
+	/* = new Map([
+		[MatchOn.TOKEN, /^(?<RedditCommand>[$%](\S*))$/gm],
+		[MatchOn.MESSAGE, /^(?<LigmaCommand>!(\S*))$/gm],
+	]);*/
 
-	static commandMap: Map<any, any> = new Map([
-		['DummyTokenCommand', new DummyTokenCommand()],
-		['DummyMessageCommand', new DummyMessageCommand()],
-	]);
+	static commandMap = new Map();
+	/*: Map<any, any> = new Map([
+		['RedditCommand', new RedditCommand()],
+		['LigmaCommand', new LigmaCommand()],
+	]);*/
 
 	public static getExecuteFromCommandName = (command: string) =>
 		Command.commandMap.get(command).execute;
+
+	private static _initialise = Promise.resolve().then(() => {
+		Command.matchOn.set(MatchOn.TOKEN, /^(?<RedditCommand>[$%](\S*))$/gm);
+		Command.commandMap.set('RedditCommand', new RedditCommand());
+		Command.matchOn.set(MatchOn.MESSAGE, /^(?<LigmaCommand>[!](\S*))$/gm);
+		Command.commandMap.set('LigmaCommand', new LigmaCommand());
+	});
 }
 
-export { Command, MatchOn, DummyMessageCommand, DummyTokenCommand };
+export { Command, MatchOn };
