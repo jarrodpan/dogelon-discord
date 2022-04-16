@@ -81,9 +81,13 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 [1.11.0-next]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.11.0-next
 
+### Added
+
+-   Macro command to chain together Dogelon calls. Type `!help macro` for usage. (closes #68 closes #67 closes #48)
+
 ### Changed
 
--   x
+-   `!changes`: now matches on token instead of message and simplified matching regex
 
 # Previous Changes
 
