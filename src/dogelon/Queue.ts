@@ -1,4 +1,6 @@
+/* eslint-disable no-mixed-spaces-and-tabs */
 import { Client, Message, TextChannel } from 'discord.js';
+const v = 'v' + require('./../../package.json').version;
 
 type Action = {
 	message: Message | TextChannel;
@@ -49,8 +51,14 @@ export class Queue {
 
 				// global footer icon
 				if (output.embeds) {
-					output.embeds[0].footer.iconURL =
+					const icon =
 						'https://cdn.discordapp.com/app-icons/945669693576994877/c11dde4d4f016ffcc820418864efd9f4.png?size=64';
+					output.embeds[0].footer
+						? (output.embeds[0].footer.iconURL = icon)
+						: output.embeds[0].setFooter({
+								text: `Dogelon ${v}`,
+								iconURL: icon,
+						  });
 				}
 
 				console.debug('sending to discord...', output);
