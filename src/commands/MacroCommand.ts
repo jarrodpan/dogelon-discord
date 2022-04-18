@@ -50,6 +50,8 @@ export default class MacroCommand extends Command {
 	public matchOn = MatchOn.TOKEN;
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public execute = async (message: Message | TextChannel, input: string) => {
+		if (!this.validateInput(input)) return null;
+
 		// flags
 		let setDefinition;
 		const channelId = (message as Message).channelId;
@@ -128,6 +130,10 @@ export default class MacroCommand extends Command {
 		}
 
 		return null;
+	};
+
+	private validateInput = (input: string): boolean => {
+		return new RegExp(this.expression, 'gm').test(input);
 	};
 
 	private validateDefinition = (definition: string[]): MacroDefinition => {

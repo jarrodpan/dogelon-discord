@@ -29,6 +29,16 @@ describe('MacroCommand', () => {
 
 	const macro = new MacroCommand(db);
 
+	describe('when input is invalid', () => {
+		it.each(['ffff', '^jfhihc', '!!!!!'])(
+			"input '%s' should return null",
+			async (input) => {
+				const res = await (macro as any).execute(mockMessage, input);
+				expect(res).toBeNull();
+			}
+		);
+	});
+
 	describe('when macro is not defined', () => {
 		it.each([
 			['empty string', ''],
