@@ -31,7 +31,10 @@ export default class NewsCommand extends Command {
 
 	public expression = `(!n(ews)?)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (_message: CallbackChannelInput, _input: unknown) => {
+	public execute = async (
+		_message: CallbackChannelInput,
+		_input: unknown
+	) => {
 		let embed;
 
 		// coin exists

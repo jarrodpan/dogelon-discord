@@ -57,7 +57,7 @@ export default class CryptocurrencyCommand extends Command {
 		],
 	};
 
-	public init = () => {
+	public init = async () => {
 		const cacheName = 'crypto-coinlist';
 
 		return Promise.resolve()
