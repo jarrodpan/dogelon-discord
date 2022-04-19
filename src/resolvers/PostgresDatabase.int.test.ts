@@ -36,6 +36,6 @@ describe('postgres wrapper class - integration test', () => {
 	});
 
 	test('clean cache', async () => {
-		expect(await db.clean()).toBe(1);
+		expect(await db.clean()).toBeGreaterThanOrEqual(1);
 	});
 });
