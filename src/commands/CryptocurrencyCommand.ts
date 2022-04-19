@@ -1,7 +1,7 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
 import axios from 'axios';
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../commands/';
+import { Message, MessageEmbed } from 'discord.js';
+import { CallbackChannelInput, Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 import { HelpPage } from '../types/Help';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -87,7 +87,7 @@ export default class CryptocurrencyCommand extends Command {
 
 	public expression = `(?:\\%\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = async (message: Message | TextChannel, input: string) => {
+	public execute = async (message: CallbackChannelInput, input: string) => {
 		const args = input.split('/');
 		const tickerArgs = args[0].slice(1).split(':');
 		let ticker = tickerArgs[0];

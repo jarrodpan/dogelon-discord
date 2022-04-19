@@ -1,5 +1,5 @@
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../commands/';
+import { Message, MessageEmbed } from 'discord.js';
+import { CallbackChannelInput, Command, MatchOn } from '../commands/';
 import { Dogelon } from '../dogelon';
 import Database from '../types/Database';
 import { HelpPage } from '../types/Help';
@@ -48,7 +48,7 @@ export default class MacroCommand extends Command {
 
 	public expression = '&\\S*';
 	public matchOn = MatchOn.TOKEN;
-	public execute = async (message: Message | TextChannel, input: string) => {
+	public execute = async (message: CallbackChannelInput, input: string) => {
 		if (!this.validateInput(input)) return null;
 
 		// flags
@@ -119,11 +119,8 @@ export default class MacroCommand extends Command {
 			console.debug(definitions);
 
 			for (const [token, command] of definitions) {
-				Dogelon.Queue.push(
-					message,
-					token,
-					Command.getExecuteFromCommandName(command)
-				);
+				const cb = Command.getExecuteFromCommandName(command);
+				if (cb) Dogelon.Queue.push(message, token, cb);
 			}
 			return null;
 		}
@@ -141,7 +138,7 @@ export default class MacroCommand extends Command {
 		definition.some((cmd) => {
 			let tokenMatchCommands, messageMatchCommands;
 			try {
-				const matchOnToken: any = Command.matchOn
+				const matchOnToken = Command.matchOn
 					.get(MatchOn.TOKEN)
 					.exec(cmd).groups;
 				tokenMatchCommands = Object.entries(matchOnToken).filter(
@@ -156,7 +153,7 @@ export default class MacroCommand extends Command {
 
 			try {
 				//for (const cat in [MatchOn.MESSAGE, MatchOn.TOKEN]) {
-				const matchOnMessage: any = Command.matchOn
+				const matchOnMessage = Command.matchOn
 					.get(MatchOn.MESSAGE)
 					.exec(cmd).groups;
 				messageMatchCommands = Object.entries(matchOnMessage).filter(
@@ -201,7 +198,7 @@ export default class MacroCommand extends Command {
 	private getMacros = async (): Promise<MacroPreferences | false> => {
 		return await this.db.get(this.cacheName);
 	};
-	private setMacros = async (data: any): Promise<1 | false> => {
+	private setMacros = async (data: unknown): Promise<1 | false> => {
 		return await this.db.set(this.cacheName, data, Database.NEVER_EXPIRE);
 	};
 

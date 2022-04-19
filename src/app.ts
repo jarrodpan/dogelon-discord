@@ -14,7 +14,7 @@ import { Dogelon } from './dogelon/';
 const { Client, Intents } = require('discord.js');
 
 // set up discord client api
-export const client = new Client({
+const client = new Client({
 	intents: [
 		Intents.FLAGS.GUILDS,
 		Intents.FLAGS.GUILD_MEMBERS,
@@ -157,20 +157,16 @@ client.on('messageCreate', (message: Message): void => {
 		}
 
 		tokenMatchCommands.forEach(([commandName, _]) => {
-			Dogelon.Queue.push(
-				message,
-				token,
-				Command.commandMap.get(commandName).execute
-			);
+			const cmd = Command.commandMap.get(commandName);
+			if (cmd) Dogelon.Queue.push(message, token, cmd.execute);
+			else throw new Error('Command does not exist: ' + commandName);
 		});
 	});
 
 	msgMatchCommands.forEach(([commandName, _]) => {
-		Dogelon.Queue.push(
-			message,
-			message.content,
-			Command.commandMap.get(commandName).execute
-		);
+		const cmd = Command.commandMap.get(commandName);
+		if (cmd) Dogelon.Queue.push(message, message.content, cmd.execute);
+		else throw new Error('Command does not exist: ' + commandName);
 	});
 });
 
@@ -205,13 +201,11 @@ const newDeploy = async (channels) => {
 				} else console.log('new version detected');
 				channels.forEach((_subscriberId, v) => {
 					const ch = channels.get(v);
+					const cmd = Command.commandMap.get('ChangesCommand');
 					//console.log(ch);
-					if (ch.viewable && ch instanceof TextChannel)
-						Dogelon.Queue.push(
-							ch,
-							'',
-							Command.commandMap.get('ChangesCommand').execute
-						);
+					if (ch.viewable && ch instanceof TextChannel && cmd) {
+						Dogelon.Queue.push(ch, '', cmd.execute);
+					}
 				});
 				break;
 			}

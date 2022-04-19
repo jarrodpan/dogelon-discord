@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../commands/';
+import { CallbackChannelInput, Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 import { HelpPage } from '../types/Help';
 
@@ -31,7 +31,7 @@ export default class NewsCommand extends Command {
 
 	public expression = `(!n(ews)?)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (_message: Message | TextChannel, _input: unknown) => {
+	public execute = (_message: CallbackChannelInput, _input: unknown) => {
 		let embed;
 
 		// coin exists

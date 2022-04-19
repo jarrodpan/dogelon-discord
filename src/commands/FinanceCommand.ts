@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../commands/';
+import { MessageEmbed } from 'discord.js';
+import { CallbackChannelInput, Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 import { HelpPage } from '../types/Help';
 
@@ -36,7 +36,7 @@ export default class FinanceCommand extends Command {
 
 	public expression = `(?:\\$\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (message: Message | TextChannel, input: any) => {
+	public execute = (_message: CallbackChannelInput, input: string) => {
 		const ticker = input.slice(1);
 
 		let embed;
@@ -67,7 +67,7 @@ export default class FinanceCommand extends Command {
 				}
 				return [response, data, error];
 			})
-			.then(([response, data, error]) => {
+			.then(([_response, data, error]) => {
 				//console.log(data.error);
 				if (!error) {
 					console.log('setting up response');

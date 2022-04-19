@@ -1,6 +1,11 @@
 import axios from 'axios';
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, DiscordMessageOptions, MatchOn } from '../commands/';
+import { MessageEmbed } from 'discord.js';
+import {
+	CallbackChannelInput,
+	Command,
+	DiscordMessageOptions,
+	MatchOn,
+} from '../commands/';
 import Database from '../types/Database';
 import { HelpPage } from '../types/Help';
 
@@ -28,7 +33,7 @@ export default class BinanceNewCommand extends Command {
 	public expression = `(!b(inance)?)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
 	public execute = async (
-		_message: Message | TextChannel,
+		_message: CallbackChannelInput,
 		_input: unknown
 	): Promise<DiscordMessageOptions> => {
 		let embed;

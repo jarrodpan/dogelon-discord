@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
-//require('./index.mock').default;
 jest.mock('./');
 
-import { Command } from './';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const dummyMessage = require('discord.js').Message;
 import RedditCommand from './RedditCommand';
 

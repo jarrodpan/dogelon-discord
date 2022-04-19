@@ -1,5 +1,4 @@
-import { Message, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../commands/';
+import { CallbackChannelInput, Command, MatchOn } from '../commands/';
 import { HelpPage } from '../types/Help';
 
 /**
@@ -20,7 +19,7 @@ export default class RedditCommand extends Command {
 
 	public expression = `(?:r\\/|\\/r\\/)\\S*`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (message: Message | TextChannel, input: any) => {
+	public execute = (message: CallbackChannelInput, input: string) => {
 		return (
 			'https://www.reddit.com' +
 			(input.slice(0, 1) == '/' ? '' : '/') +

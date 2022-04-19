@@ -1,6 +1,11 @@
 import axios from 'axios';
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, DiscordMessageOptions, MatchOn } from '../commands/';
+import { MessageEmbed } from 'discord.js';
+import {
+	CallbackChannelInput,
+	Command,
+	DiscordMessageOptions,
+	MatchOn,
+} from '../commands/';
 import Database from '../types/Database';
 import { HelpPage } from '../types/Help';
 
@@ -112,7 +117,7 @@ export default class ChangesCommand extends Command {
 	};
 
 	public execute = (
-		_message: Message | TextChannel,
+		_message: CallbackChannelInput,
 		_: unknown
 	): Promise<DiscordMessageOptions> | DiscordMessageOptions => {
 		return { embeds: [this.changesEmbed] };

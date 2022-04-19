@@ -1,8 +1,5 @@
 import Database from '../types/Database';
-import { Pool, Client } from 'pg';
-import { client } from '../app';
-import { reduceEachTrailingCommentRange, resolveModuleName } from 'typescript';
-import { PartialGroupDMChannel } from 'discord.js';
+import { Pool } from 'pg';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 require('dotenv').config();
 
@@ -36,7 +33,7 @@ export default class PostgresPoolDatabase extends Database {
 		// new postgres pool
 		const pool = new Pool(pgConfig);
 
-		pool.on('error', (err, client) => {
+		pool.on('error', (err, _client) => {
 			console.error('Unexpected error on idle client', err);
 			process.exit(-1);
 		});
@@ -92,7 +89,7 @@ export default class PostgresPoolDatabase extends Database {
 			});
 	}
 
-	public async set(key: string, val: any, setCache?: number) {
+	public async set(key: string, val: unknown, setCache?: number) {
 		const cache = Database.unixTime() + (setCache ?? 60);
 
 		return Promise.resolve()

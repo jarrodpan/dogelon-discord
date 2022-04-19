@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { MessageEmbed, TextChannel } from 'discord.js';
-import { client } from '../../app';
+import { DiscordMessageOptions } from '..';
 import { Dogelon } from '../../dogelon';
 import Database from '../../types/Database';
 import { Feed } from '../../types/Feed';
@@ -17,7 +17,7 @@ export default class binanceNew implements Feed {
 		console.log(this.feedName, 'constructed');
 	}
 
-	public updateFeed = (): Promise<any> => {
+	public updateFeed = (): Promise<DiscordMessageOptions> => {
 		// binance-new
 		// TODO: generalise
 		console.log('calling', this.feedName);
@@ -69,7 +69,7 @@ export default class binanceNew implements Feed {
 
 					subscribers.channels.forEach((subscriberId) => {
 						Dogelon.Queue.push(
-							client.channels.cache.get(
+							Dogelon.Queue.client.channels.cache.get(
 								subscriberId
 							) as TextChannel,
 							'',

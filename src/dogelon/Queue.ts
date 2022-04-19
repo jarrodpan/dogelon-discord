@@ -1,17 +1,17 @@
 /* eslint-disable no-mixed-spaces-and-tabs */
-import { Client, Message, MessageOptions, TextChannel } from 'discord.js';
-import { DiscordMessageOptions } from '../commands';
+import { Client, Message, TextChannel } from 'discord.js';
+import { CallbackChannelInput, DiscordMessageOptions } from '../commands';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const v = 'v' + require('./../../package.json').version;
 
 type Action = {
-	message: Message | TextChannel;
+	message: CallbackChannelInput;
 	token: string;
 	callback: (
-		message: Message | TextChannel,
+		message: CallbackChannelInput,
 		input: string
-	) => Promise<any> | any;
+	) => Promise<any> | any; // TODO: fix 'any'
 };
 
 export class Queue {
@@ -19,9 +19,12 @@ export class Queue {
 	public static client: Client;
 
 	public static push = (
-		message: Message | TextChannel | string,
+		message: CallbackChannelInput | string,
 		token: string,
-		callback: (...params: any) => DiscordMessageOptions
+		callback: (
+			message: CallbackChannelInput,
+			input: string
+		) => DiscordMessageOptions
 	) => {
 		if (typeof message === 'string') {
 			if (!Queue.client) throw new Error('client called before defined');
@@ -32,13 +35,9 @@ export class Queue {
 	};
 
 	public static processNext = async () => {
+		const action: Action = Queue.queue.shift() as Action;
 		if (Queue.queue.length == 0) return;
-		//console.log(client.channels.cache);
-		// get next item from queue - definitely defined as we check above
-		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-		const action: Action = Queue.queue.shift()!;
-		//console.log(message);
-		//let output;
+
 		Promise.resolve()
 			.then(async () => {
 				const output = await action.callback(

@@ -19,6 +19,8 @@ export type DiscordMessageOptions =
 	| void
 	| unknown; // TODO: fix undefined
 
+export type CallbackChannelInput = Message | TextChannel;
+
 export abstract class Command {
 	/**
 	 * Required. Regular expression to check against when matching in discord chat
@@ -36,8 +38,8 @@ export abstract class Command {
 	 * @returns a Promise or response to send to discord.
 	 */
 	public readonly execute!: (
-		message: Message | TextChannel,
-		input: any
+		message: CallbackChannelInput,
+		input: string
 	) => Promise<DiscordMessageOptions> | DiscordMessageOptions;
 
 	/**
@@ -53,7 +55,7 @@ export abstract class Command {
 	/**
 	 * all the command classes
 	 */
-	static commandMap: Map<any, any>;
+	static commandMap: Map<string, Command>;
 	static db: Database | undefined;
 
 	static matchOn: Map<MatchOn, any> = new Map([
@@ -62,13 +64,10 @@ export abstract class Command {
 	]);
 
 	public static getExecuteFromCommandName = (command: string) => {
-		return Command.commandMap.get(command).execute;
+		return Command.commandMap.get(command)?.execute;
 	};
 
 	protected readonly validateInput?: (input: string) => boolean;
-	/*public readonly validateInput = (input: string) => {
-		return new RegExp(this.expression, 'gm').test(input);
-	};*/
 
 	/**
 	 * runs directly after declaration
