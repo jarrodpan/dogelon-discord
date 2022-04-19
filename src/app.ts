@@ -65,7 +65,6 @@ console.debug = newLog;
 
 // override console.debug for production
 if (process.env.NODE_ENV === 'production') {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	console.debug = (..._x: unknown[]) => {
 		return;
 	};
@@ -116,7 +115,6 @@ client.on('messageCreate', (message: Message): void => {
 		//console.log("match found:", Object.entries(matchOnMessage));
 		// filter out unmatched expressions
 		msgMatchCommands = Object.entries(matchOnMessage).filter(
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			([_s, matchString]) => {
 				return matchString != undefined;
 			}
@@ -142,9 +140,7 @@ client.on('messageCreate', (message: Message): void => {
 				.exec(token).groups;
 			//console.log("match found:", Object.entries(matchOnToken));
 			// filter out unmatched expressions
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
 			tokenMatchCommands = Object.entries(matchOnToken).filter(
-				// eslint-disable-next-line @typescript-eslint/no-unused-vars
 				([_s, matchString]) => {
 					return matchString != undefined;
 				}
@@ -160,7 +156,6 @@ client.on('messageCreate', (message: Message): void => {
 			tokenMatchCommands = [];
 		}
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		tokenMatchCommands.forEach(([commandName, _]) => {
 			Dogelon.Queue.push(
 				message,
@@ -170,7 +165,6 @@ client.on('messageCreate', (message: Message): void => {
 		});
 	});
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	msgMatchCommands.forEach(([commandName, _]) => {
 		Dogelon.Queue.push(
 			message,

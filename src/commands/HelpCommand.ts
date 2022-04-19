@@ -29,8 +29,7 @@ export default class HelpCommand extends Command {
 		});
 	};
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public execute = (message: Message | TextChannel, input: string) => {
+	public execute = (_message: Message | TextChannel, input: string) => {
 		const v = `v${pkg.version}`;
 		//const a = '<@944798462053089300>';
 		const embed = new MessageEmbed()

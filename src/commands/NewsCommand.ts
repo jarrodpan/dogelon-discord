@@ -31,7 +31,6 @@ export default class NewsCommand extends Command {
 
 	public expression = `(!n(ews)?)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public execute = (_message: Message | TextChannel, _input: unknown) => {
 		let embed;
 

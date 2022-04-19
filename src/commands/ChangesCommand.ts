@@ -111,9 +111,8 @@ export default class ChangesCommand extends Command {
 		this.version = v;
 	};
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public execute = (
-		message: Message | TextChannel,
+		_message: Message | TextChannel,
 		_: unknown
 	): Promise<DiscordMessageOptions> | DiscordMessageOptions => {
 		return { embeds: [this.changesEmbed] };

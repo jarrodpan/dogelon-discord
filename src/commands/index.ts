@@ -85,7 +85,6 @@ export abstract class Command {
 			await fs
 				.readdirSync('./src/commands/')
 				.forEach(async (command: string) => {
-					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const [commandName, ts, ..._] = command.split('.');
 					if (
 						// knockout junk files

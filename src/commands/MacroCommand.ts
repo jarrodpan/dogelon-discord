@@ -48,7 +48,6 @@ export default class MacroCommand extends Command {
 
 	public expression = '&\\S*';
 	public matchOn = MatchOn.TOKEN;
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public execute = async (message: Message | TextChannel, input: string) => {
 		if (!this.validateInput(input)) return null;
 
@@ -146,7 +145,6 @@ export default class MacroCommand extends Command {
 					.get(MatchOn.TOKEN)
 					.exec(cmd).groups;
 				tokenMatchCommands = Object.entries(matchOnToken).filter(
-					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					([_s, matchString]) => {
 						return matchString != undefined;
 					}
@@ -162,7 +160,6 @@ export default class MacroCommand extends Command {
 					.get(MatchOn.MESSAGE)
 					.exec(cmd).groups;
 				messageMatchCommands = Object.entries(matchOnMessage).filter(
-					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					([_s, matchString]) => {
 						return matchString != undefined;
 					}
