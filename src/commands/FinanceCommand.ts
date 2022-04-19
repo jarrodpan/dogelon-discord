@@ -36,7 +36,7 @@ export default class FinanceCommand extends Command {
 
 	public expression = `(?:\\$\\S*)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
-	public execute = (_message: CallbackChannelInput, input: string) => {
+	public execute = async (_message: CallbackChannelInput, input: string) => {
 		const ticker = input.slice(1);
 
 		let embed;
