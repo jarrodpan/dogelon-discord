@@ -1,4 +1,4 @@
-import { Message, TextChannel } from 'discord.js';
+import { CallbackChannelInput } from '..';
 import LigmaCommand from './LigmaCommand';
 import RedditCommand from './RedditCommand';
 
@@ -18,7 +18,7 @@ abstract class Command {
 		return;
 	};
 	public execute!: (
-		message: Message | TextChannel,
+		message: CallbackChannelInput,
 		input: any
 	) => Promise<any> | any;
 
