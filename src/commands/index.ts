@@ -65,6 +65,11 @@ export abstract class Command {
 		return Command.commandMap.get(command).execute;
 	};
 
+	protected readonly validateInput?: (input: string) => boolean;
+	/*public readonly validateInput = (input: string) => {
+		return new RegExp(this.expression, 'gm').test(input);
+	};*/
+
 	/**
 	 * runs directly after declaration
 	 */

@@ -41,12 +41,12 @@ export default class MacroCommand extends Command {
 			},
 			{
 				title: '`&{macro name}=>{dogelon command}(=>...)` (inline)',
-				body: 'Defines a macro to be run when called in this channel.\nValid commands are listed in `!help` pages, no whitespace allowed.\nExample definitions: `&hello=>!news`, `&dogelon=>$tsla=>%doge`',
+				body: 'Defines a macro to be run when called in this channel.\nValid commands are listed in `!help` pages with no whitespace allowed.\nExample definitions: `&hello=>!news`, `&dogelon=>$tsla=>%doge`',
 			},
 		],
 	};
 
-	public expression = '&(\\S*)';
+	public expression = '&\\S*';
 	public matchOn = MatchOn.TOKEN;
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	public execute = async (message: Message | TextChannel, input: string) => {
@@ -60,7 +60,7 @@ export default class MacroCommand extends Command {
 		// knockout if non command gets passed in for some reason
 		if (input.slice(0, 1) !== '&') return null;
 		// split any trailling spaced off stuff, split by equals sign
-		const splitInput = input.split(' ')[0].slice(1).split('=>');
+		const splitInput = input.trim().split(' ')[0].slice(1).split('=>');
 		const [macro, ..._] = splitInput;
 		let [, ...definition] = splitInput;
 
@@ -132,7 +132,7 @@ export default class MacroCommand extends Command {
 		return null;
 	};
 
-	private validateInput = (input: string): boolean => {
+	protected validateInput = (input: string): boolean => {
 		return new RegExp(this.expression, 'gm').test(input);
 	};
 
