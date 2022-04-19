@@ -44,10 +44,10 @@ export default class SubscribeCommand extends Command {
 
 	public expression = `(!(un)?s(ubscribe)? \\S*)`;
 	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
-	public execute = (
+	public execute = async (
 		messageInput: CallbackChannelInput,
 		input: string
-	): Promise<DiscordMessageOptions> | DiscordMessageOptions => {
+	): Promise<DiscordMessageOptions> => {
 		const message = messageInput as Message;
 
 		const args = input.split(' ');
