@@ -169,12 +169,8 @@ export default class MacroCommand extends Command {
 			//console.log(tokenMatchCommands);
 			//console.log(messageMatchCommands);
 			const commandMatches: string | null =
-				(tokenMatchCommands &&
-					tokenMatchCommands[0] &&
-					tokenMatchCommands[0][0]) ??
-				(messageMatchCommands &&
-					messageMatchCommands[0] &&
-					messageMatchCommands[0][0]) ??
+				tokenMatchCommands?.[0]?.[0] ??
+				messageMatchCommands?.[0]?.[0] ??
 				null;
 
 			if (!commandMatches || commandMatches.length == 0) {
