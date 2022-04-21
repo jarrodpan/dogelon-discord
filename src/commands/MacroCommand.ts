@@ -119,7 +119,7 @@ export default class MacroCommand extends Command {
 			console.debug(definitions);
 
 			for (const [token, command] of definitions) {
-				const cb = Command.getExecuteFromCommandName(command)!;
+				const cb = Command.getExecuteFromCommandName(command);
 				if (cb !== undefined) Dogelon.Queue.push(message, token, cb);
 			}
 			return null;
@@ -179,7 +179,7 @@ export default class MacroCommand extends Command {
 				return false;
 			}
 
-			console.log(cmd, 'matches', commandMatches);
+			console.debug(cmd, 'matches', commandMatches);
 
 			validDef.push([cmd, commandMatches]);
 		});
