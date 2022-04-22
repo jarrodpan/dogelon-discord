@@ -88,6 +88,8 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 ### Changed
 
 -   `!changes`: now matches on token instead of message and simplified matching regex
+-   Stronger typing on various pieces of code
+-   Couple of unit tests (progress on #77 but still need more).
 
 # Previous Changes
 
