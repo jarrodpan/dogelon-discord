@@ -35,8 +35,8 @@ export class Queue {
 	};
 
 	public static processNext = async () => {
-		const action: Action = Queue.queue.shift() as Action;
 		if (Queue.queue.length == 0) return;
+		const action: Action = Queue.queue.shift() as Action;
 
 		Promise.resolve()
 			.then(async () => {
