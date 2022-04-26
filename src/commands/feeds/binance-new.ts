@@ -9,7 +9,7 @@ import { Subscribers } from '../SubscribeCommand';
 export default class binanceNew implements Feed {
 	private db: Database;
 	public readonly feedName: string = 'binance-new';
-	public readonly updateTime: number = 600000;
+	public readonly updateTime: number = 120000;
 
 	constructor(db: Database) {
 		this.db = db;

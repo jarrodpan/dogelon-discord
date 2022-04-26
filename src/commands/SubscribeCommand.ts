@@ -34,7 +34,7 @@ export default class SubscribeCommand extends Command {
 			},
 			{
 				title: 'Available options',
-				body: '- [`binance-new`](https://www.binance.com/en/support/announcement/c-48) (ten minutes)',
+				body: '- [`binance-new`](https://www.binance.com/en/support/announcement/c-48) (two minutes)',
 			},
 		],
 	};
