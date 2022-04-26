@@ -2,7 +2,7 @@
 import * as fs from 'fs';
 import Database from '../types/Database';
 import PostgresDatabase from '../resolvers/PostgresDatabase';
-import { Message, TextChannel } from 'discord.js';
+import { Message, MessageOptions, TextChannel } from 'discord.js';
 import { HelpPage } from '../types/Help';
 import HelpCommand from './HelpCommand';
 
@@ -10,6 +10,16 @@ export enum MatchOn {
 	TOKEN,
 	MESSAGE,
 }
+
+export type DiscordMessageOptions =
+	| string
+	| MessageOptions
+	| null
+	| undefined
+	| void
+	| unknown; // TODO: fix undefined
+
+export type CallbackChannelInput = Message | TextChannel;
 
 export abstract class Command {
 	/**
@@ -28,9 +38,9 @@ export abstract class Command {
 	 * @returns a Promise or response to send to discord.
 	 */
 	public readonly execute!: (
-		message: Message | TextChannel,
-		input: any
-	) => Promise<any> | any;
+		message: CallbackChannelInput,
+		input: string
+	) => Promise<DiscordMessageOptions> | DiscordMessageOptions;
 
 	/**
 	 * A callback to run after the class has been loaded. Done like this to allow for asynchronous initialisation.
@@ -45,13 +55,19 @@ export abstract class Command {
 	/**
 	 * all the command classes
 	 */
-	static commandMap: Map<any, any>;
+	static commandMap: Map<string, Command>;
 	static db: Database | undefined;
 
 	static matchOn: Map<MatchOn, any> = new Map([
 		[MatchOn.MESSAGE, []],
 		[MatchOn.TOKEN, []],
 	]);
+
+	public static getExecuteFromCommandName = (command: string) => {
+		return Command.commandMap.get(command)?.execute;
+	};
+
+	protected readonly validateInput?: (input: string) => boolean;
 
 	/**
 	 * runs directly after declaration
@@ -68,7 +84,6 @@ export abstract class Command {
 			await fs
 				.readdirSync('./src/commands/')
 				.forEach(async (command: string) => {
-					// eslint-disable-next-line @typescript-eslint/no-unused-vars
 					const [commandName, ts, ..._] = command.split('.');
 					if (
 						// knockout junk files

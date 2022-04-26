@@ -1,5 +1,10 @@
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../commands/';
+import { Message, MessageEmbed } from 'discord.js';
+import {
+	CallbackChannelInput,
+	Command,
+	DiscordMessageOptions,
+	MatchOn,
+} from '../commands/';
 import Database from '../types/Database';
 import * as fs from 'fs';
 import { Feed } from '../types/Feed';
@@ -29,7 +34,7 @@ export default class SubscribeCommand extends Command {
 			},
 			{
 				title: 'Available options',
-				body: '- [`binance-new`](https://www.binance.com/en/support/announcement/c-48) (ten minutes)',
+				body: '- [`binance-new`](https://www.binance.com/en/support/announcement/c-48) (two minutes)',
 			},
 		],
 	};
@@ -39,7 +44,10 @@ export default class SubscribeCommand extends Command {
 
 	public expression = `(!(un)?s(ubscribe)? \\S*)`;
 	public matchOn = MatchOn.MESSAGE; // MatchOn.TOKEN
-	public execute = (messageInput: Message | TextChannel, input: any) => {
+	public execute = async (
+		messageInput: CallbackChannelInput,
+		input: string
+	): Promise<DiscordMessageOptions> => {
 		const message = messageInput as Message;
 
 		const args = input.split(' ');
@@ -57,7 +65,7 @@ export default class SubscribeCommand extends Command {
 						args.length
 				);
 
-			action = args[0];
+			action = args[0] as typeof action;
 			feature = args[1];
 			subscribe = !(action === '!uns' || action === '!unsubscribe');
 			console.log(
@@ -103,8 +111,8 @@ export default class SubscribeCommand extends Command {
 		return Promise.resolve()
 			.then(async () => {
 				let subscribers: Subscribers;
-				let data;
-				let error = false;
+				//let data;
+				//let error = false;
 				const cacheName = 'subscribe-' + feature;
 
 				try {
@@ -223,8 +231,8 @@ export default class SubscribeCommand extends Command {
 					//console.log(response);
 					//data = response.data.data.catalogs[0];
 				} catch (e) {
-					data = undefined;
-					error = true;
+					//data = undefined;
+					//error = true;
 					console.error(e);
 				}
 				return null;

@@ -5,7 +5,10 @@
 const prerelease = process.env.PRERELEASE ? true : false;
 //console.log(prerelease);
 const pkgVer: string = require('../package.json').version;
-const pkgLockVer: string = require('../package-lock.json').version;
+const [pkgLockVer, pkgLockVer2] = [
+	require('../package-lock.json').version,
+	require('../package-lock.json').packages[''].version,
+];
 
 const readme: string = require('fs').readFileSync('./README.md').toString();
 const latestChange = readme
@@ -33,9 +36,15 @@ latestChange?.forEach((line) => {
 
 describe.each([
 	[pkgVer, pkgLockVer, 'package version matches package-lock version'],
+	[pkgVer, pkgLockVer2, 'package version matches package-lock version(2)'],
 	[pkgVer, changelogVer, 'package version matches changelog version'],
 	[pkgVer, tagLinkVer, 'package version matches tag link version'],
 	[pkgVer, tagVer, 'package version matches tag version'],
+	[
+		pkgLockVer,
+		pkgLockVer2,
+		'package-lock version matches package-lock version(2)',
+	],
 	[
 		pkgLockVer,
 		changelogVer,
@@ -44,12 +53,23 @@ describe.each([
 	[pkgLockVer, tagLinkVer, 'package-lock version matches tag link version'],
 	[pkgLockVer, tagVer, 'package-lock version matches tag version'],
 
+	[
+		changelogVer,
+		pkgLockVer2,
+		'changelog version matches package-lock version(2)',
+	],
 	[changelogVer, tagLinkVer, 'changelog version matches tag link version'],
 	[changelogVer, tagVer, 'changelog version matches tag version'],
+	[
+		tagLinkVer,
+		pkgLockVer2,
+		'tag link version matches package-lock version(2)',
+	],
 	[tagLinkVer, tagVer, 'tag link version matches tag version'],
+	[tagVer, pkgLockVer2, 'tag version matches package-lock version(2)'],
 ])('check package and changelong versions', (v1, v2, desc) => {
 	it(desc, () => {
-		expect(v1 === v2).toBe(true);
+		expect(v1).toEqual(v2);
 	});
 });
 

@@ -1,5 +1,5 @@
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../commands/';
+import { MessageEmbed } from 'discord.js';
+import { CallbackChannelInput, Command, MatchOn } from '../commands/';
 import Database from '../types/Database';
 import { HelpPage, HelpField } from '../types/Help';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -29,8 +29,7 @@ export default class HelpCommand extends Command {
 		});
 	};
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public execute = (message: Message | TextChannel, input: string) => {
+	public execute = (_message: CallbackChannelInput, input: string) => {
 		const v = `v${pkg.version}`;
 		//const a = '<@944798462053089300>';
 		const embed = new MessageEmbed()

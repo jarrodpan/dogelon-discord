@@ -1,6 +1,11 @@
 import axios from 'axios';
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../commands/';
+import { MessageEmbed } from 'discord.js';
+import {
+	CallbackChannelInput,
+	Command,
+	DiscordMessageOptions,
+	MatchOn,
+} from '../commands/';
 import Database from '../types/Database';
 import { HelpPage } from '../types/Help';
 
@@ -18,7 +23,7 @@ export default class ChangesCommand extends Command {
 		command: 'changes',
 		message: [
 			{
-				title: '`!changes`\n`!c`',
+				title: '`!changes` (inline)\n`!c` (inline)',
 				body: 'Displays latest changelog entry.',
 			},
 		],
@@ -26,8 +31,8 @@ export default class ChangesCommand extends Command {
 
 	public version;
 
-	public expression = '(!c(hange(s)?)?(:S*)?)';
-	public matchOn = MatchOn.MESSAGE;
+	public expression = '(!c(hange(s)?)?)';
+	public matchOn = MatchOn.TOKEN;
 
 	private changesEmbed?: MessageEmbed;
 
@@ -111,8 +116,10 @@ export default class ChangesCommand extends Command {
 		this.version = v;
 	};
 
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
-	public execute = (message: Message | TextChannel, _: unknown) => {
+	public execute = (
+		_message: CallbackChannelInput,
+		_: unknown
+	): Promise<DiscordMessageOptions> | DiscordMessageOptions => {
 		return { embeds: [this.changesEmbed] };
 	};
 }

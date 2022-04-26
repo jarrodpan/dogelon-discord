@@ -1,6 +1,6 @@
 {
 	"name": "dogelon-discord",
-	"version": "1.10.0",
+	"version": "1.11.0",
 	"description": "stock and helper bot for personal discord",
 	"type": "commonjs",
 	"bin": {
@@ -15,10 +15,11 @@
 		"build:dev": "tsc -b -v -w",
 		"postbuild": "npm test",
 		"start": "node ./bin/app.js",
+		"prestart:dev": "tsc -b",
 		"start:dev": "nodemon --inspect ./bin/app.js",
 		"changelog": "cross-env PRERELEASE=true jest --coverage --noStackTrace --detectOpenHandles version",
 		"changelog:dev": "jest --coverage --noStackTrace --detectOpenHandles version",
-		"test": "cross-env PRERELEASE=true jest --coverage --noStackTrace --detectOpenHandles",
+		"test": "cross-env PRERELEASE=true jest --coverage --detectOpenHandles",
 		"lint": "eslint . --ext .js,.jsx,.ts,.tsx",
 		"prepare": "husky install"
 	},
@@ -26,6 +27,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"@discordjs/rest": "^0.3.0",
+		"@types/node": "^17.0.23",
 		"axios": "^0.26.0",
 		"better-sqlite3": "^7.5.0",
 		"discord-api-types": "^0.27.3",

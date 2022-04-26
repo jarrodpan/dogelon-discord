@@ -77,6 +77,26 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 # Changelog
 
+## [1.11.0] - 2022-04-26
+
+[1.11.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.11.0
+
+### Added
+
+-   Macro command to chain together Dogelon calls. Type `!help macro` for usage. (closes #68 closes #67 closes #48)
+
+### Changed
+
+-   `!changes`: now matches on token instead of message and simplified matching regex
+-   Stronger typing on various pieces of code
+-   Couple of unit tests (progress on #77 but still need more).
+-   `binance-new` subscription interval dropped to two minutes.
+
+# Previous Changes
+
+<details>
+<summary>Click to expand</summary>
+
 ## [1.10.0] - 2022-04-11
 
 [1.10.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.10.0
@@ -88,11 +108,6 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 -   converted help command into dynamic help pages for each command for further extensibility (closes #60 and closes #43)
 -   made console output prettier with colours for ease of reading.
 -   added unit tests for the commands
-
-# Previous Changes
-
-<details>
-<summary>Click to expand</summary>
 
 ## [1.9.1] - 2022-04-08
 
@@ -427,3 +442,7 @@ heroku webhooks? https://stackoverflow.com/questions/50358737/connecting-heroku-
 more: https://github.com/muan/discord-webhooks
 
 free apis: https://github.com/toddmotto/public-apis
+
+jest mocking: https://medium.com/@anmol5varma/mocking-functions-and-files-while-testing-javascript-app-using-jest-93542a6f6738
+
+more jest: https://medium.com/nerd-for-tech/testing-typescript-with-jest-290eaee9479d

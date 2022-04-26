@@ -11,7 +11,7 @@ export default abstract class Database {
 		pword?: string,
 		host?: string | 'localhost',
 		port?: string | 1433
-	);
+	): boolean;
 	/**
 	 * Gets a cached object
 	 * @returns The cached object if found and not expired, false otherwise

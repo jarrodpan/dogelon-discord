@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { MessageEmbed, TextChannel } from 'discord.js';
-import { client } from '../../app';
+import { DiscordMessageOptions } from '..';
 import { Dogelon } from '../../dogelon';
 import Database from '../../types/Database';
 import { Feed } from '../../types/Feed';
@@ -9,7 +9,7 @@ import { Subscribers } from '../SubscribeCommand';
 export default class binanceNew implements Feed {
 	private db: Database;
 	public readonly feedName: string = 'binance-new';
-	public readonly updateTime: number = 600000;
+	public readonly updateTime: number = 120000;
 
 	constructor(db: Database) {
 		this.db = db;
@@ -17,7 +17,7 @@ export default class binanceNew implements Feed {
 		console.log(this.feedName, 'constructed');
 	}
 
-	public updateFeed = (): Promise<any> => {
+	public updateFeed = (): Promise<DiscordMessageOptions> => {
 		// binance-new
 		// TODO: generalise
 		console.log('calling', this.feedName);
@@ -69,11 +69,10 @@ export default class binanceNew implements Feed {
 
 					subscribers.channels.forEach((subscriberId) => {
 						Dogelon.Queue.push(
-							client.channels.cache.get(
+							Dogelon.Queue.client.channels.cache.get(
 								subscriberId
 							) as TextChannel,
 							'',
-							// eslint-disable-next-line @typescript-eslint/no-unused-vars
 							(_msg, _input) => {
 								const embed = new MessageEmbed()
 									.setColor('#9B59B6')

@@ -1,6 +1,11 @@
 import axios from 'axios';
-import { Message, MessageEmbed, TextChannel } from 'discord.js';
-import { Command, MatchOn } from '../commands/';
+import { MessageEmbed } from 'discord.js';
+import {
+	CallbackChannelInput,
+	Command,
+	DiscordMessageOptions,
+	MatchOn,
+} from '../commands/';
 import Database from '../types/Database';
 import { HelpPage } from '../types/Help';
 
@@ -28,11 +33,9 @@ export default class BinanceNewCommand extends Command {
 	public expression = `(!b(inance)?)`;
 	public matchOn = MatchOn.TOKEN; // MatchOn.TOKEN
 	public execute = async (
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		_message: Message | TextChannel,
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
+		_message: CallbackChannelInput,
 		_input: unknown
-	) => {
+	): Promise<DiscordMessageOptions> => {
 		let embed;
 
 		// coin exists
