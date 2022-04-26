@@ -77,9 +77,9 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 # Changelog
 
-## [1.11.0-next] - 2022-04-12
+## [1.11.0] - 2022-04-26
 
-[1.11.0-next]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.11.0-next
+[1.11.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.11.0
 
 ### Added
 
@@ -90,6 +90,7 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 -   `!changes`: now matches on token instead of message and simplified matching regex
 -   Stronger typing on various pieces of code
 -   Couple of unit tests (progress on #77 but still need more).
+-   `binance-new` subscription interval dropped to two minutes.
 
 # Previous Changes
 
