@@ -73,15 +73,17 @@ describe.each([
 	});
 });
 
+const not = prerelease ? 'not ' : '';
+
 describe.each([
-	[pkgVer, 'package version is not development version'],
-	[pkgLockVer, 'package-lock version is not development version'],
-	[changelogVer, 'changelog version is not development version'],
-	[tagLinkVer, 'tag link version is not development version'],
-	[tagVer, 'tag version is not development version'],
+	[pkgVer, `package version is ${not}development version`],
+	[pkgLockVer, `package-lock version is ${not}development version`],
+	[changelogVer, `changelog version is ${not}development version`],
+	[tagLinkVer, `tag link version is ${not}development version`],
+	[tagVer, `tag version is ${not}development version`],
 ])('check for development version', (ver: string, desc) => {
-	ifit(prerelease)(desc, () => {
-		expect(/-.*$/g.test(ver)).toBe(false);
+	it(desc, () => {
+		expect(/-.*$/g.test(ver)).toBe(!prerelease);
 	});
 });
 

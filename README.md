@@ -77,6 +77,23 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 
 # Changelog
 
+## [1.12.0-next] - 2022-04-27
+
+[1.12.0-next]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.12.0-next
+
+### Added
+
+-
+
+### Changed
+
+-
+
+# Previous Changes
+
+<details>
+<summary>Click to expand</summary>
+
 ## [1.11.0] - 2022-04-27
 
 [1.11.0]: https://github.com/jarrodpan/dogelon-discord/releases/tag/v1.11.0
@@ -91,11 +108,6 @@ Using [SemVer](semver.org) and [Keep a Changelog](keepachangelog.com) (except th
 -   Stronger typing on various pieces of code
 -   Couple of unit tests (progress on #77 but still need more).
 -   `binance-new` subscription interval dropped to two minutes.
-
-# Previous Changes
-
-<details>
-<summary>Click to expand</summary>
 
 ## [1.10.0] - 2022-04-11
 
@@ -446,3 +458,5 @@ free apis: https://github.com/toddmotto/public-apis
 jest mocking: https://medium.com/@anmol5varma/mocking-functions-and-files-while-testing-javascript-app-using-jest-93542a6f6738
 
 more jest: https://medium.com/nerd-for-tech/testing-typescript-with-jest-290eaee9479d
+
+github action: https://github.com/AkhileshNS/heroku-deploy
